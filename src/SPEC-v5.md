@@ -1,0 +1,35 @@
+# Edge Lab Replay – Version 5: Sync (Supabase) + Wirtschaftsdaten
+
+Arbeite in /home/claude/bt2 (Stand v4 + Zoom-Fix, alle Tests grün: test-core.js, test-analysis.js, test-ui.py, test-live.py, test-v3.py, test-v4.py, test-perf.py; Build `python3 build.py`). Deutsch, keine Emojis, Design-System von v3/v4. Kein Lookahead. Effizient, minimal-invasiv, neue Dateien: sync.js, econ.js (+ Tests).
+
+## 1. Sync über Supabase (eigene Tabelle, KEIN SDK – reines fetch)
+Projekt: URL `https://pyrdgaqifsodbhaoxwcn.supabase.co`, Publishable Key `sb_publishable_-zPRKDnt6lOWKwnEAUH9FQ_Q1wXD919` (öffentlich, darf in den Code; Schutz über RLS). Header: `apikey: <publishable>`; mit Login zusätzlich `Authorization: Bearer <access_token>`.
+
+Server-Schema (wird vom Nutzer per tools/supabase-setup.sql angelegt – NICHT selbst anlegen):
+- Tabelle `public.elr_items` (user_id uuid default auth.uid(), kind text in ('trade','session','strategy','settings','photo','meta'), id text, data jsonb, deleted bool default false, updated_at timestamptz – vom Server per Trigger auf now() gesetzt). PK (user_id, kind, id). RLS: nur eigene Zeilen.
+- Storage-Bucket `elr-photos` (privat, 5 MB, jpeg/png/webp), Pfad `<user_id>/<photoId>.jpg`, RLS nur eigener Ordner.
+
+Auth (GoTrue REST):
+- Registrieren: POST /auth/v1/signup {email, password} → je nach Projekt-Einstellung direkt Session oder „Bestätige deine E-Mail“ (Hinweis anzeigen; der Bestätigungslink kann auf eine andere Seite führen – danach in der App anmelden).
+- Anmelden: POST /auth/v1/token?grant_type=password; Erneuern: POST /auth/v1/token?grant_type=refresh_token (vor Ablauf, und bei 401 einmal erneuern + Wiederholung); Abmelden: POST /auth/v1/logout. Session (access/refresh/expires_at/user) in localStorage (`elr.auth`). Passwort vergessen: POST /auth/v1/recover {email} + Hinweis.
+- Fehlertexte deutsch („E-Mail oder Passwort falsch“, „Bitte E-Mail bestätigen“, „Keine Verbindung“, „Sync-Tabelle fehlt – Setup-Skript in Supabase ausführen“ bei 404/42P01).
+
+Sync-Logik (sync.js):
+- Lokale Datensätze bekommen `_u` (letzte lokale Änderung, ms) und `_dirty`. Löschungen als Tombstone (`deleted:true`) merken und hochladen.
+- Push: geänderte Einträge gebündelt (max. 200/Request) per POST /rest/v1/elr_items mit `Prefer: resolution=merge-duplicates,return=representation` (on_conflict=user_id,kind,id). Danach `_dirty` löschen, Server-`updated_at` merken.
+- Pull: GET /rest/v1/elr_items?updated_at=gt.<cursor>&order=updated_at.asc&limit=1000 (paginieren). Konflikt: Last-write-wins nach Änderungszeit (`data._u` vs. lokal `_u`); lokale ungesyncte neuere Änderung gewinnt und wird danach hochgeladen.
+- Was: Journal-Trades (kind trade), Backtest-Sessions (session), Strategien (strategy), Einstellungen (settings, ein Datensatz 'main', ohne gerätespezifische Dinge wie Layout/Fenster), Fotos (photo: Metadaten als Zeile, Bild im Storage; Upload POST /storage/v1/object/elr-photos/<uid>/<id>.jpg mit x-upsert true; Download per authentifiziertem GET, lokal in IndexedDB cachen; Löschen DELETE). Laufende Replay-Session (Fortsetzen-Stand) NICHT syncen (gerätelokal).
+- Wann: nach Anmeldung (Erstabgleich: lokale Daten hochladen + Server-Daten holen, nichts löschen), beim Start, bei Fokus/visibilitychange, 3 s nach lokalen Änderungen (gedrosselt), periodisch alle 60 s im Vordergrund, nach Wiederkehr online. Offline: alles läuft lokal weiter, Änderungen werden später übertragen.
+- UI: in Einstellungen Reiter „Konto & Sync“ (Anmelden/Registrieren/Abmelden, E-Mail, letzter Abgleich, Anzahl Einträge, „Jetzt abgleichen“, „Lokale Daten nach Abmelden behalten“), kleines Status-Symbol in der Kopfzeile (synchron / läuft / offline / Fehler – mit Tooltip), Hinweis in der Übersicht „Melde dich an, um Handy und PC zu verbinden“ (wegklickbar). Datenschutz-Hinweis: Daten liegen im eigenen Supabase-Projekt.
+- Sicherheit: Nie Service-Keys; nur Publishable Key. Eingaben escapen. Tokens nie in URLs.
+
+Tests: Mock-Server per Playwright-Route (GoTrue + PostgREST + Storage in-memory, mit RLS-Simulation per Token→user), Szenarien: Registrieren mit/ohne Bestätigung, Anmelden, Erstabgleich in beide Richtungen, zwei Geräte (zwei Browser-Kontexte) – Trade auf Gerät A erscheint auf B, Löschen auf B verschwindet auf A, gleichzeitige Änderung → neuere gewinnt, Foto-Upload/Download, Token-Ablauf → Refresh, offline → später nachgereicht, fehlende Tabelle → verständlicher Fehler. Unit-Tests für Merge-Logik.
+
+## 2. Wirtschaftsdaten (econ.js)
+Ziel: Im Replay wie live wissen, dass gleich ein wichtiger US-Termin kommt – ohne das Datum zu verraten.
+- Daten: wichtigste US-Termine 2020-01 bis 2026-10 als statische Liste (UTC-Zeitpunkte): **CPI** (8:30 ET), **Arbeitsmarktbericht / Employment Situation** (8:30 ET), **FOMC-Zinsentscheid** (14:00 ET, Statement; bei außerplanmäßigen Sitzungen 2020 nur, wenn belegt), optional **PPI** und **Einzelhandelsumsätze** (8:30 ET) und **PCE** (8:30 ET) nur wenn sicher belegbar. QUELLEN: offizielle Kalender – BLS Release-Schedules (bls.gov/schedule/…, bls.gov/bls/news-release/…) und federalreserve.gov/monetarypolicy/fomccalendars.htm bzw. fomchistorical. Per WebFetch/WebSearch belegen; wenn eine Quelle nicht erreichbar ist, nur sichere Termine aufnehmen und im Bericht offen sagen, was fehlt. KEINE Termine raten. Ein Skript, das die Liste prüft (Wochentag plausibel: NFP meist Freitag, FOMC Mittwoch; Uhrzeit-Umrechnung ET→UTC mit Sommerzeit via Core.zonedToUtc), plus Unit-Tests für Stichproben (z. B. CPI 10.11.2022, NFP 2.2.2024 08:30 ET, FOMC 16.3.2022 14:00 ET – nur wenn aus Quelle bestätigt).
+- Anzeige im Chart: vertikale gestrichelte Linie mit kleinem Kürzel (CPI/NFP/FOMC/…) an Termin-Zeitpunkten – nur für Termine ≤ Cursor (bereits passiert) PLUS Vorwarnung: 30 Min vorher kleines Banner im Chart „In 15 Min: Hochrelevante US-Daten (8:30 ET)“ / „In 2 Std: Fed-Zinsentscheid“. Im Blind-Modus nur generisch („Hochrelevanter US-Termin um 8:30 ET“), Kürzel erst nach der Session; in nicht-Blind Kürzel sofort. Schalter „Wirtschaftsdaten“ im Indikatoren-Menü (Standard an). Nur für Märkte mit US-Bezug (NAS100, US500, US30, XAUUSD, Krypto, CSV-Futures); GER40 auch (US-Daten bewegen den DAX).
+- Journal/Analyse: Trade-Kontext speichert beim Platzieren `ctx.news: {minutesTo, minutesSince, kind}` (nur nächste/letzte Termin-Distanz, keine Zukunftsinfo über Kurse – Termin-Zeitpunkte sind vorab bekannt, das ist kein Lookahead). Neue Analyse-Regel „News-Trades“: Trades ≤ 15 Min vor bis 30 Min nach Termin vs. übrige (Ø R), ab 5 Trades; Tipp + Handbuch-Abschnitt (in Kapitel Sessions „Wichtige Uhrzeiten“ ergänzen: so nutzt du die Termin-Markierungen). In der Neue-Session-Auswahl: Option „Tage mit Termin bevorzugen / meiden / egal“.
+
+## Abnahme
+Alle bestehenden Tests grün + neue (test-sync.py, test-econ.js/py). Screenshots: Konto & Sync (Desktop + Handy), Chart mit Termin-Linie und Vorwarnung (Blind und normal). Service-Worker-Cache 'edge-lab-replay-v7'. Kompakter Bericht auf Deutsch: was umgesetzt, Quellen der Termine + Anzahl je Typ + was fehlt, bekannte Grenzen.

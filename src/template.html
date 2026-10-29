@@ -1,0 +1,1632 @@
+<title>Edge Lab Replay</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#0b1018">
+<meta name="description" content="Kostenloses Backtesting-Terminal: Replay, Footprint, VWAP, Volume Profile, Journal, Backtest-Sessions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
+<style>
+/* Trading-Desk: Kopfzeile mit Bereichs-Navigation, darunter je Bereich eine ganze Seite.
+   Charts: Werkzeugleiste oben, Zeichenwerkzeuge links, Chart-Raster, Handels-Seitenleiste rechts, Replay-Leiste unten. */
+:root {
+  color-scheme: dark;
+  --bg: #0b1018; --panel: #101722; --panel2: #151e2c; --raise: #1b2638; --line: #223046; --grid: #18222f;
+  --text: #dbe3ef; --muted: #8f9bb0; --faint: #6f7d94;
+  --bull: #2bb38a; --bear: #e5534b; --buy: #1b7d60; --sell: #c4403a;
+  --vwap: #e3ad3b; --band: #c9973a; --accent: #e3ad3b; --accent-ink: #1a1306;
+  --info: #5aa2ff; --warn: #f0913a; --ema1: #b48cff; --ema2: #4fc3d9; --ema3: #f2709c; --ema4: #d9dee6;
+  --poc: #f4d35e; --va: #9fb3c8; --sessA: #b48cff; --sessL: #5aa2ff; --sessN: #2bb38a; --draw: #9ec5ff; --sel: #f4d35e; --rth: #c7a6ff;
+  --f-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --r: 4px; --navH: 58px; --mactH: 58px; --sheetPeek: 52px; --railW: 60px;
+  /* Design-System: Abstände 4/8/12/16/24/32, Typo, Radien, Schatten (nur schwebend), Bewegung */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
+  --fs-xs: 11px; --fs-sm: 12px; --fs-md: 13px; --fs-lg: 15px; --fs-xl: 20px; --fs-2xl: 26px;
+  --r-sm: 4px; --r-md: 6px; --r-lg: 10px;
+  --sh-float: 0 18px 44px rgba(0, 0, 0, .5), 0 2px 6px rgba(0, 0, 0, .28);
+  --t-fast: 120ms; --t-med: 160ms; --ease: cubic-bezier(.2, .7, .2, 1);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 13px/1.45 var(--f-ui); overflow: hidden; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--panel); }
+button, input, select, textarea { font: inherit; color: inherit; }
+.num, input[type=number] { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.up { color: var(--bull); } .dn { color: var(--bear); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+button { transition: background-color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), filter var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), opacity var(--t-fast) var(--ease); }
+button:disabled { cursor: not-allowed; }
+
+#app { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr); }
+header.top { display: flex; align-items: center; gap: 14px; padding-block: 0; padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); padding-top: env(safe-area-inset-top, 0px); background: var(--panel); border-bottom: 1px solid var(--line); min-width: 0; height: calc(46px + env(safe-area-inset-top, 0px)); }
+.brand { display: flex; align-items: center; gap: 8px; flex: none; font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; }
+.brand svg { width: 22px; height: 22px; }
+.brand i { font-style: normal; color: var(--accent); font-weight: 500; }
+#mainNav { display: flex; align-self: stretch; gap: 2px; min-width: 0; }
+#mainNav a { display: flex; align-items: center; gap: 7px; padding: 0 12px; color: var(--muted); text-decoration: none; font-size: 13px; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease); }
+#mainNav a:hover { color: var(--text); }
+#mainNav a[aria-current="page"] { color: var(--text); border-bottom-color: var(--accent); }
+#mainNav svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.hspace { flex: 1; }
+.ibtn { flex: none; width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid var(--line); background: var(--panel2); border-radius: var(--r); cursor: pointer; color: var(--muted); }
+.ibtn:hover { color: var(--text); border-color: var(--faint); }
+.ibtn:active { transform: translateY(1px); }
+.ibtn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+#btnSync { position: relative; }
+#btnSync i { position: absolute; right: 5px; bottom: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--faint); box-shadow: 0 0 0 2px var(--panel2); }
+#btnSync[data-state="ok"] i { background: var(--bull); }
+#btnSync[data-state="run"] i { background: var(--info); animation: syncPulse 1s ease-in-out infinite; }
+#btnSync[data-state="off"] i { background: var(--warn); }
+#btnSync[data-state="err"] i { background: var(--bear); }
+#btnSync[data-state="err"] { color: var(--bear); }
+@keyframes syncPulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { #btnSync[data-state="run"] i { animation: none; } }
+#blindBadge { font-size: 11.5px; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+
+#views { position: relative; min-height: 0; min-width: 0; }
+.view { position: absolute; inset: 0; min-width: 0; }
+.view[hidden] { display: none !important; }
+.page { overflow-y: auto; padding: 20px max(24px, env(safe-area-inset-right, 0px)) 32px max(24px, env(safe-area-inset-left, 0px)); }
+.page-in { max-width: 1320px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.page-in > * { min-width: 0; }
+.page-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.page-h h1 { margin: 0 12px 0 0; font-size: 20px; font-weight: 600; }
+.page-h .toolbar { flex: 1; }
+.page-sub { color: var(--muted); font-size: 12.5px; margin: 0; }
+
+/* ---------- Bereich Charts ---------- */
+.v-charts { display: grid; grid-template-columns: 44px minmax(0, 1fr) 340px; grid-template-rows: auto minmax(0, 1fr) auto; grid-template-areas: "cbar cbar side" "tools charts side" "replay replay side"; }
+#chartBar { grid-area: cbar; display: flex; align-items: center; gap: 8px; padding: 5px 10px; background: var(--panel); border-bottom: 1px solid var(--line); min-width: 0; }
+#btnData { display: grid; text-align: left; gap: 0; padding: 2px 10px; border: 1px solid var(--line); background: var(--panel2); border-radius: var(--r); cursor: pointer; flex: 0 1 auto; min-width: 0; max-width: 300px; }
+#btnData:hover { border-color: var(--faint); }
+#dsLabel { font-family: var(--f-mono); font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#dsSub { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.badge { font-size: 11px; padding: 1px 7px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; font-family: var(--f-mono); }
+.badge.ok { color: var(--bull); border-color: color-mix(in srgb, var(--bull) 35%, transparent); }
+.badge.warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 35%, transparent); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; flex: none; }
+.seg button { border: 0; background: transparent; padding: 4px 9px; cursor: pointer; color: var(--muted); font-size: 12px; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--raise); color: var(--text); }
+.seg button:hover { color: var(--text); }
+.scroller { display: flex; gap: 4px; align-items: center; overflow-x: auto; scrollbar-width: none; min-width: 0; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 22px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 22px), transparent); padding-right: 18px; }
+.scroller::-webkit-scrollbar { display: none; }
+.tg { flex: none; border: 1px solid transparent; background: transparent; color: var(--muted); padding: 3px 8px; border-radius: var(--r); cursor: pointer; font-size: 12px; white-space: nowrap; }
+.tg:hover { color: var(--text); border-color: var(--line); }
+.tg[aria-pressed="true"] { color: var(--text); background: var(--panel2); border-color: var(--line); }
+.tg[aria-pressed="true"]::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; background: var(--c, var(--accent)); vertical-align: 1px; }
+.vsep { width: 1px; height: 18px; background: var(--line); flex: none; margin: 0 2px; }
+select.sel { background: var(--panel2); border: 1px solid var(--line); border-radius: var(--r); padding: 3px 6px; font-size: 12px; }
+.pop-wrap { position: relative; flex: none; }
+.pop { position: absolute; top: calc(100% + 6px); left: 0; z-index: 40; width: 300px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--sh-float); padding: 10px; display: grid; gap: 8px; }
+.pop.right { left: auto; right: 0; }
+.pop.menu { width: 240px; padding: 4px; gap: 0; }
+.mi { display: grid; gap: 1px; text-align: left; width: 100%; border: 0; background: transparent; color: var(--text); padding: 8px 10px; border-radius: var(--r-sm); cursor: pointer; font-size: 13px; }
+.mi small { color: var(--muted); font-size: 11.5px; }
+.mi:hover, .mi:focus-visible { background: var(--raise); }
+.pop h5 { margin: 2px 0 0; font-size: 11.5px; font-weight: 500; color: var(--muted); }
+.pop .tgs { display: flex; flex-wrap: wrap; gap: 4px; }
+.pop .tg { border-color: var(--line); }
+
+nav#tools { grid-area: tools; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0; background: var(--panel); border-right: 1px solid var(--line); overflow-y: auto; scrollbar-width: none; }
+#tools button { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border: 1px solid transparent; border-radius: var(--r); background: transparent; color: var(--muted); cursor: pointer; position: relative; }
+#tools button:hover { color: var(--text); background: var(--panel2); }
+#tools button[aria-pressed="true"] { color: var(--accent); background: var(--raise); border-color: var(--line); }
+#tools button.has::after { content: ""; position: absolute; right: 5px; top: 5px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+#tools svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+#tools hr { width: 22px; border: 0; border-top: 1px solid var(--line); margin: 4px 0; flex: none; }
+#tools [data-tool="long"] svg .z1 { fill: color-mix(in srgb, var(--bull) 40%, transparent); stroke: none; }
+#tools [data-tool="long"] svg .z2 { fill: color-mix(in srgb, var(--bear) 40%, transparent); stroke: none; }
+#tools [data-tool="short"] svg .z1 { fill: color-mix(in srgb, var(--bear) 40%, transparent); stroke: none; }
+#tools [data-tool="short"] svg .z2 { fill: color-mix(in srgb, var(--bull) 40%, transparent); stroke: none; }
+
+main#charts { grid-area: charts; display: grid; gap: 1px; background: var(--line); min-height: 0; min-width: 0; }
+#charts[data-layout="1"] { grid-template: 1fr / 1fr; }
+#charts[data-layout="2"] { grid-template: 1fr / 1fr 1fr; }
+#charts[data-layout="4"] { grid-template: 1fr 1fr / 1fr 1fr; }
+.chart { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--bg); }
+.chart-head { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 6px; border-bottom: 1px solid var(--grid); flex: none; min-width: 0; }
+#charts[data-layout="2"] .chart.active .chart-head, #charts[data-layout="4"] .chart.active .chart-head { box-shadow: inset 0 2px 0 var(--accent); }
+.tf-sel { background: transparent; border: 1px solid var(--line); border-radius: var(--r); padding: 1px 4px; font: 600 12px var(--f-mono); color: var(--text); }
+.chart-title { font: 11.5px var(--f-mono); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.econ-warn { position: absolute; top: 34px; left: 50%; transform: translateX(-50%); z-index: 3; max-width: calc(100% - 96px); padding: 4px 10px; border-radius: var(--r); border: 1px solid color-mix(in srgb, var(--warn) 45%, transparent); background: color-mix(in srgb, var(--panel) 88%, var(--warn)); color: var(--warn); font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+.chart-badges { display: flex; flex-wrap: wrap; gap: 4px; overflow: hidden; min-width: 0; height: 20px; }
+.chart-btns { margin-left: auto; display: flex; gap: 2px; flex: none; }
+.ib { width: 24px; height: 24px; border: 0; background: transparent; color: var(--muted); border-radius: 3px; cursor: pointer; font: 14px var(--f-mono); display: grid; place-items: center; }
+.ib:hover { background: var(--panel2); color: var(--text); }
+.ib svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.cv-wrap { position: relative; flex: 1; min-height: 0; min-width: 0; }
+.cv-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+.cv-wrap canvas.ov { pointer-events: none; }
+.chart-load { position: absolute; inset: 0; display: grid; place-items: center; background: color-mix(in srgb, var(--bg) 72%, transparent); z-index: 4; }
+.cl-box { width: min(280px, 80%); display: grid; gap: 8px; padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--sh-float); }
+.cl-txt { font-size: 12.5px; color: var(--muted); }
+.pos-confirm { position: absolute; z-index: 5; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; max-width: calc(100% - 78px); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 4px; box-shadow: 0 8px 22px rgba(0,0,0,.45); }
+.pos-confirm .btn { padding: 4px 10px; }
+.pos-confirm kbd { margin-left: 4px; color: var(--accent-ink); border-color: color-mix(in srgb, var(--accent-ink) 40%, transparent); }
+.pos-confirm .pc-txt { font-size: 12px; padding: 0 4px; white-space: nowrap; }
+
+footer#replayBar { grid-area: replay; display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; padding: 6px 10px; padding-left: max(10px, env(safe-area-inset-left, 0px)); background: var(--panel); border-top: 1px solid var(--line); position: relative; min-width: 0; }
+#replayBar .grp { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; flex: none; }
+body:not(.has-live) #btnTrades { display: none; }
+@media (max-width: 1400px) { #replayBar .lbl[for="rpUnit"] { display: none; } }
+@media (max-width: 1240px) { #replayBar .full { display: none; } #replayBar .short { display: inline; } #replayBar label[title] { display: none; } }
+#replayBar[data-state="active"] .idle-only, #replayBar[data-state="picking"] .idle-only { display: none; }
+#replayBar:not([data-state="active"]) .act-only { display: none; }
+#replayBar:not([data-state="picking"]) .pick-only { display: none; }
+#rpPickHint { color: var(--accent); font-size: 12.5px; display: flex; align-items: center; gap: 8px; }
+.prog { position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: transparent; }
+.prog i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .12s linear; }
+#rpTime { font: 500 12px var(--f-mono); color: var(--text); padding: 3px 8px; background: var(--panel2); border-radius: var(--r); border: 1px solid var(--line); white-space: nowrap; }
+#rpStatus { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1 1 0; }
+.lbl { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+input[type=range] { accent-color: var(--accent); width: 76px; }
+input[type=checkbox], input[type=radio] { accent-color: var(--accent); }
+.rp-play svg { width: 14px; height: 14px; fill: currentColor; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 5px 12px; border-radius: var(--r); border: 1px solid var(--line); background: var(--panel2); color: var(--text); cursor: pointer; font-size: 12.5px; font-weight: 500; white-space: nowrap; text-decoration: none; }
+.btn:hover:not(:disabled) { border-color: var(--faint); background: var(--raise); }
+.btn:active:not(:disabled) { transform: translateY(1px); filter: brightness(.94); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.btn.primary:hover:not(:disabled) { filter: brightness(1.08); background: var(--accent); border-color: var(--accent); }
+.btn.is-loading { position: relative; color: transparent !important; pointer-events: none; }
+.btn.is-loading > * { visibility: hidden; }
+.btn.is-loading::after { content: ""; position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 2px solid var(--text); border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
+.btn.primary.is-loading::after { border-color: var(--accent-ink); border-right-color: transparent; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.btn.lg { padding: 9px 16px; font-size: 14px; }
+.btn.sm { padding: 3px 8px; font-size: 12px; }
+.btn.ghost { background: transparent; }
+.btn.danger { color: var(--bear); }
+.btn.buy { background: var(--buy); border-color: var(--buy); color: #fff; font-weight: 600; }
+.btn.lg { border-radius: var(--r-md); }
+.btn.sell { background: var(--sell); border-color: var(--sell); color: #fff; font-weight: 600; }
+.btn svg { width: 14px; height: 14px; }
+kbd { font: 10.5px var(--f-mono); padding: 0 4px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 3px; color: var(--muted); }
+
+aside.side { grid-area: side; display: flex; flex-direction: column; min-height: 0; background: var(--panel); border-left: 1px solid var(--line); padding-right: env(safe-area-inset-right, 0px); overflow-y: auto; }
+.acct { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--line); flex: none; }
+.acct div { padding: 7px 12px; display: grid; gap: 0; min-width: 0; }
+.acct div + div { border-left: 1px solid var(--line); }
+.cap { font-size: 11px; color: var(--muted); }
+.acct .num { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#propBox { border-bottom: 1px solid var(--line); flex: none; }
+#propBox summary { display: flex; align-items: center; gap: 10px; padding: 7px 12px; cursor: pointer; list-style: none; font-size: 12px; color: var(--muted); }
+#propBox summary::-webkit-details-marker { display: none; }
+#propBox summary .meter { flex: 1; }
+#propBox summary b { font-weight: 600; white-space: nowrap; font-size: 12px; }
+#propBox summary::after { content: ""; width: 6px; height: 6px; border-right: 1.5px solid var(--faint); border-bottom: 1.5px solid var(--faint); transform: rotate(45deg); margin-top: -3px; flex: none; }
+#propBox[open] summary::after { transform: rotate(-135deg); margin-top: 3px; }
+.pb-body { padding: 0 12px 9px; display: grid; gap: 4px; }
+.meter { height: 4px; background: var(--grid); border-radius: 2px; overflow: hidden; min-width: 40px; }
+.meter i { display: block; height: 100%; background: var(--bull); }
+.meter i.warn { background: var(--warn); } .meter i.crit { background: var(--bear); }
+.pb-grid { display: grid; grid-template-columns: 1fr auto; gap: 1px 10px; font-size: 12px; color: var(--muted); }
+.pb-grid b { color: var(--text); font-weight: 500; text-align: right; font-family: var(--f-mono); font-size: 11.5px; }
+.pb-br { margin: 0; font-size: 11.5px; color: var(--bear); }
+.side-sec { padding: 10px 12px; display: flex; flex-direction: column; gap: 9px; border-bottom: 1px solid var(--line); }
+.side-sec:last-child { border-bottom: 0; }
+.sec-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.sec-h h3 { margin: 0; font-size: 12px; color: var(--muted); font-weight: 500; }
+.fld { display: grid; gap: 3px; min-width: 0; }
+.fld > span:not(.with) { font-size: 11.5px; color: var(--muted); }
+.inp, .fld input, .fld select, .fld textarea { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r); padding: 6px 8px; min-width: 0; }
+.fld input:focus, .fld select:focus, .fld textarea:focus, .inp:focus { border-color: var(--accent); outline: none; }
+.fld textarea { resize: vertical; }
+.ro { color: var(--muted); background: var(--panel2) !important; }
+.with { display: flex; gap: 4px; }
+.with > * { min-width: 0; }
+.with .unit { flex: none; align-self: center; font-size: 11.5px; color: var(--muted); padding: 0 2px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.hint { font-size: 11.5px; color: var(--muted); margin: 0; }
+.trade-btns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.trade-btns button { border: 0; border-radius: var(--r); padding: 9px 8px; font-weight: 600; font-size: 14px; color: #fff; cursor: pointer; display: grid; gap: 1px; }
+.trade-btns button small { font: 11px var(--f-mono); font-weight: 400; color: #fff; }
+#btnBuy, .bbuy { background: var(--buy); } #btnSell, .bsell { background: var(--sell); }
+.trade-btns button:hover { filter: brightness(1.12); }
+.trade-btns button:active { transform: translateY(1px); filter: brightness(.95); }
+.trade-btns button.locked, #mAct button.locked { opacity: .55; pointer-events: none; }
+body:not(.is-replay) .trade-btns button { opacity: .5; }
+#tkPreview { background: var(--bg); border: 1px solid var(--grid); border-radius: var(--r); padding: 6px 9px; display: grid; gap: 2px; font: 11.5px var(--f-mono); }
+.pv-row { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.pv-row.sub { color: var(--muted); font-size: 11px; }
+.pv-err { color: var(--warn); font: 12px var(--f-ui); }
+details.mg summary { cursor: pointer; font-size: 12px; color: var(--muted); list-style: none; display: flex; align-items: center; gap: 6px; }
+details.mg summary::-webkit-details-marker { display: none; }
+details.mg summary::before { content: ""; width: 5px; height: 5px; border-right: 1.5px solid var(--faint); border-bottom: 1.5px solid var(--faint); transform: rotate(-45deg); }
+details.mg[open] summary::before { transform: rotate(45deg); }
+details.mg[open] summary { margin-bottom: 8px; }
+details.mg summary b { color: var(--accent); font-weight: 500; }
+.pos { border: 1px solid var(--line); border-left: 3px solid var(--info); border-radius: var(--r); padding: 6px 8px; display: grid; gap: 5px; background: var(--panel2); }
+.pos.long { border-left-color: var(--bull); } .pos.short { border-left-color: var(--bear); } .pos.pend { border-left-color: var(--info); }
+.pos-top { display: flex; justify-content: space-between; gap: 6px; font: 12px var(--f-mono); flex-wrap: wrap; }
+.pos-adj { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.adj { display: flex; align-items: center; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: var(--bg); min-width: 0; }
+.adj span { flex: 1; text-align: center; font: 11.5px var(--f-mono); white-space: nowrap; overflow: hidden; padding: 0 2px; }
+.adj span em { font-style: normal; color: var(--muted); margin-right: 4px; font-family: var(--f-ui); }
+.adj button { border: 0; background: var(--panel2); width: 26px; height: 24px; cursor: pointer; color: var(--muted); flex: none; font: 14px var(--f-mono); }
+.adj button:hover { color: var(--text); background: var(--raise); }
+.pos-btns { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+.tag { font: 11px var(--f-ui); padding: 0 5px; border-radius: 2px; background: var(--raise); color: var(--muted); }
+.tag.bad { color: var(--bear); background: color-mix(in srgb, var(--bear) 12%, transparent); }
+.empty { color: var(--muted); font-size: 12.5px; margin: 4px 0; }
+.empty b { color: var(--text); }
+#tkRules { display: grid; gap: 4px; border: 1px dashed var(--line); border-radius: var(--r); padding: 8px; }
+.mini-h { margin: 0 0 2px; font-size: 11.5px; color: var(--accent); }
+.chk { display: flex; gap: 7px; align-items: flex-start; font-size: 12px; color: var(--muted); cursor: pointer; }
+.chk input { margin-top: 2px; }
+.chk input:checked + span { color: var(--text); }
+
+/* Mobile Aktionsleiste und Vollbild-Panel */
+#mAct { display: none; }
+#fsPanel { display: none; }
+.fs-hint { display: none; }
+
+/* ---------- Seiten: Journal, Backtests, Statistik, Strategien ---------- */
+.toolbar { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.toolbar select { min-width: 120px; }
+.toolbar .spacer { flex: 1; }
+.filebtn { position: relative; overflow: hidden; }
+.filebtn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.jt { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.jt th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--bg); white-space: nowrap; }
+.jt td { padding: 6px 8px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+.jt td.n, .jt th.n { text-align: right; font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
+.jt td.t { font-family: var(--f-mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+.jt tr.jrow { cursor: pointer; }
+.jt tr.jrow:hover td { background: var(--panel); }
+.jt .why { color: var(--muted); max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.thumb { width: 64px; height: 40px; border-radius: 3px; border: 1px solid var(--line); object-fit: cover; display: block; background: var(--panel2); }
+.thumb.none { display: grid; place-items: center; color: var(--faint); font-size: 10px; }
+.jcard-lbl { display: none; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+.sess { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 12px; display: grid; gap: 6px; cursor: pointer; align-content: start; }
+.sess:hover { border-color: var(--faint); }
+.sess-top { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); }
+.sess-res { font-weight: 600; font-size: 11.5px; padding: 1px 7px; border-radius: 3px; background: var(--raise); color: var(--muted); }
+.sess-res.up { background: color-mix(in srgb, var(--bull) 16%, transparent); color: var(--bull); }
+.sess-res.dn { background: color-mix(in srgb, var(--bear) 16%, transparent); color: var(--bear); }
+.sess-res.run { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+.sess-date { font-family: var(--f-mono); }
+.sess-sym { margin-left: auto; font: 600 12px var(--f-mono); color: var(--text); }
+.sess-strat { font-weight: 600; font-size: 14px; }
+.sess-nums { display: flex; gap: 12px; align-items: center; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+.disc { display: inline-flex; gap: 3px; margin-left: auto; }
+.disc i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+.disc i.on { background: var(--accent); }
+.sess-mk { display: flex; gap: 4px; flex-wrap: wrap; }
+.sess-txt { margin: 0; font-size: 12.5px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.sess-ph { display: flex; gap: 4px; }
+.sess-ph img { width: 56px; height: 36px; object-fit: cover; border-radius: 3px; border: 1px solid var(--line); }
+.kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.kpi { background: var(--panel); padding: 9px 12px; display: grid; gap: 1px; min-width: 0; }
+.kpi span { font-size: 11.5px; color: var(--muted); }
+.kpi b { font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kpi b small { display: inline; }
+.kpis::after { content: ""; background: var(--panel); grid-column: auto / -1; }
+.kpi small { color: var(--muted); font-size: 11.5px; }
+.st-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 14px; align-items: start; }
+.card { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 12px 14px; display: grid; gap: 8px; min-width: 0; }
+.card h3 { margin: 0; font-size: 13px; font-weight: 600; }
+.card .hint { margin-top: -4px; }
+.card canvas { width: 100%; display: block; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tbl th { text-align: right; font-weight: 500; color: var(--muted); font-size: 11.5px; padding: 4px 5px; border-bottom: 1px solid var(--line); }
+.tbl td { text-align: right; padding: 4px 5px; font-family: var(--f-mono); font-size: 11.5px; border-bottom: 1px solid var(--grid); }
+.tbl th:first-child, .tbl td:first-child { text-align: left; font-family: var(--f-ui); font-size: 12px; }
+.tbl-wrap { overflow-x: auto; }
+.cal { display: grid; gap: 10px; }
+.cal-m h4 { margin: 0 0 4px; font-size: 12px; color: var(--muted); font-weight: 500; }
+.cal-g { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.cal-g span { font-size: 10.5px; color: var(--faint); text-align: center; }
+.cal-g i { font-style: normal; aspect-ratio: 1.6; border-radius: 3px; background: var(--grid); font: 10.5px var(--f-mono); color: var(--muted); display: grid; place-items: center; }
+.cal-g i.e { background: transparent; }
+.mc-out { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.mc-out div { display: grid; }
+.mc-out span { font-size: 11.5px; color: var(--muted); }
+.mc-out b { font: 500 14px var(--f-mono); }
+.strat-card { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 14px; display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr) 260px; }
+.strat-card .sc-main { display: grid; gap: 8px; min-width: 0; }
+.strat-card .sc-side { display: grid; gap: 8px; align-content: start; }
+.sc-kpi { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.sc-kpi div { background: var(--panel2); border-radius: var(--r); padding: 6px 8px; display: grid; }
+.sc-kpi span { font-size: 11px; color: var(--muted); }
+.sc-kpi b { font: 500 13px var(--f-mono); }
+.ph-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.ph { position: relative; width: 112px; height: 72px; border-radius: 4px; overflow: hidden; border: 1px solid var(--line); background: var(--panel2); cursor: zoom-in; padding: 0; }
+.ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ph em { position: absolute; left: 3px; bottom: 3px; font: 10px var(--f-ui); font-style: normal; background: rgba(0,0,0,.65); color: #fff; padding: 0 4px; border-radius: 2px; }
+.ph-drop { border: 1px dashed var(--line); border-radius: 6px; padding: 10px; display: grid; gap: 8px; }
+.ph-drop.over { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.tv-bar { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.tv-bar .btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+#tvHost { height: calc(100dvh - 230px); min-height: 380px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--panel); }
+#tvHost .tradingview-widget-container, #tvHost .tradingview-widget-container__widget { height: 100%; width: 100%; }
+.tv-fallback { padding: 28px; display: grid; gap: 10px; max-width: 560px; }
+.tv-fallback h3 { margin: 0; font-size: 15px; }
+
+/* ---------- Dialoge ---------- */
+.modal { position: fixed; inset: 0; z-index: 50; background: rgba(4, 7, 12, .66); display: grid; place-items: center; padding: 16px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); animation: fadeIn var(--t-med) var(--ease); }
+.modal > .dlg, .modal > form.dlg { animation: popIn var(--t-med) var(--ease); }
+@keyframes fadeIn { from { opacity: 0; } }
+@keyframes popIn { from { opacity: 0; transform: translateY(6px) scale(.99); } }
+.dlg { width: min(560px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--sh-float); display: flex; flex-direction: column; }
+.dlg.wide { width: min(760px, 100%); }
+.dlg-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--panel); z-index: 1; }
+.dlg-h h2 { margin: 0; font-size: 15px; font-weight: 600; text-wrap: balance; }
+.dlg-b { padding: 14px 16px; display: grid; gap: 12px; }
+.dlg-f { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line); position: sticky; bottom: 0; background: var(--panel); flex-wrap: wrap; }
+.dlg-f .left { margin-right: auto; }
+.dtabs { display: flex; gap: 4px; flex-wrap: wrap; }
+.dtabs button { border: 1px solid var(--line); background: transparent; color: var(--muted); padding: 5px 12px; border-radius: var(--r); cursor: pointer; }
+.dtabs button[aria-selected="true"] { background: var(--raise); color: var(--text); border-color: var(--faint); }
+.status { font-size: 12.5px; color: var(--muted); min-height: 1.4em; margin: 0; }
+.status.good { color: var(--bull); } .status.bad { color: var(--bear); } .status.warn { color: var(--warn); }
+.dl-prog { height: 3px; background: var(--grid); border-radius: 2px; overflow: hidden; }
+.dl-prog i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .15s; }
+.note { font-size: 12.5px; color: var(--muted); background: var(--panel2); border: 1px solid var(--grid); border-left: 3px solid var(--info); border-radius: var(--r); padding: 8px 10px; margin: 0; }
+.note.warn { border-left-color: var(--warn); }
+.note b { color: var(--text); font-weight: 600; }
+.note code { font-family: var(--f-mono); font-size: 11.5px; color: var(--text); }
+.reveal { font-size: 14px; color: var(--accent); margin: 0; font-weight: 600; }
+fieldset { border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px 12px; margin: 0; display: grid; gap: 10px; min-width: 0; }
+legend { font-size: 12px; color: var(--accent); padding: 0 4px; }
+.ck { display: flex; gap: 7px; align-items: center; font-size: 12.5px; cursor: pointer; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip { cursor: pointer; }
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip span { display: inline-block; padding: 3px 9px; border: 1px solid var(--line); border-radius: 99px; font-size: 12px; color: var(--muted); }
+.chip input:checked + span { border-color: var(--bear); color: var(--bear); background: color-mix(in srgb, var(--bear) 10%, transparent); }
+.chip input:focus-visible + span { outline: 2px solid var(--accent); }
+.stars { display: flex; gap: 4px; }
+.stars label { cursor: pointer; }
+.stars input { position: absolute; opacity: 0; pointer-events: none; }
+.stars span { display: grid; place-items: center; width: 32px; height: 28px; border: 1px solid var(--line); border-radius: var(--r); font: 12px var(--f-mono); color: var(--muted); }
+.stars input:checked + span { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+.stars input:focus-visible + span { outline: 2px solid var(--accent); }
+.keys { display: grid; grid-template-columns: auto 1fr; gap: 5px 14px; font-size: 12.5px; margin: 0; }
+.keys dt { white-space: nowrap; } .keys dd { margin: 0; color: var(--muted); }
+.help-p { margin: 0; color: var(--muted); font-size: 13px; max-width: 68ch; }
+.help-p b { color: var(--text); }
+.only-touch { display: none; }
+@media (pointer: coarse) { .only-touch { display: grid; } .only-mouse { display: none; } }
+.mini-list { display: grid; gap: 4px; }
+.mini-list div { display: flex; justify-content: space-between; gap: 8px; font: 12px var(--f-mono); padding: 4px 8px; background: var(--panel2); border-radius: var(--r); }
+#lightbox { background: rgba(2, 4, 8, .92); }
+#lightbox figure { margin: 0; display: grid; gap: 8px; max-width: 100%; max-height: 100%; justify-items: center; }
+#lightbox img { max-width: min(1400px, calc(100vw - 32px)); max-height: calc(100dvh - 120px); object-fit: contain; border-radius: 4px; }
+#lightbox figcaption { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 12.5px; flex-wrap: wrap; justify-content: center; }
+
+#toasts { position: fixed; z-index: 45; right: 356px; bottom: 58px; display: grid; gap: 6px; justify-items: end; pointer-events: none; width: min(440px, calc(100% - 32px)); }
+body.modal-open #toasts { z-index: 60; }
+.toast { background: var(--raise); border: 1px solid var(--line); border-left: 3px solid var(--muted); color: var(--text); padding: 7px 12px; border-radius: var(--r-md); font-size: 12.5px; box-shadow: var(--sh-float); transition: opacity var(--t-med), transform var(--t-med); max-width: 100%; display: flex; align-items: center; gap: 12px; animation: popIn var(--t-med) var(--ease); }
+.toast span { flex: 1 1 auto; min-width: 0; }
+.toast.has-act { pointer-events: auto; padding-right: 6px; }
+.toast-act { border: 0; background: transparent; color: var(--accent); font-weight: 600; font-size: 12.5px; padding: 6px 10px; border-radius: var(--r-sm); cursor: pointer; white-space: nowrap; }
+.toast-act:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+body.modal-open #toasts .toast:not(.undo) { display: none; }
+.toast.good { border-left-color: var(--bull); } .toast.bad { border-left-color: var(--bear); } .toast.warn { border-left-color: var(--warn); } .toast.info { border-left-color: var(--info); }
+.toast.out { opacity: 0; transform: translateY(6px); }
+body:not(.view-charts) #toasts { right: 24px; bottom: 24px; }
+#copyFallback { position: fixed; left: 16px; right: 16px; bottom: 16px; height: 120px; z-index: 70; background: var(--bg); color: var(--text); border: 1px solid var(--accent); font: 11px var(--f-mono); }
+
+/* ---------- Vollbild ---------- */
+body.fs header.top, body.fs #chartBar, body.fs aside.side, body.fs #mAct { display: none !important; }
+body.fs #app { grid-template-rows: minmax(0, 1fr); }
+body.fs .v-charts { grid-template-columns: 44px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; grid-template-areas: "tools charts" "replay replay"; }
+body.fs #charts { grid-template: 1fr / 1fr !important; }
+body.fs #charts .chart:not(.active) { display: none; }
+body.fs #replayBar { padding-block: 4px; }
+body.fs #replayBar .fs-hide { display: none; }
+body.fs #fsPanel { display: grid; grid-template-columns: minmax(0, 1fr); position: absolute; z-index: 30; right: 82px; top: 40px; width: 250px; background: color-mix(in srgb, var(--panel) 94%, transparent); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 14px 34px rgba(0,0,0,.5); }
+#fsPanel .fp-h { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-bottom: 1px solid var(--line); cursor: default; }
+#fsPanel .fp-h b { font-size: 12px; font-weight: 600; flex: 1; }
+#fsPanel .fp-h .num { font-size: 12px; white-space: nowrap; }
+#fsPanel .fp-b { padding: 8px; display: grid; gap: 7px; min-width: 0; }
+#fsPanel .pos-top { font-size: 11.5px; }
+#fsPanel.min .fp-b { display: none; }
+#fsPanel .fp-b .trade-btns button { padding: 7px; font-size: 13px; }
+#fsPos { display: grid; gap: 5px; max-height: 40vh; overflow-y: auto; }
+
+/* ---------- Übersicht ---------- */
+.st-head { display: flex; align-items: flex-end; gap: var(--s3); flex-wrap: wrap; }
+.st-head h1 { margin: 0; font-size: var(--fs-xl); font-weight: 600; }
+.st-head .page-sub { margin-top: 2px; }
+.st-head .hspace { flex: 1; }
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: var(--s4); border: 1px solid var(--line); border-radius: var(--r-lg); background: linear-gradient(180deg, var(--panel) 0%, color-mix(in srgb, var(--panel) 60%, var(--bg)) 100%); padding: var(--s4) var(--s5); }
+.hero-kpis { display: grid; grid-template-columns: 1.3fr repeat(4, minmax(0, 1fr)); gap: var(--s4); align-items: end; min-width: 0; }
+.hk { display: grid; gap: 2px; min-width: 0; }
+.hk span { font-size: var(--fs-xs); color: var(--muted); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.hk b { font: 500 17px var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hk.big b { font-size: var(--fs-2xl); font-weight: 500; letter-spacing: -.01em; }
+.hero-eq { grid-column: 1 / 2; height: 84px; margin-top: var(--s3); position: relative; }
+.hero-eq canvas { width: 100%; height: 84px; display: block; }
+.hero-act { grid-row: 1 / span 2; grid-column: 2; display: grid; gap: var(--s2); align-content: center; border-left: 1px solid var(--line); padding-left: var(--s5); }
+.hero-act .btn { width: 100%; justify-content: center; }
+.hero-act .hint { text-align: center; }
+.dash { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: var(--s4); align-items: start; }
+.dash-col { display: grid; gap: var(--s4); min-width: 0; }
+.card-h { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+.card-h a, .linkbtn { color: var(--muted); font-size: var(--fs-sm); text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer; }
+.card-h a:hover, .linkbtn:hover { color: var(--accent); }
+.srows { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+.srow { display: grid; grid-template-columns: 74px minmax(0, 1fr) auto auto; gap: var(--s3); align-items: center; padding: 10px 12px; background: var(--panel); cursor: pointer; border: 0; color: inherit; text-align: left; width: 100%; font: inherit; }
+.srow:hover { background: var(--panel2); }
+.srow .sr-main { display: grid; min-width: 0; }
+.srow .sr-main b { font-weight: 600; font-size: var(--fs-md); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.srow .sr-main small { color: var(--muted); font-size: var(--fs-xs); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.srow .sr-num { font: 12px var(--f-mono); text-align: right; display: grid; }
+.srow .sr-num small { color: var(--muted); }
+.srow .sess-res { justify-self: start; }
+.strat-rank { display: grid; gap: var(--s2); }
+.sr-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--s2); align-items: center; padding: 8px 10px; border-radius: var(--r-md); background: var(--panel2); }
+.sr-item em { font-style: normal; font-size: var(--fs-xs); color: var(--muted); }
+.sr-item b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sr-item .num { font-size: var(--fs-sm); }
+.disc-bars { display: flex; align-items: flex-end; gap: 6px; height: 72px; padding-top: 4px; }
+.disc-bars div { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; height: 100%; min-width: 0; }
+.disc-bars i { display: block; width: 100%; max-width: 22px; border-radius: 3px 3px 0 0; background: color-mix(in srgb, var(--accent) 70%, transparent); min-height: 3px; }
+.disc-bars i.lo { background: color-mix(in srgb, var(--bear) 65%, transparent); }
+.disc-bars i.none { background: var(--grid); }
+.disc-bars span { font: 10.5px var(--f-mono); color: var(--faint); }
+.mk-list { display: grid; gap: 6px; }
+.mk-row { display: grid; grid-template-columns: minmax(0, 1fr) 90px 22px; gap: var(--s2); align-items: center; font-size: var(--fs-sm); }
+.mk-row span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mk-row .meter { height: 5px; }
+.mk-row .meter i { background: var(--bear); }
+.mk-row b { font: 500 12px var(--f-mono); text-align: right; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s4); }
+.step { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); padding: var(--s4); display: grid; gap: var(--s2); align-content: start; position: relative; }
+.step .no { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font: 600 13px var(--f-mono); border: 1px solid var(--line); color: var(--accent); background: var(--panel2); }
+.step.done .no { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.step h3 { margin: 0; font-size: var(--fs-lg); font-weight: 600; }
+.step p { margin: 0; color: var(--muted); font-size: 12.5px; }
+.step .btn { justify-self: start; margin-top: var(--s1); }
+.welcome { border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--s5); background: radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--accent) 9%, transparent) 0%, transparent 55%), var(--panel); display: grid; gap: var(--s4); }
+.welcome h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.welcome > p { margin: 0; color: var(--muted); max-width: 70ch; }
+.resume-card { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--panel)); border-radius: var(--r-lg); padding: var(--s3) var(--s4); }
+.resume-card .rc-txt { flex: 1 1 260px; display: grid; gap: 2px; min-width: 0; }
+.resume-card b { font-weight: 600; }
+.resume-card small { color: var(--muted); font-size: 12.5px; }
+.resume-card .rc-btns { display: flex; gap: var(--s2); flex-wrap: wrap; }
+#resumeBar { grid-area: charts; align-self: start; justify-self: center; z-index: 8; margin-top: 44px; max-width: calc(100% - 24px); box-shadow: var(--sh-float); }
+
+/* ---------- Info-Erklärungen ---------- */
+.infotip { display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; border: 1px solid var(--faint); background: transparent; color: var(--muted); font: italic 600 10px/1 Georgia, serif; cursor: help; padding: 0; vertical-align: 1px; flex: none; }
+.infotip::before { content: "i"; }
+.infotip:hover, .infotip[aria-expanded="true"] { color: var(--accent); border-color: var(--accent); }
+#tipPop { position: fixed; z-index: 90; max-width: min(300px, calc(100vw - 24px)); background: var(--raise); color: var(--text); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--sh-float); padding: 9px 11px; font-size: 12.5px; line-height: 1.45; pointer-events: none; animation: popIn var(--t-fast) var(--ease); }
+#tipPop b { display: block; margin-bottom: 2px; font-weight: 600; }
+
+/* ---------- Leere Zustände, Skeletons ---------- */
+.empty-state { display: grid; justify-items: center; text-align: center; gap: var(--s2); padding: var(--s6) var(--s4); border: 1px dashed var(--line); border-radius: var(--r-lg); color: var(--muted); }
+.empty-state svg { width: 88px; height: 64px; fill: none; stroke: var(--faint); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; margin-bottom: var(--s1); }
+.empty-state svg .acc { stroke: var(--accent); }
+.empty-state h3 { margin: 0; color: var(--text); font-size: var(--fs-lg); font-weight: 600; }
+.empty-state p { margin: 0; max-width: 46ch; font-size: 12.5px; }
+.empty-state .btn { margin-top: var(--s2); }
+.skel { display: grid; gap: var(--s2); }
+.skel i { display: block; height: 44px; border-radius: var(--r-md); background: linear-gradient(90deg, var(--panel) 0%, var(--panel2) 40%, var(--panel) 80%); background-size: 300% 100%; animation: shimmer 1.2s linear infinite; }
+.skel.cards { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.skel.cards i { height: 132px; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -50% 0; } }
+.dl-prog.indet i { width: 35% !important; animation: indet 1.1s var(--ease) infinite; }
+@keyframes indet { from { transform: translateX(-100%); } to { transform: translateX(290%); } }
+
+/* ---------- Startbildschirm, Update-Banner ---------- */
+#boot { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: grid; place-items: center; transition: opacity var(--t-med) var(--ease); }
+#boot.out { opacity: 0; pointer-events: none; }
+.boot-in { display: grid; justify-items: center; gap: var(--s3); width: 240px; }
+.boot-in svg { width: 44px; height: 44px; }
+.boot-in b { font-size: var(--fs-lg); font-weight: 600; }
+.boot-in b i { font-style: normal; color: var(--accent); font-weight: 500; }
+.boot-in span { color: var(--muted); font-size: var(--fs-sm); }
+.boot-in .dl-prog { width: 100%; }
+.banner { position: fixed; z-index: 80; top: calc(54px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: var(--s3); padding: 8px 8px 8px 14px; background: var(--raise); border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--line)); border-radius: var(--r-lg); box-shadow: var(--sh-float); font-size: var(--fs-md); max-width: calc(100vw - 24px); animation: popIn var(--t-med) var(--ease); }
+
+/* ---------- Onboarding, Hilfe, Einstellungen mit Reitern ---------- */
+.ob-steps { display: flex; align-items: center; gap: 6px; }
+.ob-steps i { width: 22px; height: 4px; border-radius: 2px; background: var(--line); transition: background var(--t-med); }
+.ob-steps i.on { background: var(--accent); }
+.ob-steps span { margin-left: 6px; font-size: var(--fs-xs); color: var(--muted); }
+.ob-page { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: var(--s5); align-items: center; min-height: 170px; }
+.ob-page svg { width: 120px; height: 100px; fill: none; stroke: var(--faint); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.ob-page svg .acc { stroke: var(--accent); } .ob-page svg .bu { stroke: var(--bull); } .ob-page svg .be { stroke: var(--bear); }
+.ob-page h3 { margin: 0 0 6px; font-size: 18px; font-weight: 600; }
+.ob-page p { margin: 0 0 6px; color: var(--muted); }
+.ob-page ul { margin: 6px 0 0; padding-left: 18px; color: var(--muted); display: grid; gap: 3px; font-size: 12.5px; }
+.ob-page li b { color: var(--text); font-weight: 600; }
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; margin: -2px 0 2px; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { border: 0; background: transparent; color: var(--muted); padding: 8px 12px; border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; white-space: nowrap; font-size: var(--fs-md); }
+.tabs button:hover { color: var(--text); }
+.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); }
+.tabpanel { display: grid; gap: var(--s3); }
+.stor { display: grid; gap: 6px; }
+.stor .meter { height: 6px; }
+.stor .meter i { background: var(--accent); }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; font-size: 12.5px; margin: 0; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; }
+.gloss { display: grid; gap: var(--s2); margin: 0; }
+.gloss dt { font-weight: 600; } .gloss dd { margin: 0 0 4px; color: var(--muted); font-size: 12.5px; }
+
+/* ---------- Bottom-Sheet (Handy) ---------- */
+.sheet-h { display: none; }
+#sheetBackdrop { display: none; }
+
+@media (max-width: 1100px) { .v-charts { grid-template-columns: 44px minmax(0, 1fr) 300px; } #toasts { right: 316px; } #mainNav a { padding: 0 8px; } .strat-card { grid-template-columns: 1fr; } }
+@media (max-width: 1240px) and (min-width: 861px) { #mainNav a span { display: none; } #mainNav a { padding: 0 11px; } }
+@media (max-width: 860px) {
+  body { overflow: auto; }
+  body.view-charts { padding-bottom: calc(var(--navH) + var(--mactH) + env(safe-area-inset-bottom, 0px)); }
+  body:not(.view-charts) { padding-bottom: calc(var(--navH) + env(safe-area-inset-bottom, 0px)); }
+  #app { height: auto; min-height: 100%; display: block; }
+  header.top { position: sticky; top: 0; z-index: 20; height: calc(48px + env(safe-area-inset-top, 0px)); gap: 8px; }
+  #mainNav { position: fixed; z-index: 35; left: 0; right: 0; bottom: 0; height: calc(var(--navH) + env(safe-area-inset-bottom, 0px)); padding-bottom: env(safe-area-inset-bottom, 0px); padding-inline: max(0px, env(safe-area-inset-left, 0px)); background: var(--panel); border-top: 1px solid var(--line); gap: 0; }
+  #mainNav a { flex: 1; flex-direction: column; justify-content: center; gap: 2px; padding: 0 2px; font-size: 10.5px; border-bottom: 0; border-top: 2px solid transparent; margin: 0; min-width: 0; }
+  #mainNav a span { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  #mainNav a span.full { display: none; }
+  #mainNav a[aria-current="page"] { border-top-color: var(--accent); color: var(--accent); }
+  #mainNav svg { width: 20px; height: 20px; }
+  #views { position: static; }
+  .view { position: static; }
+  .page { padding: 14px max(14px, env(safe-area-inset-left, 0px)) 24px; overflow: visible; }
+  .v-charts { display: flex; flex-direction: column; }
+  #chartBar { flex-wrap: wrap; gap: 6px; padding: 6px 10px; }
+  #chartBar .scroller { order: 5; flex-basis: 100%; }
+  #chartBar .hspace, #dsBadge { display: none; }
+  #btnData { flex: 1; max-width: none; }
+  #btnFs { padding-inline: 10px; }
+  #btnFs .fs-lbl { display: none; }
+  .pop { position: fixed; left: 12px; right: 12px; top: auto; width: auto; }
+  #layoutSeg { display: none; }
+  nav#tools { flex-direction: row; overflow-x: auto; padding: 4px 8px; padding-left: max(8px, env(safe-area-inset-left, 0px)); border-right: 0; border-bottom: 1px solid var(--line); }
+  #tools hr { width: 1px; height: 22px; border: 0; border-left: 1px solid var(--line); margin: 0 4px; }
+  main#charts { height: 55dvh; min-height: 300px; flex: none; }
+  #charts[data-layout] { grid-template: 1fr / 1fr; }
+  #charts .chart:nth-child(n+2) { display: none; }
+  aside.side { border-left: 0; border-top: 1px solid var(--line); overflow: visible; padding-left: env(safe-area-inset-left, 0px); }
+  #replayBar #btnPlay, #replayBar #btnStep { display: none; }
+  #replayBar .idle-only #btnNewSessBar, #replayBar .idle-only #btnRandom { display: none; }
+  #btnStop { margin-left: auto; }
+  #mAct { display: flex; position: fixed; z-index: 34; left: 0; right: 0; bottom: calc(var(--navH) + env(safe-area-inset-bottom, 0px)); height: var(--mactH); align-items: center; gap: 6px; padding: 7px max(8px, env(safe-area-inset-left, 0px)); background: var(--panel2); border-top: 1px solid var(--line); }
+  body:not(.view-charts) #mAct { display: none; }
+  #mAct button { height: 44px; min-width: 44px; border-radius: var(--r); border: 1px solid var(--line); background: var(--panel); color: var(--text); font-weight: 600; font-size: 13.5px; cursor: pointer; display: grid; place-items: center; padding: 0 10px; }
+  #mAct .bbuy, #mAct .bsell { flex: 1; border: 0; color: #fff; }
+  #mAct .bbuy { background: var(--buy); } #mAct .bsell { background: var(--sell); }
+  #mAct svg { width: 16px; height: 16px; fill: currentColor; }
+  #mPnl { font: 500 12px var(--f-mono); min-width: 62px; text-align: right; white-space: nowrap; }
+  body:not(.is-replay) #mAct .act-only { display: none; }
+  body.is-replay #mAct .idle-only { display: none; }
+  #mAct .idle-only { flex: 1; }
+  #toasts, body:not(.view-charts) #toasts { right: 12px; left: 12px; width: auto; bottom: calc(var(--navH) + var(--mactH) + 10px + env(safe-area-inset-bottom, 0px)); justify-items: stretch; }
+  .grid3 { grid-template-columns: 1fr 1fr; }
+  .page-h h1 { font-size: 18px; flex-basis: 100%; }
+  .page-h .toolbar { flex-basis: 100%; }
+  .page-h .toolbar select { flex: 1 1 140px; min-width: 0; }
+  .page-h .toolbar .spacer { display: none; }
+  .page-h .hspace { display: none; }
+  #view-backtests .page-h .btn.lg { flex: 1 1 100%; }
+  #view-backtests .page-h select { flex: 1; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpis::after { display: none; }
+  .tv-bar { width: 100%; }
+  .tv-bar #tvSym { flex: 1; min-width: 0; }
+  .jt thead { display: none; }
+  .jt, .jt tbody { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
+  .jt tr.jrow { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; grid-template-areas: "ph a r" "ph b m"; gap: 2px 10px; border: 1px solid var(--line); border-radius: 6px; padding: 8px; background: var(--panel); }
+  .jt tr.jrow td { padding: 0; border: 0; display: none; background: none !important; }
+  .jt tr.jrow td.c-ph { display: block; grid-area: ph; }
+  .jt tr.jrow td.c-sum { display: block; grid-area: a; font-size: 13px; }
+  .jt tr.jrow td.c-sub { display: block; grid-area: b; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; font-size: 11.5px; }
+  .jt tr.jrow td.c-r { display: block; grid-area: r; }
+  .jt tr.jrow td.c-m { display: block; grid-area: m; }
+  .jcard-lbl { display: inline; }
+  .st-grid { grid-template-columns: minmax(0, 1fr); }
+  .cards { grid-template-columns: minmax(0, 1fr); }
+  #tvHost { height: 62dvh; }
+  body.fs { padding-bottom: 0; overflow: hidden; }
+  body.fs #app { height: 100%; display: grid; }
+  body.fs #views { position: relative; height: 100%; }
+  body.fs .view { position: absolute; }
+  body.fs .v-charts { display: grid; }
+  body.fs main#charts { height: auto; }
+  body.fs #mainNav { display: none; }
+  body.fs #fsPanel { right: 8px; top: 40px; width: 190px; }
+  body.fs nav#tools { display: none; }
+  body.fs .v-charts { grid-template-columns: minmax(0, 1fr); grid-template-areas: "charts" "replay"; }
+  body.fs #fsPanel .fld { display: none; }
+  body.fs #fsPanel .fp-b { padding: 6px; gap: 5px; }
+  body.fs #fsPanel .pos-btns .btn { min-height: 34px; padding: 2px 8px; }
+  body.fs #fsPanel .pos { padding: 5px 6px; }
+  body.fs #rpStatus { display: none; }
+  body.fs #toasts { bottom: 64px; }
+  .kpi b { font-size: 14px; white-space: normal; }
+  body.fs #replayBar #btnPlay, body.fs #replayBar #btnStep { display: inline-flex; }
+  body.fs #replayBar .lbl[for="rpSpeed"] { display: none; }
+  body.fs #fsPanel .trade-btns button { padding: 6px 4px; font-size: 13px; }
+  body.fs #fsPanel .pos-btns .btn { flex: 1; }
+  #toasts { z-index: 45; }
+}
+@media (max-width: 860px) and (orientation: portrait) { body.fs .fs-hint { display: block; } }
+@media (pointer: coarse) {
+  .btn, .seg button, .tg, select.sel, .dtabs button, .tabs button, .toast-act, .mi, .linkbtn { min-height: 44px; }
+  .btn.sm { min-height: 44px; min-width: 44px; padding-inline: 12px; }
+  #btnData { min-height: 44px; } #btnFs { min-width: 44px; }
+  .tf-sel { min-height: 44px; }
+  .tv-bar #tvSym { min-width: 120px; }
+  .linkbtn { display: inline-flex; align-items: center; }
+  .ibtn { width: 44px; height: 44px; }
+  #tools button { width: 44px; height: 44px; }
+  .ib { width: 44px; height: 44px; }
+  .chart-head { height: 48px; }
+  .adj button { width: 44px; height: 44px; }
+  .stars span { width: 44px; height: 44px; }
+  .chip span { padding: 12px 14px; }
+  .fld input, .fld select, .fld textarea, .inp { min-height: 44px; }
+  .infotip { position: relative; }
+  .infotip::after { content: ""; position: absolute; inset: -15px; }
+  #mAct button { min-height: 44px; }
+  .srow { min-height: 52px; }
+  input[type=checkbox], input[type=radio] { width: 20px; height: 20px; }
+  .ck, .chk { min-height: 44px; align-items: center; }
+  .card-h a { min-height: 44px; display: inline-flex; align-items: center; }
+}
+.short { display: none; }
+@media (max-width: 860px) { [data-view] .full, #replayBar .full { display: none; } [data-view] .short, #replayBar .short { display: inline; } }
+#mAct #mTicket { display: none; }
+body.has-draft #mAct button:not(.m-ticket) { opacity: .35; }
+
+@media (max-width: 1100px) {
+  .hero { grid-template-columns: minmax(0, 1fr); }
+  .hero-act { grid-row: auto; grid-column: auto; border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: var(--s4); grid-template-columns: 1fr 1fr; }
+  .hero-act .hint { grid-column: 1 / -1; }
+  .dash { grid-template-columns: minmax(0, 1fr); }
+  .steps { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 900px) {
+  .hero-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .hero-kpis .hk.big { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  .hero { padding: var(--s4); }
+  .hero-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3); }
+  .hero-kpis .hk.big { grid-column: 1 / -1; }
+  .hero-eq { grid-column: auto; }
+  .hero-act { grid-template-columns: minmax(0, 1fr); }
+  .srow { grid-template-columns: 64px minmax(0, 1fr) auto; }
+  .srow .disc { display: none; }
+  .ob-page { grid-template-columns: minmax(0, 1fr); gap: var(--s3); min-height: 0; }
+  .ob-page svg { width: 96px; height: 72px; }
+  .welcome { padding: var(--s4); }
+  .st-head .btn { width: 100%; }
+}
+/* ---------- Handy hoch: Chart füllt die Fläche, Order-Ticket als aufziehbares Bottom-Sheet ---------- */
+@media (max-width: 860px) and (orientation: portrait), (max-width: 860px) and (min-height: 501px) {
+  body.view-charts:not(.fs) { overflow: hidden; padding-bottom: 0; }
+  body.view-charts:not(.fs) #app { height: 100dvh; display: grid; grid-template-rows: auto minmax(0, 1fr); }
+  body.view-charts:not(.fs) #views { position: relative; min-height: 0; }
+  body.view-charts:not(.fs) #view-charts { position: absolute; inset: 0; display: flex; flex-direction: column; padding-bottom: calc(var(--navH) + var(--mactH) + var(--sheetPeek) + env(safe-area-inset-bottom, 0px)); }
+  body.view-charts:not(.fs) main#charts { height: auto; flex: 1 1 auto; min-height: 160px; }
+  body.view-charts:not(.fs) #replayBar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-block: 4px; }
+  body.view-charts:not(.fs) #replayBar .grp { flex-wrap: nowrap; flex: none; }
+  body.view-charts:not(.fs) #replayBar label[title] { display: none; }
+  body.view-charts:not(.fs) #replayBar #btnStop { margin-left: 0; order: -1; }
+  body.view-charts:not(.fs) #replayBar .lbl[for="rpSpeed"] { font-size: 0; gap: 4px; }
+  body.view-charts:not(.fs) #replayBar .lbl[for="rpSpeed"] .num { font-size: 12px; }
+  body.view-charts:not(.fs) #chartBar { flex-wrap: nowrap; }
+  body.view-charts:not(.fs) #chartBar .scroller { order: 0; flex: 1 1 auto; flex-basis: auto; }
+  body.view-charts:not(.fs) #btnData { flex: 0 1 46%; }
+  body.view-charts:not(.fs) #replayBar::-webkit-scrollbar { display: none; }
+  #replayBar .lbl[for="rpUnit"], #replayBar #rpStatus { display: none; }
+  #view-charts aside.side { position: fixed; z-index: 19; left: 0; right: 0; bottom: calc(var(--navH) + var(--mactH) + env(safe-area-inset-bottom, 0px)); max-height: calc(100dvh - var(--navH) - var(--mactH) - 96px - env(safe-area-inset-bottom, 0px)); overflow-y: auto; overscroll-behavior: contain; border-top: 1px solid var(--line); border-radius: 14px 14px 0 0; box-shadow: 0 -12px 34px rgba(0, 0, 0, .45); transform: translateY(calc(100% - var(--sheetPeek))); transition: transform var(--t-med) var(--ease); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+  body.sheet-open #view-charts aside.side { transform: translateY(0); }
+  .sheet-h { display: flex; position: sticky; top: 0; z-index: 2; flex: none; min-height: var(--sheetPeek); align-items: center; gap: 6px; padding: 8px 16px 0; background: var(--panel); border-bottom: 1px solid var(--line); cursor: grab; touch-action: none; user-select: none; }
+  .sheet-h .grab { position: absolute; left: 50%; top: 6px; width: 36px; height: 4px; margin-left: -18px; border-radius: 2px; background: var(--faint); opacity: .7; }
+  .sheet-h b { font-size: 13px; font-weight: 500; margin-right: 10px; white-space: nowrap; }
+  .sheet-h .sh-cta { margin-left: auto; color: var(--accent); font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .sheet-h .sh-cta::after { content: ""; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-135deg); margin-top: 4px; transition: transform var(--t-med); }
+  body.sheet-open .sheet-h .sh-cta::after { transform: rotate(45deg); margin-top: -4px; }
+  #view-charts aside.side .acct { display: none; }
+  #sheetBackdrop { display: block; position: fixed; inset: 0; z-index: 18; background: rgba(4, 7, 12, .5); opacity: 0; pointer-events: none; transition: opacity var(--t-med); }
+  body.sheet-open #sheetBackdrop { opacity: 1; pointer-events: auto; }
+  body.view-charts #toasts { bottom: calc(var(--navH) + var(--mactH) + var(--sheetPeek) + 10px + env(safe-area-inset-bottom, 0px)); }
+  #resumeBar { margin-top: 8px; }
+}
+
+/* ---------- Handy quer: Navigation als Leiste links, Chart füllt die Höhe, schwebende Kauf/Verkauf-Knöpfe ---------- */
+@media (orientation: landscape) and (max-height: 500px) {
+  html body, html body.view-charts, html body:not(.view-charts) { overflow: hidden; padding: 0; }
+  body #app { height: 100dvh; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr); padding-left: calc(var(--railW) + env(safe-area-inset-left, 0px)); }
+  header.top { position: fixed; z-index: 36; left: 0; top: 0; bottom: 0; width: calc(var(--railW) + env(safe-area-inset-left, 0px)); height: auto; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px)) env(safe-area-inset-left, 0px); border-bottom: 0; border-right: 1px solid var(--line); }
+  body::before { display: none; }
+  .brand { display: none; }
+  header.top #mainNav { position: static; flex-direction: column; height: auto; width: 100%; padding: 0; border: 0; background: transparent; gap: 0; overflow-y: auto; scrollbar-width: none; flex: 0 1 auto; min-height: 0; }
+  header.top #mainNav a { flex: none; height: 44px; min-height: 44px; padding: 0; border: 0; border-left: 2px solid transparent; margin: 0; justify-content: center; align-items: center; font-size: 0; }
+  header.top #mainNav a span { display: none !important; }
+  header.top #mainNav a[aria-current="page"] { border-left-color: var(--accent); border-top-color: transparent; color: var(--accent); }
+  header.top #mainNav svg { width: 20px; height: 20px; }
+  header.top .ibtn { width: 44px; height: 44px; }
+  header.top #btnHelp, header.top #btnSync { display: none; }
+  /* Sync-Status im Querformat als Punkt am Einstellungs-Knopf */
+  #btnSettings { position: relative; }
+  body[data-sync] #btnSettings::after { content: ""; position: absolute; right: 7px; bottom: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--faint); box-shadow: 0 0 0 2px var(--panel2); }
+  body[data-sync="ok"] #btnSettings::after { background: var(--bull); }
+  body[data-sync="run"] #btnSettings::after { background: var(--info); }
+  body[data-sync="off"] #btnSettings::after { background: var(--warn); }
+  body[data-sync="err"] #btnSettings::after { background: var(--bear); }
+  body[data-sync="none"] #btnSettings::after { display: none; }
+  #blindBadge { font-size: 0; width: 10px; height: 10px; padding: 0; border-radius: 50%; background: var(--accent); }
+  body #views { position: relative; min-height: 0; height: 100%; }
+  body .view { position: absolute; inset: 0; }
+  body .page { overflow-y: auto; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 16px 16px; }
+  body #view-charts.v-charts { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; grid-template-areas: "cbar" "charts" "replay"; padding: 0; }
+  #chartBar { flex-wrap: nowrap; padding: 3px 8px; gap: 6px; min-height: 0; }
+  #chartBar .scroller { order: 0; flex: 1 1 auto; flex-basis: auto; }
+  #btnData { flex: 0 1 auto; max-width: 160px; padding: 1px 8px; }
+  #dsSub, #chartBar .hspace, #dsBadge, #layoutSeg { display: none; }
+  #btnFs .fs-lbl { display: none; }
+  nav#tools { display: none; }
+  body main#charts { height: auto; min-height: 0; flex: none; }
+  .chart-head { height: 28px; }
+  #replayBar { flex-wrap: nowrap; padding: 3px 8px; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-right: max(8px, env(safe-area-inset-right, 0px)); }
+  #replayBar .fs-hide, #replayBar #rpStatus, #replayBar .lbl[for="rpUnit"] { display: none; }
+  #replayBar #btnPlay, #replayBar #btnStep { display: none; }
+  #replayBar .idle-only #btnNewSessBar, #replayBar .idle-only #btnRandom { display: none; }
+  #view-charts aside.side { position: fixed; z-index: 40; top: 0; bottom: 0; right: 0; left: auto; width: min(360px, 70vw); max-height: none; border-radius: 0; border-left: 1px solid var(--line); border-top: 0; box-shadow: var(--sh-float); transform: translateX(105%); transition: transform var(--t-med) var(--ease); overflow-y: auto; padding-right: env(safe-area-inset-right, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body.sheet-open #view-charts aside.side { transform: none; }
+  .sheet-h { display: flex; position: sticky; top: 0; z-index: 2; align-items: center; gap: 6px; padding: 10px 14px; min-height: 48px; background: var(--panel); border-bottom: 1px solid var(--line); cursor: pointer; }
+  .sheet-h .grab { display: none; }
+  .sheet-h b { font-size: 13px; font-weight: 500; margin-right: 8px; }
+  .sheet-h .sh-cta { margin-left: auto; color: var(--muted); font-size: 0; }
+  .sheet-h .sh-cta::before { content: "✕"; font-size: 15px; }
+  #view-charts aside.side .acct { display: none; }
+  #sheetBackdrop { display: block; position: fixed; inset: 0; z-index: 39; background: rgba(4, 7, 12, .45); opacity: 0; pointer-events: none; transition: opacity var(--t-med); }
+  body.sheet-open #sheetBackdrop { opacity: 1; pointer-events: auto; }
+  body #mAct { display: flex; position: fixed; z-index: 34; left: auto; right: calc(82px + env(safe-area-inset-right, 0px)); bottom: 48px; height: auto; width: auto; padding: 5px; gap: 5px; background: color-mix(in srgb, var(--panel) 92%, transparent); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-float); }
+  body:not(.view-charts) #mAct, body.fs #mAct { display: none !important; }
+  body #mAct button { height: 44px; min-width: 44px; }
+  body #mAct .bbuy, body #mAct .bsell { flex: none; padding: 0 16px; }
+  body #mAct .idle-only { flex: none; padding: 0 14px; }
+  body #mAct #mTicket { display: grid; }
+  #mPnl { min-width: 0; padding: 0 4px; }
+  body #toasts, body:not(.view-charts) #toasts { left: auto; right: 16px; width: min(380px, 60vw); bottom: 104px; }
+  body:not(.view-charts) #toasts { bottom: 16px; }
+  .banner { top: 8px; }
+  #resumeBar { margin-top: 6px; }
+}
+
+/* ---------- v4: „Mehr“-Menü (Handy), Analyse, Handbuch ---------- */
+.nav-more { display: none; }
+.more-menu { position: fixed; z-index: 46; display: grid; gap: 2px; min-width: 250px; padding: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-float); animation: popIn var(--t-med) var(--ease); right: 8px; bottom: calc(var(--navH) + 8px + env(safe-area-inset-bottom, 0px)); }
+.more-menu a { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 8px 12px; border-radius: var(--r-md); color: var(--text); text-decoration: none; }
+.more-menu a:hover, .more-menu a:focus-visible { background: var(--raise); }
+.more-menu svg { width: 20px; height: 20px; fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.more-menu span { display: grid; } .more-menu b { font-weight: 600; font-size: var(--fs-md); } .more-menu small { color: var(--muted); font-size: var(--fs-xs); }
+@media (max-width: 860px) {
+  #mainNav a.nav-x { display: none; }
+  #mainNav .nav-more { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 0 2px; min-width: 0; font: 10.5px var(--f-ui); color: var(--muted); background: transparent; border: 0; border-top: 2px solid transparent; cursor: pointer; }
+  #mainNav .nav-more.cur, #mainNav .nav-more[aria-expanded="true"] { color: var(--accent); }
+  #mainNav .nav-more.cur { border-top-color: var(--accent); }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  header.top #mainNav .nav-more { flex: none; height: 44px; min-height: 44px; width: 100%; padding: 0; font-size: 0; border: 0; border-left: 2px solid transparent; }
+  header.top #mainNav .nav-more.cur { border-left-color: var(--accent); }
+  header.top #mainNav .nav-more span { display: none; }
+  .more-menu { right: auto; left: calc(var(--railW) + 8px + env(safe-area-inset-left, 0px)); bottom: 8px; }
+}
+.muted { color: var(--muted); }
+.sev { flex: none; font-size: 11px; font-weight: 600; line-height: 18px; padding: 0 8px; border-radius: 99px; white-space: nowrap; }
+.sev.hoch { color: var(--bear); background: color-mix(in srgb, var(--bear) 15%, transparent); }
+.sev.mittel { color: var(--warn); background: color-mix(in srgb, var(--warn) 15%, transparent); }
+.sev.gering { color: var(--info); background: color-mix(in srgb, var(--info) 14%, transparent); }
+.an-body { display: grid; gap: var(--s4); }
+.an-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s5); border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--s5); background: radial-gradient(120% 160% at 0% 0%, color-mix(in srgb, var(--bear) 7%, transparent) 0%, transparent 55%), var(--panel); }
+.an-kick { font-size: var(--fs-xs); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--bear); }
+.an-kick.ok { color: var(--bull); }
+.an-main h2 { margin: 4px 0 6px; font-size: var(--fs-xl); font-weight: 600; text-wrap: balance; }
+.an-main p { margin: 0 0 var(--s4); color: var(--muted); max-width: 68ch; }
+.an-main p.an-cost { margin: 0 0 var(--s2); color: var(--text); }
+.an-main p.an-cost b { font-family: var(--f-mono); font-weight: 500; }
+.hb-ch-h .hb-acts { margin-top: var(--s3); }
+.an-btns { display: flex; gap: var(--s2); flex-wrap: wrap; }
+.an-btns .tag { margin-left: 2px; }
+.an-sum { display: grid; grid-template-columns: repeat(3, minmax(110px, auto)); gap: var(--s5); margin: 0; align-content: center; border-left: 1px solid var(--line); padding-left: var(--s5); }
+.an-sum div { display: grid; gap: 2px; align-content: start; }
+.an-sum dt { font-size: var(--fs-xs); color: var(--muted); }
+.an-sum dd { margin: 0; font: 500 22px var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.an-sum small { color: var(--faint); font-size: var(--fs-xs); max-width: 22ch; }
+.an-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(400px, 100%), 1fr)); gap: var(--s4); align-items: start; }
+.an-card { border: 1px solid var(--line); border-left: 3px solid var(--faint); border-radius: var(--r-lg); background: var(--panel); padding: var(--s4); display: grid; gap: var(--s3); min-width: 0; }
+.an-card.sev-hoch { border-left-color: var(--bear); } .an-card.sev-mittel { border-left-color: var(--warn); } .an-card.sev-gering { border-left-color: var(--info); }
+.an-top { display: flex; align-items: center; gap: var(--s2); min-width: 0; }
+.an-top h3 { margin: 0; font-size: var(--fs-lg); font-weight: 600; min-width: 0; }
+.an-nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin: 0; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+.an-nums div { background: var(--panel2); padding: 7px 10px; display: grid; min-width: 0; }
+.an-nums dt { font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.an-nums dd { margin: 0; font: 500 14px var(--f-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.an-nums dd.muted { font: 12.5px var(--f-ui); color: var(--muted); }
+.an-desc { margin: 0; font-size: var(--fs-md); line-height: 1.55; }
+.an-tip { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); background: var(--panel2); border-radius: var(--r-md); padding: 8px 10px; }
+.an-tip b { color: var(--accent); font-weight: 600; margin-right: 6px; }
+.an-sec h3 { margin: 0 0 var(--s3); font-size: var(--fs-lg); font-weight: 600; }
+.an-good { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: var(--s3); }
+.an-g { border: 1px solid color-mix(in srgb, var(--bull) 32%, var(--line)); background: color-mix(in srgb, var(--bull) 6%, var(--panel)); border-radius: var(--r-lg); padding: var(--s3) var(--s4); display: grid; gap: 2px; justify-items: start; }
+.an-g span { color: var(--muted); font-size: 12.5px; }
+.an-g .linkbtn { margin-top: 4px; color: var(--bull); }
+.an-low { border: 1px dashed var(--line); border-radius: var(--r-lg); padding: var(--s3) var(--s4); }
+.an-low summary { cursor: pointer; color: var(--muted); font-size: var(--fs-md); display: flex; align-items: center; gap: var(--s2); }
+.an-low ul { list-style: none; margin: var(--s3) 0 0; padding: 0; display: grid; gap: 6px; }
+.an-low li { display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr); gap: var(--s3); font-size: 12.5px; }
+.an-low li span { color: var(--muted); }
+.an-method { max-width: 100ch; line-height: 1.55; }
+.an-method b { color: var(--text); font-weight: 600; }
+.an-mini-b { display: flex; align-items: center; gap: var(--s2); min-width: 0; }
+.an-mini-b b { flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.an-mini-b .num { font-size: var(--fs-md); white-space: nowrap; }
+.filter-chip { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); flex-wrap: wrap; border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--panel)); border-radius: var(--r-lg); padding: 6px 6px 6px 14px; font-size: var(--fs-md); }
+.sess-find { border: 1px solid var(--line); border-left: 3px solid var(--warn); border-radius: var(--r-md); background: var(--panel2); padding: 10px 12px; display: grid; gap: 6px; font-size: 12.5px; justify-items: start; }
+.sess-find ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.sess-find li { display: flex; gap: 8px; align-items: baseline; }
+.sess-find p { margin: 0; color: var(--muted); }
+.sess-find .linkbtn { color: var(--accent); }
+/* Handbuch */
+.hb { display: grid; grid-template-columns: 264px minmax(0, 1fr); gap: var(--s6); align-items: start; }
+.hb-side { position: sticky; top: 0; display: grid; gap: var(--s3); max-height: calc(100dvh - 140px); overflow-y: auto; scrollbar-width: thin; padding: 2px 4px var(--s4) 2px; }
+.hb-search { position: relative; display: flex; align-items: center; }
+.hb-search svg { position: absolute; left: 10px; width: 15px; height: 15px; fill: none; stroke: var(--faint); stroke-width: 1.6; pointer-events: none; }
+.hb-search input { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-md); padding: 8px 34px 8px 32px; min-width: 0; }
+.hb-search input:focus { border-color: var(--accent); outline: none; }
+.hb-search input::-webkit-search-cancel-button { display: none; }
+.hb-search #hbQx { position: absolute; right: 4px; }
+.hb-toc-btn { display: none; }
+.hb-toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+.hb-toc > ol > li > a { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: var(--r-md); color: var(--muted); text-decoration: none; font-size: var(--fs-md); }
+.hb-toc > ol > li > a:hover { color: var(--text); background: var(--panel); }
+.hb-toc li.on > a { color: var(--text); background: var(--panel2); font-weight: 500; }
+.hb-no { width: 18px; flex: none; text-align: right; font: 11px var(--f-mono); color: var(--faint); }
+.hb-tt { flex: 1; min-width: 0; }
+.hb-ok { flex: none; width: 16px; height: 16px; border-radius: 50%; background: color-mix(in srgb, var(--bull) 22%, transparent); position: relative; }
+.hb-ok::after { content: ""; position: absolute; left: 5.5px; top: 3px; width: 4px; height: 7px; border: solid var(--bull); border-width: 0 1.6px 1.6px 0; transform: rotate(45deg); }
+.hb-toc ol ol { margin: 4px 0 8px 28px; gap: 0; }
+.hb-toc ol ol a { display: block; padding: 4px 10px; border-left: 1px solid var(--line); color: var(--muted); text-decoration: none; font-size: 12.5px; line-height: 1.4; }
+.hb-toc ol ol a:hover { color: var(--text); }
+.hb-toc ol ol a[aria-current="true"] { color: var(--accent); border-left-color: var(--accent); }
+.hb-prog { display: flex; align-items: center; gap: var(--s2); font-size: var(--fs-sm); color: var(--muted); }
+.hb-prog .meter { width: 120px; height: 5px; }
+.hb-prog .meter i { background: var(--bull); transition: width var(--t-med) var(--ease); }
+.hb-results { display: grid; gap: 2px; }
+.hb-rc { margin: 0 0 4px; font-size: var(--fs-sm); color: var(--muted); }
+.hb-res { display: grid; gap: 2px; padding: 8px 10px; border-radius: var(--r-md); color: var(--text); text-decoration: none; }
+.hb-res:hover, .hb-res:focus-visible { background: var(--panel2); }
+.hb-res small { font-size: 10.5px; color: var(--faint); text-transform: uppercase; letter-spacing: .06em; }
+.hb-res b { font-weight: 600; font-size: var(--fs-md); }
+.hb-res span { font-size: 12px; color: var(--muted); line-height: 1.45; }
+.hb-read { max-width: 72ch; min-width: 0; font-size: 14.5px; line-height: 1.68; }
+.hb-read p, .hb-read ul, .hb-read ol { margin: 0 0 12px; }
+.hb-read ul, .hb-read ol { padding-left: 22px; }
+.hb-read li { margin-bottom: 4px; }
+.hb-read li::marker { color: var(--faint); }
+.hb-read b { font-weight: 600; }
+.hb-read a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.hb-read a:hover { text-decoration-color: var(--accent); }
+.hb-ch-h { padding-bottom: var(--s4); margin-bottom: var(--s5); border-bottom: 1px solid var(--line); }
+.hb-kick { font-size: var(--fs-xs); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.hb-ch-h h2 { margin: 4px 0 6px; font-size: 30px; line-height: 1.2; font-weight: 600; letter-spacing: -.01em; }
+.hb-lead { margin: 0 !important; color: var(--muted); font-size: 15.5px; }
+.hb-read .hb-onpage { margin: var(--s4) 0 0 !important; columns: 2; column-gap: var(--s6); font-size: 13px; line-height: 1.5; }
+.hb-read .hb-onpage li { break-inside: avoid; margin-bottom: 4px; }
+.hb-read .hb-onpage a { color: var(--muted); text-decoration: none; }
+.hb-read .hb-onpage a:hover { color: var(--accent); }
+.hb-sec { scroll-margin-top: 20px; margin-bottom: var(--s6); border-radius: var(--r-md); }
+.hb-sec h3 { margin: 0 0 var(--s3); font-size: 19px; line-height: 1.3; font-weight: 600; }
+.hb-read .hb-anchor { margin-left: 8px; color: var(--faint); text-decoration: none; opacity: 0; transition: opacity var(--t-fast); }
+.hb-sec h3:hover .hb-anchor, .hb-read .hb-anchor:focus-visible { opacity: 1; }
+.hb-flash { animation: hbFlash 1.4s var(--ease); }
+@keyframes hbFlash { from { box-shadow: -12px 0 0 -8px var(--accent); } to { box-shadow: -12px 0 0 -8px transparent; } }
+.hb-f { font: 13px/1.65 var(--f-mono); background: var(--panel2); border: 1px solid var(--line); border-radius: var(--r-md); padding: 10px 14px; margin: 0 0 14px; overflow-x: auto; }
+.hb-box { border: 1px solid var(--line); border-left: 3px solid var(--info); background: var(--panel); border-radius: var(--r-md); padding: 10px 14px; margin: 0 0 14px; font-size: 13.5px; line-height: 1.6; }
+.hb-box > b { display: block; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--info); margin-bottom: 2px; }
+.hb-box p:last-child { margin-bottom: 0; }
+.hb-box.faust { border-left-color: var(--accent); } .hb-box.faust > b { color: var(--accent); }
+.hb-box.praxis { border-left-color: var(--bull); } .hb-box.praxis > b { color: var(--bull); }
+.hb-box.achtung { border-left-color: var(--warn); } .hb-box.achtung > b { color: var(--warn); }
+.hb-t { width: 100%; border-collapse: collapse; margin: 0 0 12px; font-size: 13px; line-height: 1.45; }
+.hb-t th { text-align: left; font-weight: 500; font-size: 12px; color: var(--muted); padding: 6px 10px; border-bottom: 1px solid var(--line); }
+.hb-t td { padding: 6px 10px; border-bottom: 1px solid var(--grid); }
+.hb-t td + td { font-family: var(--f-mono); font-size: 12.5px; }
+.hb-small { font-size: 12px; color: var(--faint); }
+.hb-fig { margin: 4px 0 18px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--bg); padding: 12px 12px 10px; }
+.hb-fig svg { width: 100%; height: auto; display: block; }
+.hb-fig figcaption { margin-top: 6px; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
+.hb-fig text { font: 11px var(--f-mono); fill: var(--muted); }
+.hb-fig .tw, .hb-fig .tn { fill: var(--text); } .hb-fig .tg { fill: var(--bull); } .hb-fig .tr { fill: var(--bear); } .hb-fig .tv { fill: var(--vwap); font-weight: 700; } .hb-fig .tb { fill: var(--band); } .hb-fig .tp { fill: var(--poc); font-weight: 700; }
+.hb-fig path { fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.hb-fig .px { stroke: var(--text); stroke-width: 1.3; } .hb-fig .vw { stroke: var(--vwap); stroke-width: 2.2; }
+.hb-fig .bd { stroke: var(--band); stroke-width: 1.1; stroke-dasharray: 4 4; } .hb-fig .bdf { fill: color-mix(in srgb, var(--band) 9%, transparent); stroke: none; }
+.hb-fig .ax { stroke: var(--line); stroke-width: 1; }
+.hb-fig .pocb { fill: var(--poc); } .hb-fig .vab { fill: color-mix(in srgb, var(--va) 62%, transparent); } .hb-fig .ob { fill: color-mix(in srgb, var(--va) 20%, transparent); }
+.hb-fig .val { stroke: var(--va); stroke-width: 1; stroke-dasharray: 3 3; } .hb-fig .pocl { stroke: var(--poc); stroke-width: 1.2; }
+.hb-fig .cell { fill: var(--panel2); stroke: var(--line); } .hb-fig .cellg { fill: color-mix(in srgb, var(--bull) 22%, var(--panel2)); stroke: var(--bull); } .hb-fig .cellr { fill: var(--panel2); stroke: var(--muted); stroke-dasharray: 3 2; }
+.hb-fig .arr { stroke: var(--accent); } .hb-fig .arrh { fill: var(--accent); stroke: none; }
+.hb-fig .cvd { stroke: var(--info); } .hb-fig .dvu { stroke: var(--bull); stroke-dasharray: 5 4; } .hb-fig .dvd { stroke: var(--bear); stroke-dasharray: 5 4; }
+.hb-fig .dot { fill: var(--text); } .hb-fig .dotr { fill: var(--bear); }
+.hb-fig .ibbox { fill: color-mix(in srgb, var(--rth) 13%, transparent); } .hb-fig .ibl { stroke: var(--rth); stroke-width: 1.4; } .hb-fig .ext { stroke: var(--rth); stroke-width: 1; stroke-dasharray: 4 4; opacity: .75; }
+.hb-fig .zw { fill: color-mix(in srgb, var(--bull) 13%, transparent); } .hb-fig .zl { fill: color-mix(in srgb, var(--bear) 14%, transparent); }
+.hb-fig .lg { stroke: var(--bull); } .hb-fig .lgd { stroke: var(--bull); stroke-dasharray: 3 3; } .hb-fig .le { stroke: var(--text); } .hb-fig .lr { stroke: var(--bear); }
+.hb-fig .eq { stroke: var(--bull); stroke-width: 2; } .hb-fig .eqf { fill: color-mix(in srgb, var(--bull) 9%, transparent); stroke: none; }
+.hb-fig .fl { stroke: var(--bear); stroke-width: 1.3; stroke-dasharray: 5 4; } .hb-fig .dd { stroke: var(--bear); stroke-width: 1.4; } .hb-fig .ddt { stroke: var(--faint); stroke-width: 1; stroke-dasharray: 2 3; }
+.hb-setup { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 8px 16px; margin: 0 0 12px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); font-size: 14px; line-height: 1.55; }
+.hb-setup dt { color: var(--muted); font-size: 12.5px; font-weight: 500; padding-top: 1px; }
+.hb-setup dd { margin: 0; }
+.hb-acts { display: flex; gap: var(--s2); flex-wrap: wrap; margin: 4px 0 6px; }
+.hb-gloss { display: grid; grid-template-columns: minmax(140px, 210px) minmax(0, 1fr); gap: 10px 18px; margin: 0; }
+.hb-gloss dt { font-weight: 600; }
+.hb-gloss dd { margin: 0; color: var(--muted); }
+.hb-ch-f { display: grid; gap: var(--s4); justify-items: start; margin-top: var(--s5); padding-top: var(--s4); border-top: 1px solid var(--line); }
+.btn.is-read { color: var(--bull); border-color: color-mix(in srgb, var(--bull) 45%, var(--line)); }
+.btn.is-read::before { content: ""; width: 4px; height: 8px; border: solid currentColor; border-width: 0 1.6px 1.6px 0; transform: rotate(45deg); margin: -3px 4px 0 0; }
+.hb-pn { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); }
+.hb-read .hb-pn a { display: grid; gap: 2px; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); color: var(--text); text-decoration: none; font-weight: 500; }
+.hb-read .hb-pn a:hover { border-color: var(--faint); }
+.hb-pn small { font-size: var(--fs-xs); color: var(--muted); font-weight: 400; }
+.hb-pn .hb-next { grid-column: 2; text-align: right; }
+mark { background: color-mix(in srgb, var(--accent) 34%, transparent); color: var(--text); border-radius: 2px; padding: 0 1px; }
+@media (max-width: 1100px) {
+  .an-hero { grid-template-columns: minmax(0, 1fr); }
+  .an-sum { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: var(--s4); }
+  .hb { grid-template-columns: 230px minmax(0, 1fr); gap: var(--s5); }
+}
+@media (max-width: 860px) {
+  .hb { grid-template-columns: minmax(0, 1fr); gap: var(--s4); }
+  .hb-side { position: static; max-height: none; overflow: visible; padding: 0; }
+  .hb-toc-btn { display: flex; align-items: center; gap: var(--s3); min-height: 44px; padding: 8px 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: var(--text); cursor: pointer; text-align: left; }
+  .hb-toc-btn span { color: var(--muted); font-size: var(--fs-sm); }
+  .hb-toc-btn b { flex: 1; font-weight: 600; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hb-toc-btn::after { content: ""; width: 7px; height: 7px; border-right: 1.6px solid var(--muted); border-bottom: 1.6px solid var(--muted); transform: rotate(45deg); margin-top: -4px; transition: transform var(--t-med); }
+  .hb-toc-btn[aria-expanded="true"]::after { transform: rotate(-135deg); margin-top: 4px; }
+  .hb-toc { display: none; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); padding: 6px; }
+  .hb-toc.open { display: block; }
+  .hb-toc > ol > li > a, .hb-toc ol ol a { min-height: 44px; display: flex; align-items: center; }
+  .hb-read { font-size: 15px; }
+  .hb-sec { scroll-margin-top: 64px; }
+  .hb-ch-h h2 { font-size: 24px; }
+  .hb-read .hb-onpage { columns: 1; }
+  .hb-setup { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .hb-setup dd { margin-bottom: 8px; }
+  .hb-gloss { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .hb-gloss dd { margin-bottom: 10px; }
+  .hb-t { display: block; overflow-x: auto; }
+  .hb-pn { grid-template-columns: minmax(0, 1fr); }
+  .hb-pn .hb-next { grid-column: 1; }
+  .hb-prog { flex-basis: 100%; }
+  .hb-prog .meter { flex: 1; }
+  .an-low li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
+@media (max-width: 640px) {
+  .an-hero { padding: var(--s4); }
+  .an-sum { grid-template-columns: 1fr 1fr; gap: var(--s4); }
+  .an-sum div:first-child { grid-column: 1 / -1; }
+  .an-btns .btn { flex: 1 1 auto; }
+  .an-nums div { padding: 6px 8px; }
+  /* Schaubilder: lesbare Schrift statt Mini-Grafik – waagerecht wischbar */
+  .hb-fig { overflow-x: auto; overscroll-behavior-x: contain; }
+  .hb-fig svg { min-width: 540px; }
+  .hb-fig figcaption { position: sticky; left: 0; max-width: calc(100vw - 56px); }
+  .hb-fig figcaption::after { content: " Zum Ansehen waagerecht wischen."; color: var(--faint); }
+}
+@media (pointer: coarse) { .hb-read .hb-anchor { opacity: .6; } .hb-res { min-height: 44px; } }
+
+/* Seite selbst nicht zoombar – Zoomen nur im Chart (Zwei Finger) */
+html, body { touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
+</style>
+
+<div id="boot" role="status" aria-label="App wird gestartet"><div class="boot-in"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="3" fill="#151e2c" stroke="#223046"/><path d="M7 5v14M12 8v10M17 4v12" stroke="#55637a" stroke-width="1.2"/><rect x="5.5" y="8" width="3" height="7" fill="#2bb38a"/><rect x="10.5" y="10" width="3" height="5" fill="#e5534b"/><rect x="15.5" y="6" width="3" height="6" fill="#2bb38a"/><path d="M3 14c4-1 6-6 9-5s5 1 9-4" fill="none" stroke="#e3ad3b" stroke-width="1.4"/></svg><b>Edge Lab <i>Replay</i></b><span id="bootTxt">Bereite Daten vor …</span><div class="dl-prog indet"><i></i></div></div></div>
+<div id="app">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="3" fill="#151e2c" stroke="#223046"/><path d="M7 5v14M12 8v10M17 4v12" stroke="#55637a" stroke-width="1.2"/><rect x="5.5" y="8" width="3" height="7" fill="#2bb38a"/><rect x="10.5" y="10" width="3" height="5" fill="#e5534b"/><rect x="15.5" y="6" width="3" height="6" fill="#2bb38a"/><path d="M3 14c4-1 6-6 9-5s5 1 9-4" fill="none" stroke="#e3ad3b" stroke-width="1.4"/></svg>
+      <span>Edge Lab <i>Replay</i></span>
+    </div>
+    <nav id="mainNav" aria-label="Bereiche">
+      <a href="#start" data-view="start"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="9" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="14" width="6" height="3" rx="1"/></svg><span class="full">Übersicht</span><span class="short">Start</span></a>
+      <a href="#charts" data-view="charts"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3v14M10 5v11M15 2v12"/><rect x="3.5" y="6" width="3" height="7"/><rect x="8.5" y="8" width="3" height="5"/><rect x="13.5" y="4" width="3" height="6"/></svg><span>Charts</span></a>
+      <a href="#journal" data-view="journal"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3.5" y="2.5" width="13" height="15" rx="1.5"/><path d="M7 7h6M7 10.5h6M7 14h4"/></svg><span>Journal</span></a>
+      <a href="#backtests" data-view="backtests"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10a6 6 0 1 0 2-4.5"/><path d="M3.5 3v3.5H7"/><path d="M10 6.5V10l2.5 2"/></svg><span>Backtests</span></a>
+      <a href="#stats" data-view="stats"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 17h14"/><rect x="4.5" y="9" width="2.6" height="6"/><rect x="8.7" y="5" width="2.6" height="10"/><rect x="12.9" y="11" width="2.6" height="4"/></svg><span>Statistik</span></a>
+      <a href="#analyse" data-view="analyse"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.6 12.6L17 17"/><path d="M6.3 10.5V9M8.5 10.5V6.5M10.7 10.5V8"/></svg><span>Analyse</span></a>
+      <a href="#strategien" data-view="strategien" class="nav-x"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/><circle cx="10" cy="10" r=".6" fill="currentColor"/></svg><span>Strategien</span></a>
+      <a href="#handbuch" data-view="handbuch" class="nav-x"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 5.5C8.4 4.2 5.9 3.7 3 3.9v11.6c2.9-.2 5.4.3 7 1.6 1.6-1.3 4.1-1.8 7-1.6V3.9c-2.9-.2-5.4.3-7 1.6z"/><path d="M10 5.5v11.6"/></svg><span>Handbuch</span></a>
+      <a href="#tradingview" data-view="tradingview" class="nav-x"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.5"/><path d="M7 17h6M10 14v3M5 11l3-3 2.5 2L15 6"/></svg><span class="full">TradingView</span><span class="short">TV-Chart</span></a>
+      <button type="button" class="nav-more" id="navMore" aria-haspopup="true" aria-expanded="false" aria-controls="moreMenu"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="4.5" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="10" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10" r="1.4" fill="currentColor" stroke="none"/></svg><span>Mehr</span></button>
+    </nav>
+    <span class="hspace"></span>
+    <span id="blindBadge" hidden title="Datum und Wochentag sind ausgeblendet, bis die Session endet">Blind-Modus</span>
+    <button class="ibtn" id="btnSync" data-state="none" title="Sync: nicht angemeldet" aria-label="Sync-Status"><svg viewBox="0 0 16 16"><path d="M4.5 12.5h7a3 3 0 0 0 .4-6 4 4 0 0 0-7.7.9A2.6 2.6 0 0 0 4.5 12.5z"/></svg><i></i></button>
+    <button class="ibtn" id="btnHelp" title="Hilfe, Tastenkürzel und Begriffe (?)" aria-label="Hilfe"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M6.2 6.2a1.9 1.9 0 1 1 2.6 1.8c-.5.2-.8.6-.8 1.1v.5"/><circle cx="8" cy="11.6" r=".4" fill="currentColor"/></svg></button>
+    <button class="ibtn" id="btnSettings" title="Einstellungen" aria-label="Einstellungen"><svg viewBox="0 0 16 16"><path d="M2 4h7M12 4h2M2 8h2M7 8h7M2 12h9M14 12h0"/><circle cx="10.5" cy="4" r="1.5"/><circle cx="5.5" cy="8" r="1.5"/><circle cx="12.5" cy="12" r="1.5"/></svg></button>
+  </header>
+
+  <div id="views">
+  <section class="view page" id="view-start" hidden aria-label="Übersicht">
+    <div class="page-in">
+      <div class="st-head"><div><h1>Übersicht</h1><p class="page-sub" id="stSub">Dein Backtesting auf einen Blick.</p></div><span class="hspace"></span><button class="btn" id="stInstall" hidden>Als App installieren</button></div>
+      <p class="note" id="stIos" hidden>Als App nutzen: in Safari unten auf <b>Teilen</b> tippen, dann <b>Zum Home-Bildschirm</b>.</p>
+      <div class="resume-card" id="stResume" hidden></div>
+      <p class="note warn" id="stBackup" hidden></p>
+      <p class="note" id="stSync" hidden><span>Melde dich an, um Handy und PC zu verbinden – Journal, Backtests und Fotos gleichen sich dann automatisch ab.</span> <button type="button" class="linkbtn" id="stSyncGo" style="color:var(--accent)">Anmelden</button> <button type="button" class="linkbtn" id="stSyncOff" aria-label="Hinweis ausblenden">Ausblenden</button></p>
+      <div id="stBody" style="display:grid;gap:16px"></div>
+    </div>
+  </section>
+  <section class="view v-charts" id="view-charts" aria-label="Charts">
+    <div id="chartBar">
+      <button id="btnData" title="Daten laden: Archiv, Binance, CSV oder Demo"><span id="dsLabel">–</span><span id="dsSub"></span></button>
+      <span class="badge" id="dsBadge" hidden></span>
+      <div class="seg" id="layoutSeg" role="group" aria-label="Chart-Layout">
+        <button data-l="1" title="Ein Chart">1</button><button data-l="2" title="Zwei Charts">2</button><button data-l="4" title="Vier Charts">4</button>
+      </div>
+      <div class="scroller" id="indBar" role="group" aria-label="Indikatoren (Schnellschalter)">
+        <button class="tg" data-ind="vwap" style="--c:var(--vwap)" title="Session-VWAP">VWAP</button>
+        <button class="tg" data-ind="vp" style="--c:var(--poc)" title="Volume Profile des sichtbaren Bereichs mit POC, VAH, VAL">Profil</button>
+        <button class="tg" data-ind="fp" style="--c:var(--bull)" title="Footprint (Bid × Ask je Preis) – braucht Trade-Daten">Footprint</button>
+        <span class="pop-wrap">
+          <button class="tg" id="btnInd" aria-expanded="false" aria-controls="indMenu">Indikatoren</button>
+          <div class="pop" id="indMenu" hidden role="dialog" aria-label="Indikatoren">
+            <h5>Preis</h5>
+            <div class="tgs">
+              <button class="tg" data-ind="vwap" style="--c:var(--vwap)">VWAP</button>
+              <button class="tg" data-ind="bands" style="--c:var(--band)" title="Standardabweichungs-Bänder um den VWAP">σ-Bänder</button>
+              <button class="tg" data-ind="vp" style="--c:var(--poc)">Profil</button>
+              <button class="tg" data-ind="fp" style="--c:var(--bull)">Footprint</button>
+              <button class="tg" data-ind="prev" style="--c:var(--va)" title="Vortag: High, Low, Close, POC, VAH, VAL">Vortag</button>
+              <button class="tg" data-ind="rth" style="--c:var(--rth)" title="Overnight-Hoch/Tief, RTH-Eröffnung 9:30, Opening Range 15 min, Initial Balance (nur Märkte mit New-York-Session)">RTH-Levels</button>
+              <button class="tg" data-ind="sessions" style="--c:var(--sessL)" title="Asien (Tokio 9–15:30), London (8–16:30), New York (9:30–16)">Sessions</button>
+              <button class="tg" data-ind="volume" style="--c:var(--muted)">Volumen</button>
+              <button class="tg" data-ind="econ" style="--c:var(--warn)" title="Wichtige US-Termine (CPI, Arbeitsmarktbericht, Fed-Zinsentscheid): Linie nach dem Termin, Vorwarnung davor">Wirtschaftsdaten</button>
+            </div>
+            <h5>Gleitende Durchschnitte</h5>
+            <div class="tgs" id="emaBar">
+              <button class="tg" data-ema="0" style="--c:var(--ema1)">EMA 9</button>
+              <button class="tg" data-ema="1" style="--c:var(--ema2)">EMA 21</button>
+              <button class="tg" data-ema="2" style="--c:var(--ema3)">EMA 50</button>
+              <button class="tg" data-ema="3" style="--c:var(--ema4)">EMA 200</button>
+            </div>
+            <p class="hint tip-row">Erklärt: VWAP <button type="button" class="infotip" data-tip="vwap"></button> · POC <button type="button" class="infotip" data-tip="poc"></button> · Value Area <button type="button" class="infotip" data-tip="va"></button> · Delta <button type="button" class="infotip" data-tip="delta"></button></p>
+            <label class="lbl" for="lowerSel">Unteres Fenster
+              <select id="lowerSel" class="sel"><option value="delta">Delta</option><option value="cvd">CVD</option><option value="none">aus</option></select>
+            </label>
+          </div>
+        </span>
+      </div>
+      <span class="hspace"></span>
+      <button class="btn sm" id="btnFs" title="Vollbild-Chart (G)"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg><span class="fs-lbl">Vollbild</span></button>
+    </div>
+
+    <nav id="tools" aria-label="Zeichenwerkzeuge">
+      <button data-tool="cursor" title="Zeiger – verschieben, auswählen (Esc)" aria-label="Zeiger"><svg viewBox="0 0 20 20"><path d="M5 3l10 7-4.5 1L13 16l-2 1-2.4-5L5 15z"/></svg></button>
+      <button data-tool="long" title="Long-Position im Chart platzieren (Shift+B)" aria-label="Long-Position"><svg viewBox="0 0 20 20"><rect class="z1" x="3" y="3" width="14" height="6"/><rect class="z2" x="3" y="9" width="14" height="5"/><path d="M3 9h14"/><path d="M6 17V5M4 7l2-2 2 2"/></svg></button>
+      <button data-tool="short" title="Short-Position im Chart platzieren (Shift+S)" aria-label="Short-Position"><svg viewBox="0 0 20 20"><rect class="z2" x="3" y="11" width="14" height="6"/><rect class="z1" x="3" y="6" width="14" height="5"/><path d="M3 11h14"/><path d="M6 3v12M4 13l2 2 2-2"/></svg></button>
+      <hr>
+      <button data-tool="hline" title="Horizontale Linie (H)" aria-label="Horizontale Linie"><svg viewBox="0 0 20 20"><path d="M2 10h16"/><circle cx="10" cy="10" r="1.6"/></svg></button>
+      <button data-tool="trend" title="Trendlinie (T)" aria-label="Trendlinie"><svg viewBox="0 0 20 20"><path d="M3 16L17 4"/><circle cx="3.5" cy="15.5" r="1.4"/><circle cx="16.5" cy="4.5" r="1.4"/></svg></button>
+      <button data-tool="rect" title="Zone / Rechteck (Z)" aria-label="Zone"><svg viewBox="0 0 20 20"><rect x="3" y="5" width="14" height="10" rx="1"/></svg></button>
+      <button data-tool="fib" title="Fibonacci-Retracement (F)" aria-label="Fibonacci"><svg viewBox="0 0 20 20"><path d="M3 4h14M3 8h14M3 11h14M3 16h14"/></svg></button>
+      <button data-tool="measure" title="Messen: Punkte, Ticks, Prozent (M)" aria-label="Messen"><svg viewBox="0 0 20 20"><path d="M4 16L16 4M4 16h5M4 16v-5M16 4h-5M16 4v5"/></svg></button>
+      <hr>
+      <button data-tool="avwap" title="Anchored VWAP: auf Kerze klicken (V). Rechtsklick entfernt." aria-label="Anchored VWAP"><svg viewBox="0 0 20 20"><path d="M4 15c3-1 4-6 7-6s3 2 5-1"/><path d="M4 4v12"/><path d="M2.5 5.5L4 4l1.5 1.5"/></svg></button>
+      <button data-tool="price" title="Preis ins Order-Ticket übernehmen (P oder Shift+Klick)" aria-label="Preis übernehmen"><svg viewBox="0 0 20 20"><path d="M3 10h9M9 6l4 4-4 4"/><path d="M15 4v12"/></svg></button>
+      <hr>
+      <button id="btnMagnet" title="Magnet: an Open/High/Low/Close einrasten" aria-label="Magnet"><svg viewBox="0 0 20 20"><path d="M5 4v6a5 5 0 0 0 10 0V4h-3v6a2 2 0 0 1-4 0V4z"/><path d="M5 7h3M12 7h3"/></svg></button>
+      <button id="btnClearDraw" title="Alle Zeichnungen löschen" aria-label="Zeichnungen löschen"><svg viewBox="0 0 20 20"><path d="M4 6h12M8 6V4h4v2M6 6l1 10h6l1-10"/></svg></button>
+    </nav>
+
+    <main id="charts" data-layout="2" aria-label="Charts"></main>
+
+    <footer id="replayBar" data-state="idle" aria-label="Replay-Steuerung">
+      <div class="prog" aria-hidden="true"><i id="rpProg"></i></div>
+      <div class="grp idle-only">
+        <button class="btn primary" id="btnNewSessBar" title="Neue Backtest-Session mit zufälligem historischem Datum"><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M4 2.5v11l9.5-5.5z"/></svg><span>Session starten</span></button>
+        <button class="btn" id="btnReplay" title="Startpunkt im Chart wählen (R)">Startpunkt wählen</button>
+        <button class="btn" id="btnRandom" title="Zufälliger Startpunkt in den geladenen Daten – gegen Rosinenpicken">Zufälliger Start</button>
+      </div>
+      <span id="rpPickHint" class="pick-only">Klicke im Chart auf die Startkerze <button class="btn sm" id="btnPickCancel">Abbrechen</button></span>
+      <div class="grp act-only">
+        <button class="btn rp-play" id="btnPlay" aria-label="Abspielen" title="Abspielen / Pause (Leertaste)"></button>
+        <button class="btn" id="btnStep" title="Eine Kerze weiter (→), Shift+→ = 10">Schritt <kbd>→</kbd></button>
+        <label class="lbl fs-hide" for="rpUnit">je
+          <select id="rpUnit" class="sel"><option value="base">Basis-Kerze</option><option value="chart">Chart-Kerze</option><option value="300">5m</option><option value="900">15m</option><option value="3600">1h</option></select>
+        </label>
+        <label class="lbl" for="rpSpeed">Tempo <input type="range" id="rpSpeed" min="1" max="60" step="1"><span id="rpSpeedVal" class="num"></span></label>
+        <label class="lbl fs-hide" title="Abspielen stoppt, wenn eine Order gefüllt oder geschlossen wird"><input type="checkbox" id="rpPause"> Auto-Pause</label>
+      </div>
+      <span id="rpTime" title="Aktuelle Replay-Zeit"></span>
+      <span id="rpStatus" aria-live="polite"></span>
+      <div class="grp act-only">
+        <button class="btn sm fs-hide" id="btnJumpOpen" aria-expanded="false" title="Bis zu einem Zeitpunkt vorspulen">Vorspulen</button>
+        <span id="jumpBox" hidden style="display:inline-flex;gap:4px"><input type="datetime-local" id="jumpTime" class="inp" style="width:auto;padding:3px 6px" aria-label="Vorspulen bis"><button class="btn sm primary" id="btnJump">Los</button></span>
+        <button class="btn sm fs-hide" id="btnTrades" title="Trades für den Footprint laden">Trades laden</button>
+        <button class="btn sm fs-hide" id="btnSessNote" title="Notiz zu dieser Backtest-Session (N)"><span class="full">Notiz schreiben</span><span class="short">Notiz</span></button>
+        <button class="btn sm ghost danger" id="btnStop">Beenden</button>
+      </div>
+    </footer>
+
+    <aside class="side" id="side" aria-label="Handel">
+      <div class="sheet-h" id="sheetH" role="button" tabindex="0" aria-expanded="false" aria-controls="side" aria-label="Order-Ticket ein- oder ausklappen"><i class="grab"></i><span class="cap">Konto</span><b class="num" id="shBal">–</b><span class="cap">Offen</span><b class="num" id="shUnr">–</b><span class="sh-cta">Ticket</span></div>
+      <div class="acct">
+        <div><span class="cap">Konto</span><span class="num" id="accBal">–</span></div>
+        <div><span class="cap">Offen</span><span class="num" id="accUnr">–</span></div>
+        <div><span class="cap">Kurs</span><span class="num" id="accPx">–</span></div>
+      </div>
+      <details id="propBox" hidden></details>
+      <section class="side-sec" id="posSec">
+        <div class="sec-h"><h3 id="posHead">Positionen &amp; Orders</h3><button class="btn sm ghost" id="btnCloseAll" title="Alles schließen (X)">Alles schließen</button></div>
+        <div id="posList" style="display:grid;gap:6px"></div>
+      </section>
+      <section class="side-sec" id="ticket" aria-label="Order-Ticket">
+        <div class="sec-h"><h3>Order-Ticket</h3><span class="hint num" id="tkAtr"></span></div>
+        <div class="seg" id="tkType" role="group" aria-label="Ordertyp" style="display:flex">
+          <button data-v="market" style="flex:1">Market</button><button data-v="pending" style="flex:1">Limit / Stop</button>
+        </div>
+        <div id="tkPriceRow" class="fld"><span>Einstieg</span><input id="tkPrice" inputmode="decimal" autocomplete="off" data-num><p class="hint">Unter dem Kurs = Buy-Limit / Sell-Stop, darüber = Buy-Stop / Sell-Limit. Shift+Klick in den Chart übernimmt den Preis.</p></div>
+        <div class="grid2">
+          <label class="fld"><span>Stop-Abstand</span><span class="with"><input id="tkSl" type="number" step="any" min="0" data-num><span class="unit" id="tkSlUnit">Punkte</span></span></label>
+          <label class="fld"><span>Ziel <button type="button" class="infotip" data-tip="r"></button></span><span class="with"><input id="tkTp" type="number" step="0.1" min="0" data-num><span class="unit">R</span></span></label>
+        </div>
+        <div class="grid2">
+          <label class="fld"><span>Risiko</span><span class="with"><input id="tkRisk" type="number" step="any" min="0" data-num><select id="tkRiskMode" class="sel" aria-label="Risiko-Einheit"><option value="money">$</option><option value="pct">%</option></select></span></label>
+          <div class="fld"><span>Größe</span><div class="seg" id="tkQtyMode" role="group" aria-label="Positionsgröße" style="display:flex"><button data-v="risk" style="flex:1">nach Risiko</button><button data-v="fixed" style="flex:1">fest</button></div></div>
+        </div>
+        <p class="hint num" id="tkRiskHint" hidden></p>
+        <label class="fld" id="tkQtyRow"><span id="tkQtyLbl">Menge</span><input id="tkQty" type="number" step="any" min="0" data-num></label>
+        <div class="row" style="display:flex;gap:6px;align-items:center;justify-content:space-between"><button class="btn sm ghost" id="tkAtrBtn" title="Stop-Abstand = 1,5 × ATR(14) des aktiven Charts">Stop aus ATR setzen</button></div>
+        <details class="mg" id="tkMgmt">
+          <summary>Teilausstieg &amp; Stop-Management <b id="tkMgmtOn"></b></summary>
+          <div style="display:grid;gap:8px">
+            <div class="grid2">
+              <label class="fld"><span>TP1 bei</span><span class="with"><input id="mgTp1R" type="number" step="0.1" min="0" data-num placeholder="aus"><span class="unit">R</span></span></label>
+              <label class="fld"><span>schließt</span><span class="with"><input id="mgTp1Pct" type="number" step="5" min="0" max="99" data-num><span class="unit">%</span></span></label>
+              <label class="fld"><span>Stop auf Einstand ab</span><span class="with"><input id="mgBeR" type="number" step="0.1" min="0" data-num placeholder="aus"><span class="unit">R</span></span></label>
+              <label class="fld"><span>Trailing-Stop</span><span class="with"><input id="mgTrail" type="number" step="any" min="0" data-num placeholder="aus"><span class="unit">Punkte</span></span></label>
+            </div>
+            <p class="hint">Leer oder 0 = aus. Teilausstiege landen als ein Trade im Journal. Der Stop wird nach Abschluss einer Kerze nachgezogen.</p>
+          </div>
+        </details>
+        <div class="grid2">
+          <label class="fld"><span>Strategie</span><select id="tkStrat" data-strat></select></label>
+          <label class="fld"><span>Grund / Notiz</span><input id="tkNote" maxlength="200" placeholder="optional"></label>
+        </div>
+        <div id="tkRules" hidden></div>
+        <div class="trade-btns">
+          <button id="btnBuy">Kaufen<small>Long · B</small></button>
+          <button id="btnSell">Verkaufen<small>Short · S</small></button>
+        </div>
+        <div id="tkPreview" aria-live="polite"></div>
+      </section>
+    </aside>
+
+    <div id="mAct" aria-label="Schnellaktionen">
+      <button class="idle-only" id="mNew">Session starten</button>
+      <button class="idle-only" id="mRandom">Zufälliger Start</button>
+      <button class="act-only" id="mPlay" aria-label="Abspielen"></button>
+      <button class="act-only" id="mStep" aria-label="Eine Kerze weiter"><svg viewBox="0 0 16 16"><path d="M3 3v10l7-5zM11 3h2v10h-2z"/></svg></button>
+      <button class="act-only bbuy" id="mBuy">Kaufen</button>
+      <button class="act-only bsell" id="mSell">Verkaufen</button>
+      <span class="act-only num" id="mPnl">–</span>
+      <button class="m-ticket" id="mTicket" aria-label="Order-Ticket öffnen">Ticket</button>
+    </div>
+    <div id="sheetBackdrop" aria-hidden="true"></div>
+    <div class="resume-card" id="resumeBar" hidden></div>
+
+    <div id="fsPanel" aria-label="Order-Panel im Vollbild">
+      <div class="fp-h"><b>Handel</b><span class="num" id="fsPnl"></span><button class="ib" id="fsMin" title="Einklappen" aria-label="Panel einklappen"><svg viewBox="0 0 16 16"><path d="M4 10l4-4 4 4"/></svg></button><button class="ib" id="fsExit" title="Vollbild beenden (Esc)" aria-label="Vollbild beenden"><svg viewBox="0 0 16 16"><path d="M6 2v4H2M14 6h-4V2M10 14v-4h4M2 10h4v4"/></svg></button></div>
+      <div class="fp-b">
+        <p class="hint fs-hint">Tipp: Gerät quer halten.</p>
+        <label class="fld"><span>Risiko ($ oder %)</span><input id="fsRisk" type="number" step="any" min="0" data-num></label>
+        <div class="trade-btns"><button class="bbuy" id="fsBuy">Kaufen</button><button class="bsell" id="fsSell">Verkaufen</button></div>
+        <div id="fsPos"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view page" id="view-journal" hidden aria-label="Journal">
+    <div class="page-in">
+      <div class="page-h"><h1>Journal</h1>
+        <div class="toolbar">
+          <select id="jfSym" class="sel" aria-label="Markt"></select>
+          <select id="jfStrat" class="sel" aria-label="Strategie"></select>
+          <select id="jfRes" class="sel" aria-label="Ergebnis"><option value="">Alle Ergebnisse</option><option value="win">Gewinner</option><option value="loss">Verlierer</option></select>
+          <select id="jfSess" class="sel" aria-label="Backtest-Session"></select>
+          <span class="spacer"></span>
+          <button class="btn sm" id="jCsv" title="Gefilterte Trades als CSV herunterladen">CSV exportieren</button>
+          <span class="pop-wrap"><button class="btn sm" id="jBackupBtn" aria-expanded="false" aria-controls="jBackupMenu">Sicherung<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg></button>
+            <div class="pop menu right" id="jBackupMenu" hidden role="menu">
+              <button class="mi" id="jFile" role="menuitem">Als Datei speichern<small>Alles inkl. Fotos</small></button>
+              <button class="mi" id="jCopy" role="menuitem">Als Text kopieren<small>Ohne Fotos</small></button>
+              <label class="mi filebtn" role="menuitem">Sicherung importieren<small>.json-Datei wählen</small><input type="file" id="jImport" accept=".json,application/json"></label>
+            </div></span>
+          <button class="btn sm ghost danger" id="jClear">Journal leeren</button>
+        </div>
+      </div>
+      <div class="filter-chip" id="jIdFilter" hidden></div>
+      <p class="page-sub" id="jSummary"></p>
+      <div id="jTable"></div>
+    </div>
+  </section>
+
+  <section class="view page" id="view-backtests" hidden aria-label="Backtests">
+    <div class="page-in">
+      <div class="page-h"><h1>Backtests</h1>
+        <button class="btn primary lg" id="btnNewSess">Neue Backtest-Session</button>
+        <button class="btn" id="nNew" title="Eintrag für einen Backtest außerhalb der App">Eintrag ohne Replay</button>
+        <span class="hspace"></span>
+        <select id="nFilter" class="sel" aria-label="Nach Strategie filtern"></select>
+      </div>
+      <p class="page-sub">Jede Session: zufälliger historischer Tag, Replay ohne Blick in die Zukunft, danach Notiz mit Disziplin, Fehlern und Learnings.</p>
+      <div id="notesBody" class="cards"></div>
+    </div>
+  </section>
+
+  <section class="view page" id="view-stats" hidden aria-label="Statistik">
+    <div class="page-in">
+      <div class="page-h"><h1>Statistik</h1><div class="toolbar"><select id="sFilter" class="sel" aria-label="Auswahl"></select></div></div>
+      <div id="statsBody" style="display:grid;gap:14px"></div>
+    </div>
+  </section>
+
+  <section class="view page" id="view-analyse" hidden aria-label="Analyse">
+    <div class="page-in">
+      <div class="page-h"><h1>Analyse</h1><div class="toolbar"><select id="aFilter" class="sel" aria-label="Auswahl der Trades"></select></div></div>
+      <p class="page-sub" id="aSub">Erkennt typische Fehler in deinen Trades und schätzt, was sie gekostet haben.</p>
+      <div id="aBody" class="an-body"></div>
+    </div>
+  </section>
+
+  <section class="view page" id="view-strategien" hidden aria-label="Strategien">
+    <div class="page-in">
+      <div class="page-h"><h1>Strategien</h1><button class="btn primary" id="stratAdd">Neue Strategie</button></div>
+      <p class="page-sub">Regeln stehen als Checkliste im Order-Ticket. Änderungen werden sofort gespeichert.</p>
+      <div id="stratList" style="display:grid;gap:12px"></div>
+    </div>
+  </section>
+
+  <section class="view page" id="view-handbuch" hidden aria-label="Handbuch">
+    <div class="page-in">
+      <div class="page-h"><h1>Handbuch</h1><span class="hspace"></span>
+        <div class="hb-prog" id="hbProg" role="meter" aria-label="Lesefortschritt" aria-valuemin="0" aria-valuemax="11" aria-valuenow="0"><span id="hbProgTxt"></span><span class="meter"><i id="hbProgBar"></i></span></div></div>
+      <div class="hb">
+        <aside class="hb-side">
+          <div class="hb-search"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.4 10.4L14 14"/></svg><input id="hbQ" type="search" placeholder="Handbuch durchsuchen" aria-label="Handbuch durchsuchen" autocomplete="off" spellcheck="false"><button type="button" class="ib" id="hbQx" hidden aria-label="Suche löschen">✕</button></div>
+          <button type="button" class="hb-toc-btn" id="hbTocBtn" aria-expanded="false" aria-controls="hbToc"></button>
+          <nav class="hb-toc" id="hbToc" aria-label="Inhaltsverzeichnis"></nav>
+          <div class="hb-results" id="hbResults" hidden></div>
+        </aside>
+        <article class="hb-read" id="hbRead" aria-labelledby="hbTitle"></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="view page" id="view-tradingview" hidden aria-label="TradingView">
+    <div class="page-in">
+      <div class="page-h"><h1>TradingView</h1>
+        <div class="tv-bar" id="tvSyms">
+          <button class="btn sm" data-sym="CME_MINI:NQ1!">NQ</button><button class="btn sm" data-sym="CME_MINI:ES1!">ES</button><button class="btn sm" data-sym="COMEX:GC1!">Gold</button><button class="btn sm" data-sym="BINANCE:BTCUSDT">BTC</button><button class="btn sm" data-sym="XETR:DAX">DAX</button>
+          <input id="tvSym" class="inp" style="width:170px" placeholder="Symbol, z. B. NASDAQ:AAPL" spellcheck="false" aria-label="Symbol">
+          <select id="tvInt" class="sel" aria-label="Intervall"><option value="1">1m</option><option value="5">5m</option><option value="15" selected>15m</option><option value="60">1h</option><option value="240">4h</option><option value="D">1D</option></select>
+          <button class="btn sm primary" id="tvGo">Anzeigen</button>
+        </div>
+      </div>
+      <p class="note">Nur zum Ansehen und Analysieren (offizielles kostenloses TradingView-Widget). Handeln, Replay und Backtests laufen im Bereich <b>Charts</b>.</p>
+      <div id="tvHost"></div>
+    </div>
+  </section>
+  </div>
+</div>
+
+<div class="modal" id="dataModal" hidden>
+  <div class="dlg wide" role="dialog" aria-modal="true" aria-labelledby="dataTitle">
+    <div class="dlg-h"><h2 id="dataTitle">Daten laden</h2><button class="ib" data-close aria-label="Schließen">✕</button></div>
+    <div class="dlg-b">
+      <div class="dtabs" id="dataTabs" role="tablist"><button data-p="ar" aria-selected="true">Archiv (Indizes, Gold)</button><button data-p="bn" aria-selected="false">Binance (Krypto)</button><button data-p="csv" aria-selected="false">CSV-Datei</button><button data-p="demo" aria-selected="false">Demo</button></div>
+      <div class="dpanel" id="dp-ar" style="display:grid;gap:12px">
+        <p class="note">1-Minuten-Kerzen von Nasdaq 100, S&amp;P 500, Dow, Gold und DAX aus dem Archiv deiner GitHub-Seite (Dukascopy-Kurse). Ohne Taker-Volumen – Delta wird geschätzt.</p>
+        <div class="grid3">
+          <label class="fld"><span>Markt</span><select id="arInst"></select></label>
+          <label class="fld"><span>Von</span><input id="arFrom" type="date"></label>
+          <label class="fld"><span>Bis (max. 31 Tage)</span><input id="arTo" type="date"></label>
+        </div>
+        <div class="row" style="display:flex;justify-content:space-between;gap:8px"><p class="status" id="arStatus"></p><span style="display:flex;gap:6px"><button class="btn sm ghost" id="arCancel" hidden>Abbrechen</button><button class="btn primary" id="arLoad">Laden</button></span></div>
+        <div class="dl-prog" id="arProg" hidden><i></i></div>
+      </div>
+      <div class="dpanel" id="dp-bn" hidden style="display:grid;gap:12px">
+        <p class="note">Kostenlose Kerzen von Binance mit <b>echtem Kauf-/Verkaufs-Volumen</b> – Delta und CVD sind damit exakt. Footprint-Trades lädst du im Replay über „Trades laden“ nach. Funktioniert auf deiner GitHub-Seite oder als lokal geöffnete Datei, nicht in der Claude-Vorschau.</p>
+        <div class="grid3">
+          <label class="fld"><span>Markt</span><select id="bnMarket"><option value="spot">Spot</option><option value="futures">USDⓈ-M Futures (Perps)</option></select></label>
+          <label class="fld"><span>Symbol</span><input id="bnSymbol" list="bnSyms" autocomplete="off" spellcheck="false"></label>
+          <label class="fld"><span>Basis-Intervall</span><select id="bnInterval"><option value="1m">1 Minute</option><option value="3m">3 Minuten</option><option value="5m">5 Minuten</option><option value="15m">15 Minuten</option><option value="1h">1 Stunde</option></select></label>
+          <label class="fld"><span>Tage</span><input id="bnDays" type="number" min="1" max="365"></label>
+          <label class="fld"><span>Bis (UTC, leer = jetzt)</span><input id="bnEnd" type="date"></label>
+        </div>
+        <datalist id="bnSyms"><option value="BTCUSDT"><option value="ETHUSDT"><option value="SOLUSDT"><option value="BNBUSDT"><option value="XRPUSDT"><option value="PAXGUSDT"><option value="DOGEUSDT"></datalist>
+        <div class="row" style="display:flex;justify-content:space-between;gap:8px"><p class="status" id="bnStatus"></p><span style="display:flex;gap:6px"><button class="btn sm ghost" id="dlCancel" hidden>Abbrechen</button><button class="btn primary" id="bnLoad">Laden</button></span></div>
+        <div class="dl-prog" id="dlProg" hidden><i></i></div>
+      </div>
+      <div class="dpanel" id="dp-csv" hidden style="display:grid;gap:12px">
+        <p class="note">Für Futures (NQ, ES, Gold …) oder Forex. Erkannt werden Kerzen-CSVs (<code>time, open, high, low, close, volume</code>, auch deutsch mit Dezimalkomma), der <b>TradingView-Export</b>, <b>Databento</b> (Trades und OHLCV), Trade-CSVs (<code>time, price, qty, side</code>) und die Dateien von <b>data.binance.vision</b>. Mit einer Trade-Datei bekommst du echten Footprint und echtes Delta.</p>
+        <div class="grid2">
+          <label class="fld"><span>Kerzen-Datei (oder Trades)</span><input type="file" id="csvBars" accept=".csv,.txt,text/csv"></label>
+          <label class="fld"><span>Trade-Datei (optional)</span><input type="file" id="csvTrades" accept=".csv,.txt,text/csv"></label>
+        </div>
+        <div class="grid3">
+          <label class="fld"><span>Instrument</span><select id="csvInst"></select></label>
+          <label class="fld"><span>Zeitzone der Datei</span><select id="csvTz"><option value="UTC">UTC</option><option value="America/New_York">New York</option><option value="America/Chicago">Chicago</option><option value="Europe/Berlin">Berlin</option><option value="Europe/London">London</option></select></label>
+          <label class="fld"><span>Name</span><input id="csvSym" placeholder="z. B. NQZ6" maxlength="20"></label>
+        </div>
+        <p class="hint" id="csvInstHint"></p>
+        <label class="fld" style="max-width:200px"><span>Tick-Größe (optional)</span><input id="csvTick" inputmode="decimal" placeholder="aus Instrument"></label>
+        <div class="row" style="display:flex;justify-content:space-between;gap:8px"><p class="status" id="csvStatus"></p><button class="btn primary" id="csvLoad">Importieren</button></div>
+      </div>
+      <div class="dpanel" id="dp-demo" hidden style="display:grid;gap:12px">
+        <p class="note">Künstlich erzeugte Daten im Stil des Nasdaq-Futures (Tick 0,25, 20 $ pro Punkt) mit kompletten Trades für Footprint. Gut zum Ausprobieren – <b>kein echter Markt</b>, also keine Backtest-Ergebnisse daraus ableiten.</p>
+        <div class="row" style="display:flex;justify-content:flex-end"><button class="btn primary" id="demoLoad">Demo laden</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="newSessModal" hidden>
+  <div class="dlg wide" role="dialog" aria-modal="true" aria-labelledby="nsTitle">
+    <div class="dlg-h"><h2 id="nsTitle">Neue Backtest-Session</h2><button class="ib" data-close aria-label="Schließen">✕</button></div>
+    <div class="dlg-b">
+      <p class="note warn" id="nsArchHint" hidden></p>
+      <div class="grid2">
+        <label class="fld"><span>Markt</span><select id="nsMarket"></select></label>
+        <div class="fld" id="nsCryptoBox" hidden><span>Krypto</span><span class="with"><input id="nsSym" class="inp" placeholder="z. B. BTCUSDT" spellcheck="false" autocomplete="off"><select id="nsBnMarket" class="sel" aria-label="Spot oder Futures"><option value="spot">Spot</option><option value="futures">Futures</option></select></span></div>
+      </div>
+      <fieldset><legend>Zeitraum</legend>
+        <label class="ck"><input type="radio" name="nsWhen" value="random" checked> Zufälliger Tag zwischen <select id="nsY0" class="sel" aria-label="Jahr von"></select> und <select id="nsY1" class="sel" aria-label="Jahr bis"></select></label>
+        <label class="ck"><input type="radio" name="nsWhen" value="date"> Bestimmtes Datum <input id="nsDate" type="date" class="inp" style="width:auto"></label>
+      </fieldset>
+      <div class="grid2">
+        <label class="fld"><span>Startzeit</span><select id="nsStart"><option value="random">Zufällig</option><option value="ny">New York 9:30 ET (Start 9:15)</option><option value="ldn">London 8:00</option><option value="asia">Asien 9:00 Tokio</option></select></label>
+        <label class="fld"><span>Strategie</span><select id="nsStrat" data-strat></select></label>
+      </div>
+      <div class="ck"><label class="ck"><input type="checkbox" id="nsBlind" checked> Datum verstecken (Blind-Modus) – Datum und Wochentag erst nach dem Ende zeigen</label> <button type="button" class="infotip" data-tip="blind"></button></div>
+      <p class="hint">Vorlauf für Indikatoren: 3 Handelstage vor dem Starttag, 2 Tage danach (Krypto: Kalendertage).</p>
+      <p class="status" id="nsStatus"></p>
+      <div class="dl-prog" id="nsProg" hidden><i></i></div>
+    </div>
+    <div class="dlg-f"><button class="btn" data-close>Schließen</button><button class="btn ghost" id="nsCancel" hidden>Abbrechen</button><button class="btn primary" id="nsGo">Session starten</button></div>
+  </div>
+</div>
+
+<div class="modal" id="tradesModal" hidden>
+  <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="trTitle">
+    <div class="dlg-h"><h2 id="trTitle">Trades für Footprint laden</h2><button class="ib" data-close aria-label="Schließen">✕</button></div>
+    <div class="dlg-b">
+      <p class="help-p">Lädt alle Einzel-Trades (aggTrades) von Binance für einen Zeitraum. Daraus entstehen Footprint, exaktes Volume Profile und Imbalances. Bei BTC sind das schnell 50.000+ Trades pro Stunde, das dauert etwas.</p>
+      <div class="grid2">
+        <label class="fld"><span>Zeitraum</span><select id="trWhere"><option value="after">ab Replay-Position</option><option value="around">rund um die Position</option><option value="before">vor der Position</option></select></label>
+        <label class="fld"><span>Stunden</span><input id="trHours" type="number" min="0.25" max="12" step="0.25" value="2"></label>
+      </div>
+      <p class="status" id="trStatus"></p>
+    </div>
+    <div class="dlg-f"><button class="btn ghost" id="trCancel" hidden>Abbrechen</button><button class="btn" data-close>Schließen</button><button class="btn primary" id="trLoad">Laden</button></div>
+  </div>
+</div>
+
+<div class="modal" id="settingsModal" hidden>
+  <div class="dlg wide" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+    <div class="dlg-h"><h2 id="setTitle">Einstellungen</h2><button class="ib" data-close aria-label="Schließen">✕</button></div>
+    <div class="dlg-b">
+      <div class="tabs" id="setTabs" role="tablist" aria-label="Bereiche der Einstellungen">
+        <button role="tab" data-t="konto" aria-selected="true">Konto &amp; Risiko</button><button role="tab" data-t="kosten" aria-selected="false">Kosten</button><button role="tab" data-t="prop" aria-selected="false">Prop-Regeln</button><button role="tab" data-t="chart" aria-selected="false">Chart &amp; Indikatoren</button><button role="tab" data-t="sync" aria-selected="false">Konto &amp; Sync</button><button role="tab" data-t="daten" aria-selected="false">Daten &amp; Speicher</button><button role="tab" data-t="ueber" aria-selected="false">Über</button>
+      </div>
+      <div class="tabpanel" role="tabpanel" data-panel="konto">
+      <fieldset><legend>Konto</legend>
+        <div class="grid3">
+          <label class="fld"><span>Startkapital ($)</span><input type="number" min="100" step="any" data-s="account.start"></label>
+          <label class="fld"><span>Anzeige-Zeitzone</span><select data-s="tz"><option value="Europe/Berlin">Berlin</option><option value="UTC">UTC</option><option value="America/New_York">New York</option><option value="America/Chicago">Chicago</option><option value="Europe/London">London</option><option value="Asia/Tokyo">Tokio</option></select></label>
+          <label class="fld"><span>SL &amp; TP in einer Kerze</span><select data-s="intrabar"><option value="conservative">Konservativ: SL zuerst</option><option value="path">Kerzenpfad (O→L→H→C)</option><option value="optimistic">Optimistisch: TP zuerst</option></select></label>
+          <label class="fld"><span>Standard-Risiko je Trade ($)</span><input type="number" min="1" step="any" data-s="ticket.risk"></label>
+        </div>
+        <p class="hint">Werden Stop und Ziel in derselben Basis-Kerze berührt, weiß niemand, was zuerst kam. „Konservativ“ rechnet mit dem schlechteren Fall – so überschätzt du deine Strategie nicht. Mit 1-Minuten-Daten passiert das selten.</p>
+        <label class="ck"><input type="checkbox" data-s="photos"> Automatische Chart-Fotos bei Einstieg und Ausstieg</label>
+      </fieldset>
+      </div>
+      <div class="tabpanel" role="tabpanel" data-panel="kosten" hidden>
+      <fieldset><legend>Kosten Futures / Archiv / CSV (pro Kontrakt)</legend>
+        <div class="grid3">
+          <label class="fld"><span>Slippage (Ticks)</span><input type="number" min="0" max="50" step="1" data-s="cost.futures.slipTicks"></label>
+          <label class="fld"><span>Gebühr je Seite ($)</span><input type="number" min="0" step="any" data-s="cost.futures.feeFix"></label>
+          <label class="fld"><span>Gebühr je Seite (%)</span><input type="number" min="0" step="any" data-s="cost.futures.feePct"></label>
+        </div>
+      </fieldset>
+      <fieldset><legend>Kosten Krypto</legend>
+        <div class="grid3">
+          <label class="fld"><span>Slippage (Ticks)</span><input type="number" min="0" max="500" step="1" data-s="cost.crypto.slipTicks"></label>
+          <label class="fld"><span>Gebühr je Seite (fix $)</span><input type="number" min="0" step="any" data-s="cost.crypto.feeFix"></label>
+          <label class="fld"><span>Gebühr je Seite (%)</span><input type="number" min="0" step="any" data-s="cost.crypto.feePct"></label>
+        </div>
+      </fieldset>
+      <fieldset><legend>Kosten Forex / CFD</legend>
+        <div class="grid3">
+          <label class="fld"><span>Slippage (Ticks)</span><input type="number" min="0" max="500" step="1" data-s="cost.forex.slipTicks"></label>
+          <label class="fld"><span>Gebühr je Seite pro Lot ($)</span><input type="number" min="0" step="any" data-s="cost.forex.feeLot"></label>
+          <label class="fld"><span>Gebühr je Seite (%)</span><input type="number" min="0" step="any" data-s="cost.forex.feePct"></label>
+        </div>
+        <p class="hint">1 Lot = 100.000 Einheiten. Slippage gilt für Market-Orders, Stop-Einstiege und Stop-Loss. Limit-Orders und Take-Profit werden zum Limitpreis gefüllt.</p>
+      </fieldset>
+      </div>
+      <div class="tabpanel" role="tabpanel" data-panel="prop" hidden>
+      <fieldset><legend>Prop-Firm-Regeln</legend>
+        <label class="ck"><input type="checkbox" data-s="prop.on"> Regeln prüfen und anzeigen</label>
+        <div class="grid3">
+          <label class="fld"><span>Max. Drawdown ($)</span><input type="number" min="0" step="any" data-s="prop.maxDD"></label>
+          <label class="fld"><span>Tagesverlust-Limit ($)</span><input type="number" min="0" step="any" data-s="prop.dailyLoss"></label>
+          <label class="fld"><span>Gewinnziel ($)</span><input type="number" min="0" step="any" data-s="prop.target"></label>
+        </div>
+        <p class="hint">Drawdown nachziehend auf Basis des Tagesend-Hochs, maximal bis zum Startkapital (wie bei TopStep). Jede Backtest-Session wird als eigenes Konto geprüft.</p>
+      </fieldset>
+      </div>
+      <div class="tabpanel" role="tabpanel" data-panel="chart" hidden>
+      <fieldset><legend>Replay</legend>
+        <div class="grid3">
+          <label class="fld"><span>Schritt je Klick</span><select data-s="replay.unit"><option value="base">Basis-Kerze</option><option value="chart">Chart-Kerze</option><option value="300">5 Minuten</option><option value="900">15 Minuten</option><option value="3600">1 Stunde</option></select></label>
+        </div>
+        <label class="ck"><input type="checkbox" data-s="replay.pauseOnFill"> Auto-Pause: Abspielen stoppt, wenn eine Order gefüllt oder geschlossen wird</label>
+      </fieldset>
+      <fieldset><legend>Indikatoren</legend>
+        <div class="grid3">
+          <label class="fld"><span>EMA 1</span><input type="number" min="1" max="500" step="1" data-s="emas.0.p"></label>
+          <label class="fld"><span>EMA 2</span><input type="number" min="1" max="500" step="1" data-s="emas.1.p"></label>
+          <label class="fld"><span>EMA 3</span><input type="number" min="1" max="500" step="1" data-s="emas.2.p"></label>
+          <label class="fld"><span>EMA 4</span><input type="number" min="1" max="500" step="1" data-s="emas.3.p"></label>
+          <label class="fld"><span>VWAP-Bänder (σ)</span><input id="setBands" placeholder="1, 2"></label>
+          <label class="fld"><span>Value Area (%)</span><input type="number" min="50" max="95" step="1" data-s="vaPct"></label>
+          <label class="fld"><span>Imbalance ab (×)</span><input type="number" min="1.5" max="10" step="0.5" data-s="fp.ratio"></label>
+          <label class="fld"><span>Imbalance min. Volumen</span><input type="number" min="0" step="any" data-s="fp.minVol"></label>
+          <label class="fld"><span>Footprint-Zeilen ×</span><input type="number" min="1" max="20" step="1" data-s="fp.rowMult"></label>
+        </div>
+        <label class="ck"><input type="checkbox" data-s="cvdReset"> CVD zu Session-Beginn auf 0 setzen</label>
+      </fieldset>
+      </div>
+      <div class="tabpanel" role="tabpanel" data-panel="sync" hidden><div id="syncPanel"></div></div>
+      <div class="tabpanel" role="tabpanel" data-panel="daten" hidden>
+        <fieldset><legend>Speicher</legend>
+          <div class="stor"><div class="meter"><i id="storBar" style="width:0"></i></div><p class="hint" id="storTxt">Wird ermittelt …</p></div>
+          <dl class="kv"><dt>Ablage</dt><dd id="storMode">–</dd><dt>Dauerhaft</dt><dd id="storPersist">–</dd><dt>Letzte Sicherung</dt><dd id="storBackup">–</dd></dl>
+          <p class="hint">Journal, Sessions und Strategien liegen in der Browser-Datenbank (IndexedDB) – ohne die 5-MB-Grenze von früher. Trotzdem gilt: Browserdaten löschen löscht auch die App-Daten. Regelmäßig eine Sicherung als Datei machen.</p>
+          <div class="toolbar"><button type="button" class="btn" id="setBackup">Sicherung als Datei</button><label class="btn filebtn">Sicherung importieren<input type="file" id="setImport" accept=".json,application/json"></label></div>
+        </fieldset>
+      </div>
+      <div class="tabpanel" role="tabpanel" data-panel="ueber" hidden>
+        <fieldset><legend>Edge Lab Replay</legend>
+          <dl class="kv"><dt>Version</dt><dd id="appVer">5.0</dd><dt>Daten</dt><dd>Archiv (Dukascopy), Binance, CSV, Demo</dd><dt>Speicherort</dt><dd>Dieser Browser; mit Anmeldung zusätzlich dein eigenes Supabase-Projekt</dd><dt>Termine</dt><dd>CPI, Arbeitsmarktbericht (BLS), FOMC (Federal Reserve), 2020–10/2026</dd></dl>
+          <div class="toolbar"><button type="button" class="btn" id="setInstall" hidden>Als App installieren</button><button type="button" class="btn" id="setOnboard">Einführung erneut zeigen</button><button type="button" class="btn" id="setHelp">Hilfe öffnen</button></div>
+          <p class="hint" id="setIos" hidden>Auf dem iPhone/iPad: in Safari auf <b>Teilen</b> tippen, dann <b>Zum Home-Bildschirm</b>.</p>
+        </fieldset>
+      </div>
+    </div>
+    <div class="dlg-f"><button class="btn ghost left" id="setReset">Zurücksetzen</button><button class="btn" data-close>Abbrechen</button><button class="btn primary" id="setSave">Speichern</button></div>
+  </div>
+</div>
+
+<div class="modal" id="sessModal" hidden>
+  <form class="dlg wide" id="sessForm" role="dialog" aria-modal="true" aria-labelledby="sessTitle">
+    <div class="dlg-h"><h2 id="sessTitle">Backtest-Session festhalten</h2><button type="button" class="ib" data-close aria-label="Schließen">✕</button></div>
+    <div class="dlg-b">
+      <p class="reveal" id="sessReveal" hidden></p>
+      <p class="hint" id="sessAutoHint" hidden></p>
+      <div class="sess-find" id="sessFindings" hidden></div>
+      <div class="grid3">
+        <label class="fld"><span>Strategie</span><select name="strategy" data-strat></select></label>
+        <label class="fld"><span>Markt</span><input name="sym" maxlength="20"></label>
+        <label class="fld" id="sessDateFld"><span>Datum</span><input name="date" type="date"></label>
+        <label class="fld"><span>Trades</span><input name="trades" type="number" min="0" step="1"></label>
+        <label class="fld"><span>Ergebnis ($)</span><input name="net" type="number" step="any"></label>
+        <label class="fld"><span>Summe R</span><input name="r" type="number" step="any"></label>
+      </div>
+      <label class="fld" style="max-width:260px"><span>Ergebnis-Typ</span><select name="result"><option value="auto">automatisch</option><option value="Profit">Profit</option><option value="Verlust">Verlust</option><option value="Break-even">Break-even</option></select></label>
+      <div class="fld"><span>Disziplin – Regeln eingehalten?</span>
+        <div class="stars" id="sessDisc" role="radiogroup" aria-label="Disziplin 1 bis 5">
+          <label><input type="radio" name="disc" value="1"><span>1</span></label><label><input type="radio" name="disc" value="2"><span>2</span></label><label><input type="radio" name="disc" value="3"><span>3</span></label><label><input type="radio" name="disc" value="4"><span>4</span></label><label><input type="radio" name="disc" value="5"><span>5</span></label>
+        </div>
+      </div>
+      <div class="fld"><span>Fehler</span><div class="chips" id="sessMistakes"></div></div>
+      <label class="fld"><span>Was lief gut?</span><textarea name="good" rows="2" maxlength="1000"></textarea></label>
+      <label class="fld"><span>Was lief schlecht – was lerne ich daraus?</span><textarea name="bad" rows="2" maxlength="1000"></textarea></label>
+      <label class="fld"><span>Notizen</span><textarea name="note" rows="3" maxlength="3000"></textarea></label>
+      <div class="fld" id="sessTradesBox"><span>Trades dieser Session</span><div class="mini-list" id="sessTrades"></div></div>
+      <div class="fld"><span>Fotos</span><div class="ph-drop" data-owner-box id="sessPhotos"></div></div>
+    </div>
+    <div class="dlg-f"><button type="button" class="btn ghost danger left" id="sessDelete">Löschen</button><button type="button" class="btn" data-close>Abbrechen</button><button type="submit" class="btn primary">Speichern</button></div>
+  </form>
+</div>
+
+<div class="modal" id="tradeModal" hidden>
+  <div class="dlg wide" role="dialog" aria-modal="true" aria-labelledby="tdTitle">
+    <div class="dlg-h"><h2 id="tdTitle">Trade</h2><button class="ib" data-close aria-label="Schließen">✕</button></div>
+    <div class="dlg-b" id="tdBody"></div>
+    <div class="dlg-f"><button class="btn ghost danger left" id="tdDel">Löschen</button><button class="btn" id="tdShow">Im Chart zeigen</button><button class="btn primary" data-close>Fertig</button></div>
+  </div>
+</div>
+
+<div class="modal" id="lightbox" hidden>
+  <figure><img id="lbImg" alt="Chart-Foto"><figcaption><button class="btn sm" id="lbPrev" aria-label="Vorheriges Foto">‹ Zurück</button><span id="lbCap"></span><button class="btn sm" id="lbNext" aria-label="Nächstes Foto">Weiter ›</button><button class="btn sm ghost danger" id="lbDel">Löschen</button><button class="btn sm" data-close>Schließen</button></figcaption></figure>
+</div>
+
+<div class="modal" id="helpModal" hidden>
+  <div class="dlg wide" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="dlg-h"><h2 id="helpTitle">Hilfe</h2><button class="ib" data-close aria-label="Schließen">✕</button></div>
+    <div class="dlg-b">
+      <div class="tabs" id="helpTabs" role="tablist" aria-label="Hilfe-Themen">
+        <button role="tab" data-t="ablauf" aria-selected="true">Ablauf</button><button role="tab" data-t="keys" aria-selected="false">Tastenkürzel</button><button role="tab" data-t="touch" aria-selected="false">Gesten</button><button role="tab" data-t="begriffe" aria-selected="false">Begriffe</button>
+      </div>
+      <div class="tabpanel" data-panel="ablauf">
+        <p class="help-p"><b>1. Session starten:</b> „Session starten“ unten im Chart oder „Neue Backtest-Session“ in der Übersicht. Die App wählt einen zufälligen historischen Tag, lädt die Daten und startet das Replay – auf Wunsch blind, ohne Datum. Alles rechts vom Cursor ist ausgeblendet, höhere Timeframes bauen sich Kerze für Kerze auf.</p>
+        <p class="help-p"><b>2. Handeln:</b> Im Order-Ticket Stop-Abstand, Ziel in R und Risiko eintragen, dann Kaufen/Verkaufen. Oder mit dem Long-/Short-Werkzeug direkt in den Chart klicken, Zonen ziehen und „Platzieren“. Ausführungen werden mit Slippage und Gebühren gerechnet.</p>
+        <p class="help-p"><b>3. Auswerten:</b> Journal (jeder Trade mit Fotos und Notiz), Backtests (Session-Notizen), Statistik (Kennzahlen, Monte-Carlo, Kalender) und Strategien (Regeln und Ergebnisse).</p>
+        <p class="hint">Deine Trades, Notizen, Fotos und Einstellungen werden nur in diesem Browser gespeichert. Eine laufende Session wird automatisch gemerkt und lässt sich nach dem Neuladen fortsetzen.</p>
+      </div>
+      <div class="tabpanel" data-panel="keys" hidden>
+        <dl class="keys">
+        <dt><kbd>→</kbd> / <kbd>Shift</kbd>+<kbd>→</kbd></dt><dd>Eine / zehn Kerzen weiter</dd>
+        <dt><kbd>Leertaste</kbd></dt><dd>Abspielen / Pause</dd>
+        <dt><kbd>B</kbd> / <kbd>S</kbd> / <kbd>X</kbd></dt><dd>Kaufen / Verkaufen / alles schließen</dd>
+        <dt><kbd>Shift</kbd>+<kbd>B</kbd> / <kbd>Shift</kbd>+<kbd>S</kbd></dt><dd>Long- / Short-Position im Chart platzieren, dann <kbd>Enter</kbd> oder <kbd>Esc</kbd></dd>
+        <dt><kbd>G</kbd></dt><dd>Vollbild-Chart an/aus</dd>
+        <dt><kbd>R</kbd> / <kbd>N</kbd></dt><dd>Startpunkt wählen / Session-Notiz</dd>
+        <dt><kbd>H</kbd> <kbd>T</kbd> <kbd>Z</kbd> <kbd>F</kbd> <kbd>M</kbd> <kbd>V</kbd></dt><dd>Linie, Trend, Zone, Fibonacci, Messen, Anchored VWAP</dd>
+        <dt><kbd>Shift</kbd>+Klick</dt><dd>Preis ins Order-Ticket</dd>
+        <dt>Mausrad · Ziehen</dt><dd>Zoomen · Verschieben (auf der Preisachse: Preis-Zoom, Doppelklick = automatisch)</dd>
+        <dt><kbd>Entf</kbd> / <kbd>Esc</kbd></dt><dd>Zeichnung löschen / Werkzeug abbrechen</dd>
+      </dl>
+      </div>
+      <div class="tabpanel" data-panel="touch" hidden>
+        <dl class="keys">
+        <dt>Ein Finger ziehen</dt><dd>Chart verschieben</dd>
+        <dt>Zwei Finger</dt><dd>Zoomen</dd>
+        <dt>Preisachse ziehen</dt><dd>Preis-Zoom</dd>
+        <dt>Doppeltippen</dt><dd>Zurück zur letzten Kerze</dd>
+        <dt>Linie oder Label ziehen</dt><dd>SL / TP verschieben</dd>
+        <dt>Leiste unten</dt><dd>Abspielen, Schritt, Kaufen, Verkaufen</dd>
+      </dl>
+      </div>
+      <div class="tabpanel" data-panel="begriffe" hidden><dl class="gloss" id="glossList"></dl></div>
+    </div>
+    <div class="dlg-f"><button class="btn ghost left" id="helpOnboard">Einführung zeigen</button><button class="btn primary" data-close autofocus>Schließen</button></div>
+  </div>
+</div>
+
+<div class="modal" id="onboardModal" hidden>
+  <div class="dlg wide" role="dialog" aria-modal="true" aria-labelledby="obTitle">
+    <div class="dlg-h"><div class="ob-steps" id="obSteps" aria-hidden="true"><i></i><i></i><i></i><span id="obCount"></span></div><button class="ib" data-close aria-label="Einführung überspringen">✕</button></div>
+    <div class="dlg-b" id="obBody" aria-live="polite"></div>
+    <div class="dlg-f"><button class="btn ghost left" id="obSkip">Überspringen</button><button class="btn" id="obBack">Zurück</button><button class="btn primary" id="obNext">Weiter</button></div>
+  </div>
+</div>
+
+<div class="modal" id="confirmModal" hidden>
+  <div class="dlg" role="alertdialog" aria-modal="true" aria-labelledby="cfTitle" style="width:min(420px,100%)">
+    <div class="dlg-h"><h2 id="cfTitle"></h2></div>
+    <div class="dlg-b"><p class="help-p" id="cfText"></p></div>
+    <div class="dlg-f"><button class="btn" id="cfCancel">Abbrechen</button><button class="btn primary" id="cfOk">OK</button></div>
+  </div>
+</div>
+<div class="banner" id="updBanner" hidden role="status"><span>Neue Version verfügbar.</span><button class="btn sm primary" id="updReload">Neu laden</button><button class="ib" id="updLater" aria-label="Später">✕</button></div>
+<div id="tipPop" role="tooltip" hidden></div>
+<nav class="more-menu" id="moreMenu" hidden aria-label="Weitere Bereiche">
+  <a href="#strategien"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/></svg><span><b>Strategien</b><small>Regeln und Checklisten</small></span></a>
+  <a href="#handbuch"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 5.5C8.4 4.2 5.9 3.7 3 3.9v11.6c2.9-.2 5.4.3 7 1.6 1.6-1.3 4.1-1.8 7-1.6V3.9c-2.9-.2-5.4.3-7 1.6z"/><path d="M10 5.5v11.6"/></svg><span><b>Handbuch</b><small>VWAP, Profil, Orderflow, Risiko</small></span></a>
+  <a href="#tradingview"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.5"/><path d="M7 17h6M10 14v3M5 11l3-3 2.5 2L15 6"/></svg><span><b>TradingView</b><small>Live-Chart ansehen</small></span></a>
+</nav>
+<div id="toasts" aria-live="polite"></div>
+<textarea id="copyFallback" hidden aria-label="Text zum Kopieren"></textarea>
+<!--SCRIPTS-->
