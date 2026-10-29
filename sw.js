@@ -1,6 +1,6 @@
 /* Offline-Cache: App-Dateien werden gespeichert, Marktdaten (Binance, Archiv) nie.
    Eine neue Version wartet, bis die Seite „Neu laden“ bestätigt (Update-Banner). */
-const CACHE = 'edge-lab-replay-v6';
+const CACHE = 'edge-lab-replay-v7';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES))); });
 self.addEventListener('message', (e) => { if (e.data === 'skipWaiting') self.skipWaiting(); });

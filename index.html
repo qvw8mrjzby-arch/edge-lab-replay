@@ -66,6 +66,15 @@ header.top { display: flex; align-items: center; gap: 14px; padding-block: 0; pa
 .ibtn:hover { color: var(--text); border-color: var(--faint); }
 .ibtn:active { transform: translateY(1px); }
 .ibtn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+#btnSync { position: relative; }
+#btnSync i { position: absolute; right: 5px; bottom: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--faint); box-shadow: 0 0 0 2px var(--panel2); }
+#btnSync[data-state="ok"] i { background: var(--bull); }
+#btnSync[data-state="run"] i { background: var(--info); animation: syncPulse 1s ease-in-out infinite; }
+#btnSync[data-state="off"] i { background: var(--warn); }
+#btnSync[data-state="err"] i { background: var(--bear); }
+#btnSync[data-state="err"] { color: var(--bear); }
+@keyframes syncPulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { #btnSync[data-state="run"] i { animation: none; } }
 #blindBadge { font-size: 11.5px; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
 
 #views { position: relative; min-height: 0; min-width: 0; }
@@ -134,6 +143,7 @@ main#charts { grid-area: charts; display: grid; gap: 1px; background: var(--line
 #charts[data-layout="2"] .chart.active .chart-head, #charts[data-layout="4"] .chart.active .chart-head { box-shadow: inset 0 2px 0 var(--accent); }
 .tf-sel { background: transparent; border: 1px solid var(--line); border-radius: var(--r); padding: 1px 4px; font: 600 12px var(--f-mono); color: var(--text); }
 .chart-title { font: 11.5px var(--f-mono); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.econ-warn { position: absolute; top: 34px; left: 50%; transform: translateX(-50%); z-index: 3; max-width: calc(100% - 96px); padding: 4px 10px; border-radius: var(--r); border: 1px solid color-mix(in srgb, var(--warn) 45%, transparent); background: color-mix(in srgb, var(--panel) 88%, var(--warn)); color: var(--warn); font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
 .chart-badges { display: flex; flex-wrap: wrap; gap: 4px; overflow: hidden; min-width: 0; height: 20px; }
 .chart-btns { margin-left: auto; display: flex; gap: 2px; flex: none; }
 .ib { width: 24px; height: 24px; border: 0; background: transparent; color: var(--muted); border-radius: 3px; cursor: pointer; font: 14px var(--f-mono); display: grid; place-items: center; }
@@ -754,7 +764,15 @@ body.has-draft #mAct button:not(.m-ticket) { opacity: .35; }
   header.top #mainNav a[aria-current="page"] { border-left-color: var(--accent); border-top-color: transparent; color: var(--accent); }
   header.top #mainNav svg { width: 20px; height: 20px; }
   header.top .ibtn { width: 44px; height: 44px; }
-  header.top #btnHelp { display: none; }
+  header.top #btnHelp, header.top #btnSync { display: none; }
+  /* Sync-Status im Querformat als Punkt am Einstellungs-Knopf */
+  #btnSettings { position: relative; }
+  body[data-sync] #btnSettings::after { content: ""; position: absolute; right: 7px; bottom: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--faint); box-shadow: 0 0 0 2px var(--panel2); }
+  body[data-sync="ok"] #btnSettings::after { background: var(--bull); }
+  body[data-sync="run"] #btnSettings::after { background: var(--info); }
+  body[data-sync="off"] #btnSettings::after { background: var(--warn); }
+  body[data-sync="err"] #btnSettings::after { background: var(--bear); }
+  body[data-sync="none"] #btnSettings::after { display: none; }
   #blindBadge { font-size: 0; width: 10px; height: 10px; padding: 0; border-radius: 50%; background: var(--accent); }
   body #views { position: relative; min-height: 0; height: 100%; }
   body .view { position: absolute; inset: 0; }
@@ -1044,6 +1062,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
     </nav>
     <span class="hspace"></span>
     <span id="blindBadge" hidden title="Datum und Wochentag sind ausgeblendet, bis die Session endet">Blind-Modus</span>
+    <button class="ibtn" id="btnSync" data-state="none" title="Sync: nicht angemeldet" aria-label="Sync-Status"><svg viewBox="0 0 16 16"><path d="M4.5 12.5h7a3 3 0 0 0 .4-6 4 4 0 0 0-7.7.9A2.6 2.6 0 0 0 4.5 12.5z"/></svg><i></i></button>
     <button class="ibtn" id="btnHelp" title="Hilfe, Tastenkürzel und Begriffe (?)" aria-label="Hilfe"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M6.2 6.2a1.9 1.9 0 1 1 2.6 1.8c-.5.2-.8.6-.8 1.1v.5"/><circle cx="8" cy="11.6" r=".4" fill="currentColor"/></svg></button>
     <button class="ibtn" id="btnSettings" title="Einstellungen" aria-label="Einstellungen"><svg viewBox="0 0 16 16"><path d="M2 4h7M12 4h2M2 8h2M7 8h7M2 12h9M14 12h0"/><circle cx="10.5" cy="4" r="1.5"/><circle cx="5.5" cy="8" r="1.5"/><circle cx="12.5" cy="12" r="1.5"/></svg></button>
   </header>
@@ -1055,6 +1074,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
       <p class="note" id="stIos" hidden>Als App nutzen: in Safari unten auf <b>Teilen</b> tippen, dann <b>Zum Home-Bildschirm</b>.</p>
       <div class="resume-card" id="stResume" hidden></div>
       <p class="note warn" id="stBackup" hidden></p>
+      <p class="note" id="stSync" hidden><span>Melde dich an, um Handy und PC zu verbinden – Journal, Backtests und Fotos gleichen sich dann automatisch ab.</span> <button type="button" class="linkbtn" id="stSyncGo" style="color:var(--accent)">Anmelden</button> <button type="button" class="linkbtn" id="stSyncOff" aria-label="Hinweis ausblenden">Ausblenden</button></p>
       <div id="stBody" style="display:grid;gap:16px"></div>
     </div>
   </section>
@@ -1082,6 +1102,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
               <button class="tg" data-ind="rth" style="--c:var(--rth)" title="Overnight-Hoch/Tief, RTH-Eröffnung 9:30, Opening Range 15 min, Initial Balance (nur Märkte mit New-York-Session)">RTH-Levels</button>
               <button class="tg" data-ind="sessions" style="--c:var(--sessL)" title="Asien (Tokio 9–15:30), London (8–16:30), New York (9:30–16)">Sessions</button>
               <button class="tg" data-ind="volume" style="--c:var(--muted)">Volumen</button>
+              <button class="tg" data-ind="econ" style="--c:var(--warn)" title="Wichtige US-Termine (CPI, Arbeitsmarktbericht, Fed-Zinsentscheid): Linie nach dem Termin, Vorwarnung davor">Wirtschaftsdaten</button>
             </div>
             <h5>Gleitende Durchschnitte</h5>
             <div class="tgs" id="emaBar">
@@ -1418,7 +1439,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
     <div class="dlg-h"><h2 id="setTitle">Einstellungen</h2><button class="ib" data-close aria-label="Schließen">✕</button></div>
     <div class="dlg-b">
       <div class="tabs" id="setTabs" role="tablist" aria-label="Bereiche der Einstellungen">
-        <button role="tab" data-t="konto" aria-selected="true">Konto &amp; Risiko</button><button role="tab" data-t="kosten" aria-selected="false">Kosten</button><button role="tab" data-t="prop" aria-selected="false">Prop-Regeln</button><button role="tab" data-t="chart" aria-selected="false">Chart &amp; Indikatoren</button><button role="tab" data-t="daten" aria-selected="false">Daten &amp; Speicher</button><button role="tab" data-t="ueber" aria-selected="false">Über</button>
+        <button role="tab" data-t="konto" aria-selected="true">Konto &amp; Risiko</button><button role="tab" data-t="kosten" aria-selected="false">Kosten</button><button role="tab" data-t="prop" aria-selected="false">Prop-Regeln</button><button role="tab" data-t="chart" aria-selected="false">Chart &amp; Indikatoren</button><button role="tab" data-t="sync" aria-selected="false">Konto &amp; Sync</button><button role="tab" data-t="daten" aria-selected="false">Daten &amp; Speicher</button><button role="tab" data-t="ueber" aria-selected="false">Über</button>
       </div>
       <div class="tabpanel" role="tabpanel" data-panel="konto">
       <fieldset><legend>Konto</legend>
@@ -1489,6 +1510,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
         <label class="ck"><input type="checkbox" data-s="cvdReset"> CVD zu Session-Beginn auf 0 setzen</label>
       </fieldset>
       </div>
+      <div class="tabpanel" role="tabpanel" data-panel="sync" hidden><div id="syncPanel"></div></div>
       <div class="tabpanel" role="tabpanel" data-panel="daten" hidden>
         <fieldset><legend>Speicher</legend>
           <div class="stor"><div class="meter"><i id="storBar" style="width:0"></i></div><p class="hint" id="storTxt">Wird ermittelt …</p></div>
@@ -1499,7 +1521,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
       </div>
       <div class="tabpanel" role="tabpanel" data-panel="ueber" hidden>
         <fieldset><legend>Edge Lab Replay</legend>
-          <dl class="kv"><dt>Version</dt><dd id="appVer">4.0</dd><dt>Daten</dt><dd>Archiv (Dukascopy), Binance, CSV, Demo</dd><dt>Speicherort</dt><dd>Nur dieser Browser – keine Konten, keine Cloud</dd></dl>
+          <dl class="kv"><dt>Version</dt><dd id="appVer">5.0</dd><dt>Daten</dt><dd>Archiv (Dukascopy), Binance, CSV, Demo</dd><dt>Speicherort</dt><dd>Dieser Browser; mit Anmeldung zusätzlich dein eigenes Supabase-Projekt</dd><dt>Termine</dt><dd>CPI, Arbeitsmarktbericht (BLS), FOMC (Federal Reserve), 2020–10/2026</dd></dl>
           <div class="toolbar"><button type="button" class="btn" id="setInstall" hidden>Als App installieren</button><button type="button" class="btn" id="setOnboard">Einführung erneut zeigen</button><button type="button" class="btn" id="setHelp">Hilfe öffnen</button></div>
           <p class="hint" id="setIos" hidden>Auf dem iPhone/iPad: in Safari auf <b>Teilen</b> tippen, dann <b>Zum Home-Bildschirm</b>.</p>
         </fieldset>
@@ -2771,7 +2793,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
   /* Schwellen und Mindest-Datenbasis je Regel (alle in einem Objekt, damit Tests und Bericht dieselben Zahlen nutzen) */
   C.ANALYSE = {
     revengeMin: 10, postBars: 120, postExtraR: 0.5, riskFactor: 1.25, cvMax: 0.5, holdFactor: 1.5, groupMin: 5, overAbs: 5,
-    min: { sl: 5, frueh: 5, eng: 5, revenge: 3, over: 3, risiko: 5, schwankt: 8, halten: 5, zeit: 15, setup: 5, regeln: 5, vwap: 10, ziel: 8 }
+    min: { sl: 5, frueh: 5, eng: 5, revenge: 3, over: 3, risiko: 5, schwankt: 8, halten: 5, zeit: 15, setup: 5, regeln: 5, vwap: 10, ziel: 8, news: 5 }
   };
   const avgOf = (a) => a.length ? a.reduce((s, x) => s + x, 0) / a.length : null;
   const sumOf = (a) => a.reduce((s, x) => s + x, 0);
@@ -3038,6 +3060,24 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
         }
       }
     }
+    /* 12 · News-Trades: Einstieg ≤ 15 Min vor bis ≤ 30 Min nach einem wichtigen US-Termin (ctx.news beim Platzieren) */
+    if (!kurz) {
+      const isN = (n) => !!n && ((n.minutesTo != null && n.minutesTo <= 15) || (n.minutesSince != null && n.minutesSince <= 30));
+      const el = T.filter((x) => x.ctx && x.ctx.news && rOf(x) != null);
+      const nw = el.filter((x) => isN(x.ctx.news)), rest = el.filter((x) => !isN(x.ctx.news));
+      if (need('news-trades', 'News-Trades', nw.length, M.news, 'Trades rund um Wirtschaftstermine')) {
+        const aN = avgOf(nw.map(rOf)), aR = avgOf(rest.map(rOf)), sN = sumOf(nw.map(rOf));
+        const vgl = rest.length ? '; übrige Trades: Ø ' + fR(aR) + ' (' + rest.length + ')' : '';
+        if (sN < 0 && (aR == null || aN < aR)) {
+          const sP = sumOf(nw.map((x) => x.pnl));
+          add({ id: 'news-trades', titel: 'Verluste rund um Wirtschaftsdaten', anteil: nw.length / el.length, kostenR: Math.max(0, -sN), kostenUsd: Math.max(0, -sP), tradeIds: ids(nw), handbuch: 'wichtige-zeiten',
+            beschreibung: nw.length + ' Trades lagen zwischen 15 Minuten vor und 30 Minuten nach einem wichtigen US-Termin (CPI, Arbeitsmarktbericht, Fed): Ø ' + fR(aN) + vgl + '. Kostenschätzung: Verlust dieser News-Trades.',
+            tipp: 'Vor Terminen flach sein oder das Risiko halbieren. Nach der Veröffentlichung die erste Bewegung abwarten (z. B. 15 Minuten) und erst handeln, wenn ein Level hält. Die Vorwarnung im Chart zeigt dir, wann es so weit ist.' });
+        } else if (aN > 0 && (aR == null || aN >= aR)) {
+          staerken.push({ id: 'news-stark', titel: 'Stark rund um Wirtschaftsdaten', beschreibung: nw.length + ' News-Trades, Ø ' + fR(aN) + vgl + '.', tradeIds: ids(nw) });
+        }
+      }
+    }
     /* 11 · Ziel zu weit */
     if (!kurz) {
       const el = T.filter((x) => x.plannedR > 1 && x.mfeR != null && rOf(x) != null && !x.partials);
@@ -3160,7 +3200,7 @@ class Chart {
       '<button class="ib" data-z="fit" title="Zur letzten Kerze springen" aria-label="Zur letzten Kerze">⇥</button>' +
       '<button class="ib" data-z="fs" title="Vollbild (G)" aria-label="Vollbild"><svg viewBox="0 0 16 16"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg></button></span></div>' +
       '<div class="cv-wrap"><canvas tabindex="0" aria-label="Chart"></canvas><canvas class="ov" aria-hidden="true"></canvas>' +
-      '<div class="chart-load" hidden><div class="cl-box"><span class="cl-txt">Lade Daten …</span><div class="dl-prog"><i></i></div></div></div></div>' +
+      '<div class="econ-warn" hidden role="status"></div><div class="chart-load" hidden><div class="cl-box"><span class="cl-txt">Lade Daten …</span><div class="dl-prog"><i></i></div></div></div></div>' +
       '<div class="pos-confirm" hidden><span class="pc-txt num"></span><button class="btn sm primary" data-pc="ok">Platzieren<kbd>Enter</kbd></button><button class="btn sm" data-pc="no">Abbrechen</button></div>';
     host.appendChild(this.el);
     this.cv = this.el.querySelector('canvas');
@@ -3173,6 +3213,7 @@ class Chart {
     this.title = this.el.querySelector('.chart-title');
     this.badges = this.el.querySelector('.chart-badges');
     this.confirmEl = this.el.querySelector('.pos-confirm');
+    this.econEl = this.el.querySelector('.econ-warn');
     this.tf = app.settings.charts[slot].tf;
     this.view = { rightIdx: null, barW: 9, auto: true, yMin: 0, yMax: 1 };
     this.lastN = 0;
@@ -3318,7 +3359,7 @@ class Chart {
     this.title.textContent = A.symbol ? A.symbol + ' · ' + Core.tfLabel(this.tf) : '';
     this.tags = [];
     if (this.legendW == null) this.legendW = Math.min(this.W - 80, 520);
-    if (!m || A.hideData) { if (!m) { ctx.fillStyle = COL.muted; ctx.font = '13px ' + FONT_UI; ctx.fillText('Keine Daten geladen', 16, 30); } this.m = null; this.renderOverlay(); return; }
+    if (!m || A.hideData) { if (this._ew) { this._ew = ''; this.econEl.hidden = true; } if (!m) { ctx.fillStyle = COL.muted; ctx.font = '13px ' + FONT_UI; ctx.fillText('Keine Daten geladen', 16, 30); } this.m = null; this.renderOverlay(); return; }
     const v = this.view;
     if (v.rightIdx == null) v.rightIdx = m.n - 1 + this.rightPad();
     else if (this.lastN && m.n !== this.lastN && v.rightIdx >= this.lastN - 1.5) v.rightIdx += m.n - this.lastN;
@@ -3367,6 +3408,7 @@ class Chart {
     this.flushLevelLabels(P);
     this.drawDrawings(P);
     this.drawTradeMarks(m, P);
+    this.drawEcon(m, i0, i1, P);
     ctx.restore();
     this.drawOrderLines(P);
     if (this.lower) this.drawLower(m, i0, i1);
@@ -3421,6 +3463,33 @@ class Chart {
     if (A.settings.ind.fp && A.trades && this.view.barW < 56) b.push('<span class="badge" title="Hineinzoomen, um den Footprint zu sehen">Footprint: zoomen</span>');
     const html = b.join('');
     if (html !== this._bh) { this.badges.innerHTML = html; this._bh = html; }
+  }
+  /* Wirtschaftstermine: gestrichelte Linie nur für Termine, die schon passiert sind (≤ jetzt); Vorwarnung als Banner.
+     Blind-Modus: kein Kürzel, nur generischer Hinweis. */
+  drawEcon(m, i0, i1, P) {
+    const A = this.app, on = A.settings.ind.econ && A.econOn() && this.tf < 86400;
+    let warn = null;
+    if (!on) this.econLabs = [];
+    if (on) {
+      const now = A.econNow(), blind = A.isBlind();
+      const t0 = m.bar(i0).t, t1 = Math.min(now, m.bar(i1).t + this.tf);
+      const ctx = this.ctx, c = COL.warn;
+      let lastT = null; this.econLabs = [];
+      ctx.save(); ctx.setLineDash([4, 4]); ctx.lineWidth = 1; ctx.font = '600 10px ' + FONT_MONO;
+      for (const e of Econ.between(t0, t1)) {
+        const x = Math.round(this.xOfTime(e.t)) + 0.5;
+        if (x < -2 || x > P.w + 2) continue;
+        if (e.t !== lastT) { ctx.strokeStyle = alpha(c, 0.7); ctx.beginPath(); ctx.moveTo(x, P.y + 38); ctx.lineTo(x, P.y + P.h); ctx.stroke(); }
+        const lab = blind ? 'Termin' : Econ.KINDS[e.kind].abbr, w = textW(ctx, lab) + 8, k = e.t === lastT ? 1 : 0;
+        ctx.fillStyle = alpha(c, 0.18); ctx.fillRect(x - w / 2, P.y + 24 + k * 15, w, 14);
+        ctx.fillStyle = c; ctx.textAlign = 'center'; ctx.fillText(lab, x, P.y + 34.5 + k * 15); ctx.textAlign = 'left';
+        lastT = e.t; this.econLabs.push(lab);
+      }
+      ctx.restore();
+      warn = Econ.warning(now, blind);
+    }
+    const txt = warn ? warn.text : '';
+    if (txt !== this._ew) { this._ew = txt; this.econEl.textContent = txt; this.econEl.hidden = !txt; }
   }
   drawGrid(P) {
     const ctx = this.ctx, v = this.view;
@@ -4360,7 +4429,7 @@ const DEFAULTS = {
   layout: 2,
   charts: [{ tf: 900 }, { tf: 60 }, { tf: 300 }, { tf: 3600 }],
   tz: 'Europe/Berlin',
-  ind: { vwap: true, bands: true, vp: true, fp: true, sessions: true, prev: true, rth: false, volume: true, lower: 'delta' },
+  ind: { vwap: true, bands: true, vp: true, fp: true, sessions: true, prev: true, rth: false, volume: true, econ: true, lower: 'delta' },
   emas: [{ p: 9, on: false }, { p: 21, on: true }, { p: 50, on: false }, { p: 200, on: true }],
   vwapBands: [1, 2],
   vaPct: 70,
@@ -4897,8 +4966,12 @@ const App = {
     const s = this.series, i = this.cursor; if (!s || !this.base || !isFinite(px)) return undefined;
     const vw = s.vwap[i], sd = s.sd[i], d = this.dec() + 1, atr = this.atrNow(this.baseTf);
     return { vwapSide: Math.abs(px - vw) < this.tick / 2 ? 0 : px > vw ? 1 : -1, vwapDist: +(px - vw).toFixed(d), vwapSd: sd > 0 ? +((px - vw) / sd).toFixed(2) : null,
-      atr: isFinite(atr) ? +atr.toFixed(d) : null, deltaLast: Math.round(this.base[i].d), cvdSlope: i >= 10 ? Math.round(s.cvd[i] - s.cvd[i - 10]) : null };
+      atr: isFinite(atr) ? +atr.toFixed(d) : null, deltaLast: Math.round(this.base[i].d), cvdSlope: i >= 10 ? Math.round(s.cvd[i] - s.cvd[i - 10]) : null,
+      news: this.econOn() ? Econ.ctxAt(this.econNow()) || undefined : undefined };
   },
+  /* Wirtschaftstermine: nur Märkte mit US-Bezug; „jetzt“ = Ende der zuletzt sichtbaren Basis-Kerze */
+  econOn() { return typeof Econ !== 'undefined' && !!this.base && Econ.relevant(this.instKey); },
+  econNow() { return this.nowT() + this.baseTf; },
   /* Nachlauf-Prüfung erst NACH dem Ende der Session (Daten liegen vor, Replay ist aus) – während des Replays nie */
   runPostChecks(rid) {
     if (this.replay.active || !this.base || rid == null) return 0;
@@ -5316,6 +5389,140 @@ const App = {
 /* Toasts ausblenden, solange ein Dialog offen ist */
 function syncModalState() { document.body.classList.toggle('modal-open', $$('.modal').some((m) => !m.hidden)); }
 
+/* Edge Lab Replay — Wichtige US-Wirtschaftstermine (statisch, 2020-01 bis 2026-10).
+   Quellen (offizielle Veröffentlichungsarchive, Abruf 29.10.2026):
+   - CPI:  https://www.bls.gov/bls/news-release/cpi.htm     (Archiv-Dateien cpi_MMDDYYYY = Veröffentlichungstag)
+   - NFP:  https://www.bls.gov/bls/news-release/empsit.htm  (Employment Situation, empsit_MMDDYYYY)
+   - FOMC: https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm (2021–2026, Statement-Links monetaryYYYYMMDDa)
+           https://www.federalreserve.gov/newsevents/pressreleases/2020-press-fomc.htm (2020 inkl. außerplanmäßiger Statements;
+           Uhrzeiten 3.3.2020 10:00, 15.3.2020 17:00, 23.3.2020 8:00 ET laut Pressemitteilung bzw. Sitzungsseite)
+   Oktober 2025: CPI und Arbeitsmarktbericht wurden wegen des US-Haushaltsstillstands nicht veröffentlicht (laut BLS).
+   PPI, Einzelhandelsumsätze und PCE sind bewusst nicht enthalten.
+   Termin-Zeitpunkte sind vorab bekannt; sie zu zeigen ist kein Blick in die Kurs-Zukunft. */
+'use strict';
+(function (root) {
+  const CoreRef = typeof Core !== 'undefined' ? Core : (typeof require === 'function' ? require('./core.js') : null);
+  /* Jahr → MMDD-Liste (Veröffentlichungstage) */
+  const RAW = {
+    CPI: {
+      2020: '0114 0213 0311 0410 0512 0610 0714 0812 0911 1013 1112 1210',
+      2021: '0113 0210 0310 0413 0512 0610 0713 0811 0914 1013 1110 1210',
+      2022: '0112 0210 0310 0412 0511 0610 0713 0810 0913 1013 1110 1213',
+      2023: '0112 0214 0314 0412 0510 0613 0712 0810 0913 1012 1114 1212',
+      2024: '0111 0213 0312 0410 0515 0612 0711 0814 0911 1010 1113 1211',
+      2025: '0115 0212 0312 0410 0513 0611 0715 0812 0911 1024 1218',
+      2026: '0113 0213 0311 0410 0512 0610 0714 0812 0911 1014'
+    },
+    NFP: {
+      2020: '0110 0207 0306 0403 0508 0605 0702 0807 0904 1002 1106 1204',
+      2021: '0108 0205 0305 0402 0507 0604 0702 0806 0903 1008 1105 1203',
+      2022: '0107 0204 0304 0401 0506 0603 0708 0805 0902 1007 1104 1202',
+      2023: '0106 0203 0310 0407 0505 0602 0707 0804 0901 1006 1103 1208',
+      2024: '0105 0202 0308 0405 0503 0607 0705 0802 0906 1004 1101 1206',
+      2025: '0110 0207 0307 0404 0502 0606 0703 0801 0905 1120 1216',
+      2026: '0109 0211 0306 0403 0508 0605 0702 0807 0904 1002'
+    },
+    FOMC: {
+      2020: '0129 0303@1000 0315@1700 0323@0800 0429 0610 0729 0916 1105 1216',
+      2021: '0127 0317 0428 0616 0728 0922 1103 1215',
+      2022: '0126 0316 0504 0615 0727 0921 1102 1214',
+      2023: '0201 0322 0503 0614 0726 0920 1101 1213',
+      2024: '0131 0320 0501 0612 0731 0918 1107 1218',
+      2025: '0129 0319 0507 0618 0730 0917 1029 1210',
+      2026: '0128 0318 0429 0617 0729 0916 1028'
+    }
+  };
+  const KINDS = {
+    CPI: { abbr: 'CPI', name: 'US-Verbraucherpreise (CPI)', hh: 8, mm: 30, warn: 30 },
+    NFP: { abbr: 'NFP', name: 'US-Arbeitsmarktbericht (NFP)', hh: 8, mm: 30, warn: 30 },
+    FOMC: { abbr: 'FOMC', name: 'Fed-Zinsentscheid', hh: 14, mm: 0, warn: 120 }
+  };
+  const ET = 'America/New_York';
+  /* Märkte mit US-Bezug (instKey aus dem Datensatz) */
+  const RELEVANT = new Set(['ARCHIV', 'CRYPTO', 'FOREX', 'NQ', 'MNQ', 'ES', 'MES', 'YM', 'MYM', 'RTY', 'M2K', 'GC', 'MGC', 'CL', 'MCL']);
+  let LIST = null, TIMES = null, DAYS = null;
+
+  const E = {
+    KINDS, ET, RAW,
+    FIRST: '2020-01', LAST: '2026-10',
+    /* Alle Termine, aufsteigend: { t (UTC-Sekunden), kind, y, m, d, hh, mm } */
+    events() {
+      if (LIST) return LIST;
+      const out = [];
+      for (const kind of Object.keys(RAW)) {
+        const K = KINDS[kind];
+        for (const y of Object.keys(RAW[kind])) {
+          for (const tok of RAW[kind][y].split(/\s+/)) {
+            if (!tok) continue;
+            const m = +tok.slice(0, 2), d = +tok.slice(2, 4);
+            let hh = K.hh, mm = K.mm;
+            const at = tok.indexOf('@');
+            if (at > 0) { hh = +tok.slice(at + 1, at + 3); mm = +tok.slice(at + 3, at + 5); }
+            out.push({ t: CoreRef.zonedToUtc(+y, m, d, hh, mm, 0, ET), kind, y: +y, m, d, hh, mm });
+          }
+        }
+      }
+      out.sort((a, b) => a.t - b.t || a.kind.localeCompare(b.kind));
+      LIST = out; TIMES = out.map((e) => e.t);
+      DAYS = new Set(out.map((e) => E.dayKey(e.y, e.m, e.d)));
+      return LIST;
+    },
+    dayKey(y, m, d) { return y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0'); },
+    /* erster Index mit t >= x */
+    lower(x) { this.events(); let lo = 0, hi = TIMES.length; while (lo < hi) { const k = (lo + hi) >> 1; if (TIMES[k] < x) lo = k + 1; else hi = k; } return lo; },
+    /* Termine im Zeitraum [a, b] */
+    between(a, b) { const L = this.events(); const out = []; for (let i = this.lower(a); i < L.length && L[i].t <= b; i++) out.push(L[i]); return out; },
+    /* Nächster Termin (t > now) – alle Termine zum selben Zeitpunkt */
+    next(now) { const L = this.events(); let i = this.lower(now + 1e-6); if (i >= L.length) return null; const t = L[i].t, g = []; while (i < L.length && L[i].t === t) g.push(L[i++]); return { t, list: g }; },
+    /* Letzter Termin (t <= now) */
+    prev(now) { const L = this.events(); let i = this.lower(now + 1e-6) - 1; if (i < 0) return null; const t = L[i].t, g = []; while (i >= 0 && L[i].t === t) g.unshift(L[i--]); return { t, list: g }; },
+    /* Tag (ET-Kalendertag) mit mindestens einem Termin */
+    hasEventOn(y, m, d) { this.events(); return DAYS.has(this.dayKey(y, m, d)); },
+    relevant(instKey) { return !!instKey && RELEVANT.has(instKey); },
+    /* Kontext für das Journal: Minuten bis zum nächsten / seit dem letzten Termin (max. 7 Tage), Art des näheren Termins */
+    ctxAt(now) {
+      const n = this.next(now), p = this.prev(now), LIM = 7 * 86400;
+      const to = n && n.t - now <= LIM ? Math.round((n.t - now) / 60) : null;
+      const since = p && now - p.t <= LIM ? Math.round((now - p.t) / 60) : null;
+      if (to == null && since == null) return null;
+      const near = to == null ? p : since == null ? n : (n.t - now < now - p.t ? n : p);
+      return { minutesTo: to, minutesSince: since, kind: near.list.map((e) => e.kind).join('+') };
+    },
+    /* „News-Trade“: Einstieg ≤ 15 Min vor bis ≤ 30 Min nach einem Termin */
+    isNewsTrade(news) { return !!news && ((news.minutesTo != null && news.minutesTo <= 15) || (news.minutesSince != null && news.minutesSince <= 30)); },
+    etLabel(e) { return e.hh + ':' + String(e.mm).padStart(2, '0') + ' ET'; },
+    fmtIn(min) { if (min < 60) return 'In ' + min + ' Min'; const h = Math.floor(min / 60), r = min % 60; return 'In ' + h + ' Std' + (r ? ' ' + r + ' Min' : ''); },
+    /* Vorwarnung: Text oder null. now = Ende der zuletzt sichtbaren Kerze. */
+    warning(now, blind) {
+      const n = this.next(now); if (!n) return null;
+      const win = Math.max(...n.list.map((e) => KINDS[e.kind].warn)) * 60;
+      if (n.t - now > win) return null;
+      const min = Math.max(1, Math.ceil((n.t - now) / 60)), e0 = n.list[0];
+      if (blind) return { t: n.t, min, text: this.fmtIn(min) + ': Hochrelevanter US-Termin um ' + this.etLabel(e0) };
+      const names = n.list.map((e) => KINDS[e.kind].name).join(' + ');
+      return { t: n.t, min, text: this.fmtIn(min) + ': ' + names + ' · ' + this.etLabel(e0) };
+    },
+    /* Prüfung der Liste: Wochentage und Uhrzeiten plausibel (für Tests/Konsole) */
+    check() {
+      const L = this.events(), warn = [], count = {};
+      for (const e of L) {
+        count[e.kind] = (count[e.kind] || 0) + 1;
+        const p = CoreRef.localParts(e.t, ET);
+        if (p.y !== e.y || p.m !== e.m || p.d !== e.d || p.h !== e.hh || p.mi !== e.mm) warn.push('Umrechnung falsch: ' + e.kind + ' ' + this.dayKey(e.y, e.m, e.d));
+        if (p.wd === 0 || p.wd === 6) {
+          if (!(e.kind === 'FOMC' && e.hh !== 14)) warn.push('Wochenende: ' + e.kind + ' ' + this.dayKey(e.y, e.m, e.d));
+        }
+        if (e.kind === 'NFP' && p.wd !== 5) warn.push('NFP nicht Freitag (' + ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'][p.wd] + '): ' + this.dayKey(e.y, e.m, e.d));
+        if (e.kind === 'FOMC' && e.hh === 14 && p.wd !== 3) warn.push('FOMC nicht Mittwoch: ' + this.dayKey(e.y, e.m, e.d));
+      }
+      const ymin = L[0], ymax = L[L.length - 1];
+      return { n: L.length, count, warn, first: this.dayKey(ymin.y, ymin.m, ymin.d), last: this.dayKey(ymax.y, ymax.m, ymax.d) };
+    }
+  };
+  if (typeof module !== 'undefined' && module.exports) module.exports = E;
+  else root.Econ = E;
+})(typeof self !== 'undefined' ? self : this);
+
 /* Edge Lab Replay — Speicher: Journal, Sessions, Strategien in IndexedDB (unbegrenzt), localStorage als Rückfall.
    Einstellungen, Zeichnungen und der Fortsetzen-Stand bleiben im localStorage (klein, synchron). */
 'use strict';
@@ -5345,13 +5552,14 @@ const IDB = {
 
 const Store = {
   mode: 'ls', db: null, err: '', migrated: [],
-  KEYS: { journal: 'elr.journal', sessions: 'elr.sessions', strategies: 'elr.strategies' },
+  KEYS: { journal: 'elr.journal', sessions: 'elr.sessions', strategies: 'elr.strategies', syncmeta: 'elr.syncmeta' },
   idKey: { journal: 'id', sessions: 'id', strategies: 'name' },
   async init() {
     try { this.db = await IDB.open(); this.mode = 'idb'; }
     catch (e) { this.mode = 'ls'; this.err = e.message || String(e); console.warn('Speicher: localStorage-Rückfall –', this.err); return this.mode; }
     /* Einmalige Migration aus dem localStorage (v2) – bei Daten auf beiden Seiten zusammenführen */
     for (const k of Object.keys(this.KEYS)) {
+      if (k === 'syncmeta') continue;
       const ls = store.get(this.KEYS[k], null);
       if (ls == null) continue;
       try {
@@ -5579,6 +5787,445 @@ const Lightbox = {
   },
   close() { if (this.url) { URL.revokeObjectURL(this.url); this.url = null; } }
 };
+
+/* Edge Lab Replay — Sync über das eigene Supabase-Projekt (ohne SDK, reines fetch).
+   Tabelle public.elr_items (user_id, kind, id, data jsonb, deleted, updated_at per Trigger), Bucket elr-photos (privat).
+   Nur der öffentliche Publishable Key steht im Code – geschützt wird über Row Level Security. Tokens nie in URLs. */
+'use strict';
+(function (root) {
+  /* ---------- Reine Logik (Node-testbar) ---------- */
+  const SyncCore = {
+    DEVICE_KEYS: ['layout', 'charts', 'jf', 'statsFilter', 'aFilter'],
+    /* Inhalt ohne Sync-Felder, Schlüssel sortiert → stabiler Hash */
+    canon(o) {
+      if (o === null || typeof o !== 'object') return JSON.stringify(o === undefined ? null : o);
+      if (Array.isArray(o)) return '[' + o.map((x) => SyncCore.canon(x)).join(',') + ']';
+      return '{' + Object.keys(o).filter((k) => k !== '_u' && k !== '_dirty' && o[k] !== undefined).sort().map((k) => JSON.stringify(k) + ':' + SyncCore.canon(o[k])).join(',') + '}';
+    },
+    hash(o) { const s = SyncCore.canon(o); let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36) + '.' + s.length; },
+    rowU(row) { return (row && row.data && +row.data._u) || 0; },
+    /* Entscheidung für eine Server-Zeile gegen den lokalen Stand e = {h, u, d, del}:
+       'keep'  – lokale, noch nicht übertragene Änderung ist neuer (wird danach hochgeladen)
+       'skip'  – identisch, nichts zu tun
+       'apply' – Server-Stand übernehmen (neuer oder gleich alt → Server gewinnt) */
+    decide(e, row) {
+      const ru = SyncCore.rowU(row);
+      if (e && e.d && e.u > ru) return 'keep';
+      if (e && !e.d && e.u === ru && !!e.del === !!row.deleted && (row.deleted || e.h === SyncCore.hash(row.data))) return 'skip';
+      return 'apply';
+    },
+    /* Lokale Liste gegen den gemerkten Stand abgleichen: neue/geänderte → dirty mit Zeitstempel, fehlende → Grabstein.
+       first: erster Abgleich dieser Art – unbekannte Einträge bekommen u = 0 (Server gewinnt bei Gleichstand/neuer). */
+    scan(meta, kind, list, idOf, now, first, skip) {
+      const seen = new Set(); let changed = 0;
+      for (const it of list) {
+        const id = idOf(it); if (id == null || id === '') continue;
+        const key = kind + ':' + id; seen.add(key);
+        if (skip && skip(it)) continue;
+        const h = SyncCore.hash(it), e = meta[key];
+        if (e && !e.del && e.h === h) continue;
+        const u = e ? now : (first ? (+it._u || 0) : now);
+        meta[key] = { h, u, d: true };
+        it._u = u; it._dirty = true; changed++;
+      }
+      const pre = kind + ':';
+      for (const key in meta) {
+        if (key.startsWith(pre) && !seen.has(key) && !meta[key].del) { meta[key] = { h: null, u: now, d: true, del: true }; changed++; }
+      }
+      return changed;
+    },
+    /* Server-Zeilen auf eine lokale Liste anwenden (Last-write-wins). Gibt die Anzahl Änderungen zurück. */
+    applyRows(meta, kind, list, idOf, rows, keepIf) {
+      const pos = new Map(); list.forEach((it, i) => pos.set(String(idOf(it)), i));
+      let n = 0; const del = new Set();
+      for (const row of rows) {
+        if (row.kind !== kind) continue;
+        const key = kind + ':' + row.id, e = meta[key], i = pos.get(String(row.id));
+        if (i != null && keepIf && keepIf(list[i])) continue;
+        const dec = SyncCore.decide(e, row);
+        if (dec !== 'apply') continue;
+        const u = SyncCore.rowU(row);
+        if (row.deleted) {
+          if (i != null) { del.add(i); n++; }
+          meta[key] = { h: null, u, d: false, del: true };
+        } else {
+          const it = Object.assign({}, row.data); delete it._dirty; it._u = u;
+          if (i != null) list[i] = it; else { pos.set(String(row.id), list.length); list.push(it); }
+          meta[key] = { h: SyncCore.hash(it), u, d: false }; n++;
+        }
+      }
+      if (del.size) { const keep = list.filter((_, i) => !del.has(i)); list.length = 0; keep.forEach((x) => list.push(x)); }
+      return n;
+    },
+    settingsPart(s) { const o = JSON.parse(JSON.stringify(s || {})); for (const k of SyncCore.DEVICE_KEYS) delete o[k]; return o; },
+    /* Fehlertexte */
+    authError(status, j) {
+      const c = (j && (j.error_code || j.error || j.code)) || '', m = String((j && (j.msg || j.error_description || j.message)) || '');
+      if (c === 'email_not_confirmed' || /not confirmed/i.test(m)) return 'Bitte E-Mail bestätigen – den Link in der Mail öffnen und danach hier anmelden.';
+      if (c === 'invalid_credentials' || c === 'invalid_grant' || /invalid login/i.test(m)) return 'E-Mail oder Passwort falsch.';
+      if (c === 'user_already_exists' || /already registered/i.test(m)) return 'Diese E-Mail ist schon registriert – bitte anmelden.';
+      if (c === 'weak_password' || /password/i.test(m) && status === 422) return 'Passwort zu schwach – mindestens 6 Zeichen.';
+      if (status === 429 || c === 'over_request_rate_limit' || c === 'over_email_send_rate_limit') return 'Zu viele Versuche – bitte kurz warten.';
+      if (c === 'validation_failed' || /email/i.test(m) && status === 400) return 'Bitte eine gültige E-Mail eingeben.';
+      return 'Anmeldung fehlgeschlagen (' + status + ').';
+    },
+    restError(status, j) {
+      const c = (j && j.code) || '';
+      if (status === 404 || c === '42P01' || c === 'PGRST205') return 'Sync-Tabelle fehlt – Setup-Skript in Supabase ausführen (tools/supabase-setup.sql).';
+      if (status === 401 || status === 403) return 'Keine Berechtigung – bitte neu anmelden.';
+      return 'Sync-Fehler (' + status + (j && j.message ? ': ' + j.message : '') + ').';
+    }
+  };
+
+  /* ---------- Laufzeit (Browser) ---------- */
+  const Sync = {
+    URL: 'https://pyrdgaqifsodbhaoxwcn.supabase.co',
+    KEY: 'sb_publishable_-zPRKDnt6lOWKwnEAUH9FQ_Q1wXD919',
+    KINDS: [
+      { kind: 'trade', coll: 'journal', id: (x) => x && x.id },
+      { kind: 'session', coll: 'sessions', id: (x) => x && x.id },
+      { kind: 'strategy', coll: 'strategies', id: (x) => x && (x.id || x.name) }
+    ],
+    auth: null, meta: null, state: 'none', msg: '', busy: false, again: false, applying: 0, timer: null, iv: null, ready: false,
+    PULL_LIMIT: 1000, PUSH_BATCH: 200, DEBOUNCE: 3000, PERIOD: 60000,
+
+    loggedIn() { return !!(this.auth && this.auth.access_token && this.auth.user && this.auth.user.id); },
+    uid() { return this.auth && this.auth.user ? this.auth.user.id : null; },
+    keepLocal() { return store.get('elr.sync.keep', true) !== false; },
+    async init() {
+      this.auth = store.get('elr.auth', null);
+      const m = await Store.load('syncmeta', null);
+      this.meta = m && m.v === 1 ? m : { v: 1, items: {}, first: {}, cursor: null, last: 0, photoRetry: {} };
+      this.install();
+      this.ready = true;
+      /* lokale Änderungen ab jetzt verfolgen (auch abgemeldet – damit Zeitstempel stimmen) */
+      await this.scanAll().catch((e) => console.warn('[Sync] scan', e));
+      await this.saveMeta();
+      addEventListener('online', () => this.run('online'));
+      addEventListener('offline', () => { if (this.loggedIn()) this.setState('off', 'Offline – Änderungen werden später übertragen'); });
+      addEventListener('focus', () => this.run('focus'));
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') this.run('visible'); });
+      this.iv = setInterval(() => { if (document.visibilityState === 'visible') this.run('periodisch'); }, this.PERIOD);
+      if (this.loggedIn()) { this.setState('run', 'Abgleich läuft …'); this.run('start'); } else this.setState('none', 'Nicht angemeldet');
+      this.updateHint();
+    },
+    /* Speicher-Hooks: jede lokale Änderung plant einen Abgleich in 3 s */
+    install() {
+      if (this._inst) return; this._inst = true;
+      const self = this, save = Store.save.bind(Store);
+      Store.save = function (k, v) { const p = save(k, v); if (k !== 'syncmeta' && !self.applying) self.touch(); return p; };
+      const ss = App.saveSettings.bind(App);
+      App.saveSettings = function () { ss(); if (!self.applying) self.touch(); };
+      if (typeof Photos !== 'undefined') for (const f of ['add', 'del', 'delOwner', 'put']) {
+        const o = Photos[f].bind(Photos);
+        Photos[f] = async function () { const r = await o.apply(null, arguments); if (!self.applying) self.touch(); return r; };
+      }
+    },
+    touch() { if (!this.ready) return; clearTimeout(this.timer); this.timer = setTimeout(() => this.run('änderung'), this.DEBOUNCE); },
+    saveMeta() { return Store.save('syncmeta', this.meta); },
+
+    /* ---------- HTTP ---------- */
+    async http(path, opt) {
+      opt = opt || {};
+      const h = Object.assign({ apikey: this.KEY }, opt.headers || {});
+      if (opt.auth !== false && this.auth && this.auth.access_token) h.Authorization = 'Bearer ' + this.auth.access_token;
+      if (opt.json !== undefined) h['Content-Type'] = 'application/json';
+      let r;
+      try { r = await fetch(this.URL + path, { method: opt.method || 'GET', headers: h, body: opt.json !== undefined ? JSON.stringify(opt.json) : opt.body }); }
+      catch (e) { const err = new Error('Keine Verbindung'); err.offline = true; throw err; }
+      return r;
+    },
+    async body(r) { const t = await r.text().catch(() => ''); try { return t ? JSON.parse(t) : null; } catch (_) { return { message: t.slice(0, 200) }; } },
+    /* authentifizierter Aufruf: vor Ablauf erneuern, bei 401 einmal erneuern und wiederholen */
+    async api(path, opt) {
+      if (!this.loggedIn()) throw new Error('Nicht angemeldet');
+      if (this.auth.expires_at && this.auth.expires_at - Date.now() / 1000 < 60) await this.refresh();
+      let r = await this.http(path, opt);
+      if (r.status === 401) { await this.refresh(); r = await this.http(path, opt); }
+      return r;
+    },
+    setSession(j) {
+      if (!j || !j.access_token) return false;
+      this.auth = { access_token: j.access_token, refresh_token: j.refresh_token, expires_at: j.expires_at || Math.floor(Date.now() / 1000) + (j.expires_in || 3600), user: { id: j.user && j.user.id, email: j.user && j.user.email } };
+      store.set('elr.auth', this.auth);
+      return true;
+    },
+    async refresh() {
+      if (!this.auth || !this.auth.refresh_token) throw new Error('Sitzung abgelaufen – bitte neu anmelden.');
+      if (this._ref) return this._ref;
+      this._ref = (async () => {
+        const r = await this.http('/auth/v1/token?grant_type=refresh_token', { method: 'POST', auth: false, json: { refresh_token: this.auth.refresh_token } });
+        const j = await this.body(r);
+        if (!r.ok || !this.setSession(Object.assign({ user: this.auth.user }, j))) {
+          if (r.status >= 400 && r.status < 500) { this.dropAuth(); const e = new Error('Sitzung abgelaufen – bitte neu anmelden.'); e.auth = true; throw e; }
+          throw new Error('Anmeldung konnte nicht erneuert werden (' + r.status + ').');
+        }
+      })();
+      try { await this._ref; } finally { this._ref = null; }
+    },
+    dropAuth() { this.auth = null; try { localStorage.removeItem('elr.auth'); } catch (_) { /* egal */ } },
+
+    /* ---------- Konto ---------- */
+    async signUp(email, pw) {
+      const r = await this.http('/auth/v1/signup', { method: 'POST', auth: false, json: { email, password: pw } });
+      const j = await this.body(r);
+      if (!r.ok) throw new Error(SyncCore.authError(r.status, j));
+      if (this.setSession(j)) { await this.afterLogin(); return { session: true }; }
+      return { session: false, msg: 'Fast geschafft: Bestätige deine E-Mail über den Link in der Mail. Der Link kann auf eine andere Seite führen – danach hier mit E-Mail und Passwort anmelden.' };
+    },
+    async signIn(email, pw) {
+      const r = await this.http('/auth/v1/token?grant_type=password', { method: 'POST', auth: false, json: { email, password: pw } });
+      const j = await this.body(r);
+      if (!r.ok || !this.setSession(j)) throw new Error(SyncCore.authError(r.status, j));
+      await this.afterLogin();
+    },
+    async recover(email) {
+      const r = await this.http('/auth/v1/recover', { method: 'POST', auth: false, json: { email } });
+      if (!r.ok) throw new Error(SyncCore.authError(r.status, await this.body(r)));
+    },
+    /* Erstabgleich: alles Lokale als „hochzuladen“ markieren (Zeitstempel bleiben – Neueres gewinnt), Server komplett holen, nichts löschen */
+    async afterLogin() {
+      const m = this.meta;
+      if (m.uid !== this.uid()) { for (const k in m.items) { if (m.items[k].del) delete m.items[k]; else m.items[k].d = true; } m.cursor = null; m.photoRetry = {}; m.uid = this.uid(); }
+      await this.saveMeta();
+      this.updateHint();
+      await this.run('anmeldung');
+    },
+    async signOut() {
+      const keep = this.keepLocal();
+      try { if (this.loggedIn()) await this.http('/auth/v1/logout', { method: 'POST' }); } catch (_) { /* offline: lokal trotzdem abmelden */ }
+      this.dropAuth();
+      const m = this.meta; m.cursor = null; m.uid = null; m.photoRetry = {};
+      for (const k in m.items) { if (m.items[k].del) delete m.items[k]; else m.items[k].d = true; }
+      if (!keep) {
+        this.applying++;
+        try {
+          App.journal = []; App.sessions = App.sessions.filter((s) => s.running); App.strategies = App.defaultStrategies();
+          await Store.save('journal', App.journal); await Store.save('sessions', App.sessions); await Store.save('strategies', App.strategies);
+          if (Photos.ok) for (const p of await Photos.all()) await Photos.del(p.id);
+        } finally { this.applying--; }
+        m.items = {}; m.first = {};
+        await this.scanAll();
+        this.refreshUi();
+      }
+      await this.saveMeta();
+      this.setState('none', 'Abgemeldet'); this.updateHint();
+    },
+
+    /* ---------- Abgleich ---------- */
+    async scanAll() {
+      const m = this.meta, now = Date.now();
+      for (const K of this.KINDS) {
+        const list = App[K.coll]; if (!Array.isArray(list)) continue;
+        SyncCore.scan(m.items, K.kind, list, K.id, now, !m.first[K.kind], K.kind === 'session' ? (s) => s.running : null);
+        m.first[K.kind] = true;
+      }
+      const st = [Object.assign(SyncCore.settingsPart(App.settings), { id: 'main' })];
+      SyncCore.scan(m.items, 'settings', st, (x) => x.id, now, !m.first.settings);
+      m.first.settings = true;
+      if (typeof Photos !== 'undefined' && Photos.ok) {
+        const ps = (await Photos.all()).map((p) => ({ id: p.id, owner: p.owner, kind: p.kind, t: p.t, w: p.w, h: p.h, type: (p.blob && p.blob.type) || 'image/jpeg' }));
+        SyncCore.scan(m.items, 'photo', ps, (x) => x.id, now, !m.first.photo);
+        m.first.photo = true;
+      }
+    },
+    async run(why) {
+      if (!this.ready || !this.loggedIn()) return;
+      if (this.busy) { this.again = true; return this.busy; }
+      clearTimeout(this.timer);
+      this.busy = (async () => {
+        this.setState('run', 'Abgleich läuft …');
+        try {
+          await this.scanAll();
+          await this.pull();
+          await this.push();
+          this.meta.last = Date.now();
+          await this.saveMeta();
+          this.setState('ok', 'Synchron');
+        } catch (e) {
+          await this.saveMeta().catch(() => {});
+          if (e.offline || (typeof navigator !== 'undefined' && navigator.onLine === false)) this.setState('off', 'Offline – Änderungen werden später übertragen');
+          else this.setState(this.loggedIn() ? 'err' : 'none', e.message || String(e));
+          if (e.auth) this.updateHint();
+        }
+      })();
+      try { await this.busy; } finally { this.busy = false; }
+      if (this.again) { this.again = false; return this.run('nachlauf'); }
+    },
+    async pull() {
+      const m = this.meta, rows = [];
+      const since = m.cursor ? new Date(Date.parse(m.cursor) - 60000).toISOString() : null;
+      for (let off = 0; ; off += this.PULL_LIMIT) {
+        const q = '/rest/v1/elr_items?select=kind,id,data,deleted,updated_at' + (since ? '&updated_at=gt.' + encodeURIComponent(since) : '') + '&order=updated_at.asc,kind.asc,id.asc&limit=' + this.PULL_LIMIT + '&offset=' + off;
+        const r = await this.api(q);
+        const j = await this.body(r);
+        if (!r.ok) throw new Error(SyncCore.restError(r.status, j));
+        rows.push(...(j || []));
+        if (!j || j.length < this.PULL_LIMIT) break;
+      }
+      for (const row of rows) if (!m.cursor || row.updated_at > m.cursor) m.cursor = row.updated_at;
+      if (!rows.length) return 0;
+      let n = 0;
+      this.applying++;
+      try {
+        for (const K of this.KINDS) {
+          const list = App[K.coll]; if (!Array.isArray(list)) continue;
+          const c = SyncCore.applyRows(m.items, K.kind, list, K.id, rows, K.kind === 'session' ? (s) => s.running : null);
+          if (c) { n += c; await Store.save(K.coll, list); }
+        }
+        const sr = rows.filter((r) => r.kind === 'settings' && r.id === 'main');
+        if (sr.length) {
+          const cur = [Object.assign(SyncCore.settingsPart(App.settings), { id: 'main' })];
+          if (SyncCore.applyRows(m.items, 'settings', cur, (x) => x.id, sr)) {
+            const s = Object.assign({}, cur[0]); delete s.id; delete s._u;
+            App.settings = deepMerge(App.settings, s); store.set('elr.settings', App.settings); n++;
+            if (typeof UI !== 'undefined' && UI.fillTicket) try { UI.fillTicket(); } catch (_) { /* egal */ }
+          }
+        }
+        n += await this.pullPhotos(rows.filter((r) => r.kind === 'photo'));
+      } finally { this.applying--; }
+      if (n) this.refreshUi();
+      return n;
+    },
+    photoPath(id) { return encodeURIComponent(this.uid()) + '/' + encodeURIComponent(id) + '.jpg'; },
+    async pullPhotos(rows) {
+      if (typeof Photos === 'undefined' || !Photos.ok) return 0;
+      const m = this.meta; let n = 0;
+      for (const id in m.photoRetry) if (!rows.some((r) => r.id === id)) rows.push(m.photoRetry[id]);
+      const have = new Set((await Photos.all()).map((p) => p.id));
+      for (const row of rows) {
+        const key = 'photo:' + row.id, e = m.items[key];
+        const dec = SyncCore.decide(e, row);
+        if (dec !== 'apply') { delete m.photoRetry[row.id]; continue; }
+        const u = SyncCore.rowU(row);
+        if (row.deleted) {
+          if (have.has(row.id)) { await Photos.del(row.id); n++; }
+          m.items[key] = { h: null, u, d: false, del: true }; delete m.photoRetry[row.id];
+          continue;
+        }
+        const d = row.data || {};
+        if (!have.has(row.id)) {
+          const r = await this.api('/storage/v1/object/authenticated/elr-photos/' + this.photoPath(row.id));
+          if (!r.ok) { m.photoRetry[row.id] = row; continue; }
+          const blob = await r.blob();
+          await Photos.put({ id: row.id, owner: String(d.owner), kind: d.kind || 'upload', t: d.t || 0, w: d.w || 0, h: d.h || 0, blob: new Blob([blob], { type: d.type || 'image/jpeg' }) });
+          n++;
+        }
+        const it = { id: row.id, owner: d.owner, kind: d.kind, t: d.t, w: d.w, h: d.h, type: d.type || 'image/jpeg' };
+        m.items[key] = { h: SyncCore.hash(it), u, d: false }; delete m.photoRetry[row.id];
+      }
+      return n;
+    },
+    async push() {
+      const m = this.meta, uid = this.uid(), out = [];
+      const byKind = {};
+      for (const K of this.KINDS) { const mp = new Map(); for (const it of App[K.coll] || []) mp.set(String(K.id(it)), it); byKind[K.kind] = mp; }
+      byKind.settings = new Map([['main', Object.assign(SyncCore.settingsPart(App.settings), { id: 'main' })]]);
+      let photos = null;
+      for (const key in m.items) {
+        const e = m.items[key]; if (!e.d) continue;
+        const i = key.indexOf(':'), kind = key.slice(0, i), id = key.slice(i + 1);
+        if (e.del) { out.push({ key, row: { user_id: uid, kind, id, data: { _u: e.u }, deleted: true } }); continue; }
+        let data;
+        if (kind === 'photo') {
+          if (!photos) photos = new Map((await Photos.all()).map((p) => [p.id, p]));
+          const p = photos.get(id); if (!p) continue;
+          const type = (p.blob && p.blob.type) || 'image/jpeg';
+          const r = await this.api('/storage/v1/object/elr-photos/' + this.photoPath(id), { method: 'POST', headers: { 'x-upsert': 'true', 'Content-Type': /^image\/(jpeg|png|webp)$/.test(type) ? type : 'image/jpeg' }, body: p.blob });
+          if (!r.ok) { const j = await this.body(r); throw new Error(/bucket/i.test((j && (j.message || j.error)) || '') ? 'Foto-Speicher fehlt – Setup-Skript in Supabase ausführen.' : 'Foto-Upload fehlgeschlagen (' + r.status + ').'); }
+          data = { owner: p.owner, kind: p.kind, t: p.t, w: p.w, h: p.h, type };
+        } else {
+          const it = byKind[kind] && byKind[kind].get(id); if (!it) continue;
+          data = JSON.parse(JSON.stringify(it)); delete data._dirty;
+        }
+        data._u = e.u;
+        out.push({ key, row: { user_id: uid, kind, id, data, deleted: false } });
+      }
+      /* gelöschte Fotos auch im Speicher entfernen */
+      for (const o of out) if (o.row.kind === 'photo' && o.row.deleted) { try { await this.api('/storage/v1/object/elr-photos/' + this.photoPath(o.row.id), { method: 'DELETE' }); } catch (e) { if (e.offline) throw e; } }
+      for (let k = 0; k < out.length; k += this.PUSH_BATCH) {
+        const part = out.slice(k, k + this.PUSH_BATCH);
+        const r = await this.api('/rest/v1/elr_items?on_conflict=user_id,kind,id', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=representation' }, json: part.map((o) => o.row) });
+        const j = await this.body(r);
+        if (!r.ok) throw new Error(SyncCore.restError(r.status, j));
+        for (const o of part) {
+          const e = m.items[o.key]; if (!e || e.u !== o.row.data._u) continue; /* inzwischen erneut geändert → bleibt dirty */
+          e.d = false;
+          const back = (j || []).find((x) => x.kind === o.row.kind && x.id === o.row.id); if (back) e.s = back.updated_at;
+          const it = byKind[o.row.kind] && byKind[o.row.kind].get(o.row.id); if (it) delete it._dirty;
+        }
+      }
+      return out.length;
+    },
+    refreshUi() {
+      try {
+        App.renderStratSelects();
+        if (typeof UI !== 'undefined' && App.view && App.view !== 'charts') UI.showView(App.view);
+        App.requestRender();
+      } catch (e) { console.warn('[Sync] UI', e); }
+    },
+
+    /* ---------- Anzeige ---------- */
+    setState(s, msg) {
+      this.state = s; this.msg = msg || '';
+      const b = typeof document !== 'undefined' && document.getElementById('btnSync');
+      if (typeof document !== 'undefined' && document.body) document.body.dataset.sync = s;
+      if (b) {
+        b.dataset.state = s;
+        const last = this.meta && this.meta.last ? ' · letzter Abgleich ' + new Date(this.meta.last).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : '';
+        const t = s === 'none' ? 'Sync: nicht angemeldet – Handy und PC verbinden' : s === 'ok' ? 'Sync: synchron' + last : s === 'run' ? 'Sync: Abgleich läuft …' : s === 'off' ? 'Sync: offline – Änderungen werden später übertragen' : 'Sync-Fehler: ' + this.msg;
+        b.title = t; b.setAttribute('aria-label', t);
+      }
+      if (typeof document !== 'undefined' && document.getElementById('syncPanel') && !document.getElementById('settingsModal').hidden) this.renderPanel();
+    },
+    updateHint() {
+      const el = typeof document !== 'undefined' && document.getElementById('stSync');
+      if (el) el.hidden = this.loggedIn() || !!store.get('elr.sync.hintOff', false);
+    },
+    count() { let n = 0; for (const k in (this.meta || {}).items || {}) if (!this.meta.items[k].del) n++; return n; },
+    pending() { let n = 0; for (const k in (this.meta || {}).items || {}) if (this.meta.items[k].d) n++; return n; },
+    renderPanel(note) {
+      const host = document.getElementById('syncPanel'); if (!host) return;
+      const st = { ok: 'Synchron', run: 'Abgleich läuft …', off: 'Offline', err: 'Fehler', none: 'Nicht angemeldet' }[this.state] || '–';
+      const priv = '<p class="hint">Deine Daten liegen in deinem eigenen Supabase-Projekt (Tabelle elr_items, privater Foto-Ordner) und sind per Row Level Security nur für dein Konto lesbar. Die laufende Replay-Session und Fenster-Layout bleiben auf dem Gerät.</p>';
+      if (!this.loggedIn()) {
+        host.innerHTML = '<fieldset><legend>Konto</legend><p class="hint">Melde dich an, um Journal, Backtests, Strategien, Einstellungen und Fotos zwischen Handy und PC abzugleichen. Ohne Anmeldung bleibt alles nur in diesem Browser.</p>' +
+          '<div class="grid2"><label class="fld"><span>E-Mail</span><input id="syEmail" type="email" autocomplete="username" spellcheck="false" value="' + esc(this._email || '') + '"></label>' +
+          '<label class="fld"><span>Passwort</span><input id="syPw" type="password" autocomplete="current-password" minlength="6"></label></div>' +
+          '<div class="toolbar"><button type="button" class="btn primary" id="syIn">Anmelden</button><button type="button" class="btn" id="syUp">Registrieren</button><button type="button" class="linkbtn" id="syForgot">Passwort vergessen?</button></div>' +
+          '<p class="status' + (note && note.k ? ' ' + note.k : '') + '" id="syMsg" role="status">' + esc(note ? note.t : (this.state === 'err' ? this.msg : '')) + '</p></fieldset>' + priv;
+        const em = () => host.querySelector('#syEmail').value.trim(), pw = () => host.querySelector('#syPw').value;
+        const act = async (btn, fn) => {
+          const e = em(); this._email = e;
+          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) { this.renderPanel({ t: 'Bitte eine gültige E-Mail eingeben.', k: 'bad' }); return; }
+          setBusy(btn, true);
+          try { const r = await fn(e); this.renderPanel(r && r.msg ? { t: r.msg, k: 'ok' } : null); }
+          catch (err) { this.renderPanel({ t: err.message, k: 'bad' }); }
+        };
+        host.querySelector('#syIn').onclick = (ev) => { const p = pw(); if (!p) { this.renderPanel({ t: 'Bitte Passwort eingeben.', k: 'bad' }); return; } act(ev.currentTarget, (e) => this.signIn(e, p)); };
+        host.querySelector('#syUp').onclick = (ev) => { const p = pw(); if (p.length < 6) { this.renderPanel({ t: 'Passwort: mindestens 6 Zeichen.', k: 'bad' }); return; } act(ev.currentTarget, (e) => this.signUp(e, p)); };
+        host.querySelector('#syForgot').onclick = (ev) => act(ev.currentTarget, async (e) => { await this.recover(e); return { msg: 'Wenn ein Konto existiert, kommt gleich eine Mail zum Zurücksetzen. Danach hier mit dem neuen Passwort anmelden.' }; });
+        host.querySelector('#syPw').onkeydown = (e) => { if (e.key === 'Enter') host.querySelector('#syIn').click(); };
+        return;
+      }
+      const last = this.meta.last ? new Date(this.meta.last).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'noch nie';
+      const pend = this.pending();
+      host.innerHTML = '<fieldset><legend>Konto</legend><dl class="kv"><dt>Angemeldet als</dt><dd id="syUser">' + esc(this.auth.user.email || '–') + '</dd><dt>Status</dt><dd id="syState" data-state="' + this.state + '">' + esc(st) + (this.state === 'err' || this.state === 'off' ? ' – ' + esc(this.msg) : '') + '</dd>' +
+        '<dt>Letzter Abgleich</dt><dd id="syLast">' + esc(last) + '</dd><dt>Einträge</dt><dd id="syCount">' + this.count() + (pend ? ' · ' + pend + ' noch zu übertragen' : '') + '</dd></dl>' +
+        '<div class="toolbar"><button type="button" class="btn primary" id="syNow">Jetzt abgleichen</button><button type="button" class="btn" id="syOut">Abmelden</button></div>' +
+        '<label class="ck"><input type="checkbox" id="syKeep"' + (this.keepLocal() ? ' checked' : '') + '> Lokale Daten nach Abmelden behalten</label>' +
+        (note ? '<p class="status ' + (note.k || '') + '">' + esc(note.t) + '</p>' : '') + '</fieldset>' + priv;
+      host.querySelector('#syNow').onclick = async (ev) => { setBusy(ev.currentTarget, true); await this.run('knopf'); this.renderPanel(); };
+      host.querySelector('#syOut').onclick = async (ev) => {
+        if (!this.keepLocal() && !(await App.confirm('Abmelden und lokale Daten löschen?', 'Journal, Backtests, Strategien und Fotos werden auf diesem Gerät gelöscht. Was schon abgeglichen ist, bleibt im Konto.', 'Abmelden'))) return;
+        setBusy(ev.currentTarget, true); await this.signOut(); this.renderPanel({ t: 'Abgemeldet.', k: 'ok' });
+      };
+      host.querySelector('#syKeep').onchange = (e) => store.set('elr.sync.keep', e.target.checked);
+    }
+  };
+  if (typeof module !== 'undefined' && module.exports) module.exports = SyncCore;
+  else { root.SyncCore = SyncCore; root.Sync = Sync; }
+})(typeof self !== 'undefined' ? self : this);
 
 /* Edge Lab Replay — Backtest-Sessions und Strategien */
 'use strict';
@@ -7163,7 +7810,14 @@ const HB = [
       '<li><b>10:00 ET (16:00):</b> weitere Daten, z. B. ISM-Einkaufsmanagerindex, Verbrauchervertrauen, JOLTS.</li>' +
       '<li><b>14:00 ET (20:00):</b> Zinsentscheid der US-Notenbank (acht planmäßige Sitzungen im Jahr), Pressekonferenz 14:30 ET.</li>' +
       '<li><b>16:00 ET (22:00):</b> Schluss des Kassamarkts; Futures handeln bis 17:00 ET weiter.</li></ul>' +
-      '<p>Termine schwanken; nutze einen Wirtschaftskalender. Im Blind-Modus kennst du das Datum nicht – genau deshalb lohnt es sich, Verhalten um 8:30 und 10:00 ET grundsätzlich vorsichtig zu üben.</p>' },
+      '<p>Termine schwanken; nutze einen Wirtschaftskalender. Im Blind-Modus kennst du das Datum nicht – genau deshalb lohnt es sich, Verhalten um 8:30 und 10:00 ET grundsätzlich vorsichtig zu üben.</p>' +
+      '<h4>So nutzt du die Termin-Markierungen</h4>' +
+      '<p>Edge Lab kennt die wichtigsten US-Termine von 2020 bis Oktober 2026: Verbraucherpreise (CPI) und Arbeitsmarktbericht jeweils 8:30 ET, Fed-Zinsentscheid 14:00 ET (2020 auch die außerplanmäßigen Statements). Quellen sind die offiziellen Archive von BLS und Federal Reserve.</p>' +
+      '<ul><li><b>Vorwarnung:</b> 30 Minuten vor Daten (2 Stunden vor dem Zinsentscheid) erscheint oben im Chart ein Hinweis, z. B. „In 15 Min: …“. Im Live-Handel weißt du das auch – das ist kein Blick in die Zukunft.</li>' +
+      '<li><b>Linie:</b> Ist der Termin vorbei, markiert eine gestrichelte Linie mit Kürzel (CPI, NFP, FOMC) den Zeitpunkt. Künftige Termine werden nie gezeichnet.</li>' +
+      '<li><b>Blind-Modus:</b> Die Kürzel würden das Datum verraten. Deshalb steht dort nur „Hochrelevanter US-Termin um 8:30 ET“ bzw. „Termin“; die Art siehst du nach der Session.</li>' +
+      '<li><b>Schalter:</b> Indikatoren → Wirtschaftsdaten. Gilt für Märkte mit US-Bezug (Indizes inkl. DAX, Gold, Krypto, Futures).</li>' +
+      '<li><b>Auswertung:</b> Jeder Trade speichert den Abstand zum nächsten bzw. letzten Termin. Die Analyse vergleicht „News-Trades“ (15 Min davor bis 30 Min danach) mit den übrigen, sobald es mindestens fünf gibt.</li></ul>' },
     { id: 'sommerzeit', titel: 'Sommerzeit-Verschiebung', html:
       '<p>Die USA stellen am zweiten Sonntag im März auf Sommerzeit um und am ersten Sonntag im November zurück. Europa stellt am letzten Sonntag im März und am letzten Sonntag im Oktober um.</p>' +
       '<p>In den Wochen dazwischen beträgt der Abstand zwischen Deutschland und New York nur fünf statt sechs Stunden: Die US-Eröffnung liegt dann bei <b>14:30</b> statt 15:30 deutscher Zeit, die 8:30-Daten bei 13:30.</p>' +
@@ -7527,6 +8181,7 @@ const UI = {
       App.sessions = (await Store.load('sessions', [])) || [];
       const st = await Store.load('strategies', null);
       App.strategies = Array.isArray(st) ? st : App.defaultStrategies();
+      App.dataOk = true;
     } catch (e) { console.error(e); App.toast('Gespeicherte Daten konnten nicht geladen werden: ' + e.message, 'bad'); }
     if (Store.migrated.length) console.info('Daten in IndexedDB übernommen:', Store.migrated.join(', '));
     App.renderStratSelects();
@@ -7554,6 +8209,9 @@ const UI = {
     for (const s of App.sessions) if (s.running && (!pend || pend.replay.id !== s.replayId)) { s.running = false; s.to = s.to || s.from; fixed++; }
     if (fixed) App.saveSessions();
     this.route();
+    /* Sync nur, wenn die lokalen Daten sicher geladen sind (sonst würden fehlende Einträge als gelöscht gelten) */
+    if (App.dataOk && typeof Sync !== 'undefined') Sync.init().catch((e) => console.warn('[Sync]', e));
+    else if (typeof Sync !== 'undefined') Sync.setState('err', 'Lokale Daten nicht geladen – Sync pausiert');
     const boot = $('#boot');
     if (boot) { boot.classList.add('out'); setTimeout(() => boot.remove(), 250); }
     App.bootMs = Math.round(performance.now() - t0);
@@ -7618,6 +8276,9 @@ const UI = {
     });
     $('#lowerSel').addEventListener('change', (e) => { App.settings.ind.lower = e.target.value; App.saveSettings(); App.requestRender(); });
     $('#btnSettings').addEventListener('click', () => this.openSettings());
+    $('#btnSync').addEventListener('click', () => this.openSettings('sync'));
+    $('#stSyncGo').addEventListener('click', () => this.openSettings('sync'));
+    $('#stSyncOff').addEventListener('click', () => { store.set('elr.sync.hintOff', true); $('#stSync').hidden = true; });
     $('#btnHelp').addEventListener('click', () => this.openHelp());
     $('#btnFs').addEventListener('click', () => App.setFullscreen());
   },
@@ -8251,7 +8912,7 @@ const UI = {
     $('#lbPrev').addEventListener('click', () => Lightbox.step(-1));
     $('#lbNext').addEventListener('click', () => Lightbox.step(1));
     $('#lbDel').addEventListener('click', () => Lightbox.del());
-    bindTabs($('#setTabs'), (t) => { if (t === 'daten') this.fillStorage(); });
+    bindTabs($('#setTabs'), (t) => { if (t === 'daten') this.fillStorage(); if (t === 'sync' && typeof Sync !== 'undefined') Sync.renderPanel(); });
     bindTabs($('#helpTabs'));
     $('#setInstall').addEventListener('click', () => Install.prompt());
     $('#setOnboard').addEventListener('click', () => { closeModal('#settingsModal'); Onboard.open(); });
@@ -8259,7 +8920,8 @@ const UI = {
     $('#helpOnboard').addEventListener('click', () => { closeModal('#helpModal'); Onboard.open(); });
   },
   openSettings(tab) {
-    this.fillSettings(); selectTab($('#setTabs'), tab || 'konto'); this.fillStorage(); Install.sync(); openModal('#settingsModal');
+    this.fillSettings(); selectTab($('#setTabs'), tab || 'konto'); this.fillStorage(); Install.sync(); if (typeof Sync !== 'undefined') Sync.renderPanel(); openModal('#settingsModal');
+    const st = $('#setTabs [aria-selected="true"]'); if (st && st.scrollIntoView) st.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   },
   fillSettings() {
     for (const el of $$('#settingsModal [data-s]')) {
