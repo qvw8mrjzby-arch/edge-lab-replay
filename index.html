@@ -2348,6 +2348,13 @@ class Chart {
       v.yMin = volOn ? lo - r * 0.3 : lo - r * (this.fpMode ? 0.12 : 0.07);
     }
     const P = this.plot;
+    const dm = this.mode;
+    if (dm && dm.type === 'order' && dm.edge) {
+      const sh = (v.yMax - v.yMin) * 0.012 * dm.edge;
+      v.yMin += sh; v.yMax += sh;
+      this.dragTo(dm);
+      this.app.requestRender();
+    }
     ctx.save(); ctx.beginPath(); ctx.rect(P.x, P.y, P.w, P.h); ctx.clip();
     this.drawGrid(P);
     if (S.ind.sessions && this.tf <= 1800) this.drawSessions(m, i0, i1, P);
@@ -2979,24 +2986,34 @@ class Chart {
     }
     return best;
   }
+  dragTo(md) {
+    const A = this.app, L = md.L;
+    const price = Core.roundTick(this.priceAt(Math.max(0, Math.min(this.plot.h, md.lastY))) - md.grab, A.tick);
+    if (price === md.price) return;
+    md.price = price;
+    if (L.draft) A.movePosDraft(L.f, price);
+    else { L.p = price; A.previewOrderLine(L.o, L.f, price); }
+  }
   /* Bestätigen-Leiste neben dem Positions-Entwurf */
   updateConfirm() {
     const A = this.app, d = A.posDraft, el = this.confirmEl;
     if (!d || A.activeChart !== this || !this.m || !this.plot) { if (!el.hidden) el.hidden = true; return; }
     const b = A.draftInfo();
     const txt = b && !b.err ? A.fmtQ(b.qty) + ' · Risiko ' + A.fmtMoney(-b.slNet) + ' · R:R ' + A.fmtN(b.tpR, 2) : (b ? b.err : '');
-    el.querySelector('.pc-txt').textContent = txt;
+    if (txt !== this._pcTxt) { el.querySelector('.pc-txt').textContent = txt; this._pcTxt = txt; this._pcSize = null; }
     el.querySelector('[data-pc="ok"]').disabled = !(b && !b.err);
-    el.hidden = false;
-    const head = this.el.querySelector('.chart-head').offsetHeight;
+    if (el.hidden) { el.hidden = false; this._pcSize = null; }
+    if (!this._pcSize) this._pcSize = { head: this.el.querySelector('.chart-head').offsetHeight, h: el.offsetHeight || 34, w: el.offsetWidth || 320 };
+    const head = this._pcSize.head;
     const yTop = Math.min(this.yOf(d.sl), this.yOf(d.tp), this.yOf(d.entry));
     const yBot = Math.max(this.yOf(d.sl), this.yOf(d.tp), this.yOf(d.entry));
-    const h = el.offsetHeight || 34, w = el.offsetWidth || 320;
+    const h = this._pcSize.h, w = this._pcSize.w;
     let y = yBot + 8;
     if (y + h > this.plot.h - 4) y = yTop - h - 8;
     y = Math.max(4, Math.min(this.plot.h - h - 4, y));
     const x = Math.max(4, Math.min(this.plot.w - w - 4, this.plot.w * 0.55 - w / 2));
-    el.style.top = (head + y) + 'px'; el.style.left = x + 'px';
+    const pos = Math.round(head + y) + 'px|' + Math.round(x) + 'px';
+    if (pos !== this._pcPos) { const [t, l] = pos.split('|'); el.style.top = t; el.style.left = l; this._pcPos = pos; }
   }
 
   /* ---------- Zeichnungen ---------- */
@@ -3148,7 +3165,13 @@ class Chart {
       A.requestRender(); return;
     }
     const L = this.hitLine(p, touch);
-    if (L) { this.mode = { type: 'order', L, y0: p.y, moved: false }; this.cv.style.cursor = 'ns-resize'; A.requestRender(); return; }
+    if (L) {
+      /* Abstand zwischen Griffpunkt und Linie merken, Preisskala während des Ziehens einfrieren */
+      this.mode = { type: 'order', L, y0: p.y, moved: false, grab: this.priceAt(p.y) - L.p, wasAuto: v.auto, lastY: p.y };
+      v.auto = false; A.dragChart = this;
+      A.selLine = { o: L.o, f: L.f, draft: !!L.draft };
+      this.cv.style.cursor = 'ns-resize'; A.requestRender(); return;
+    }
     const hit = this.hitDrawing(p.x, p.y);
     if (hit) {
       A.selDrawing = hit.d;
@@ -3191,12 +3214,10 @@ class Chart {
     } else if (md.type === 'order') {
       if (Math.abs(p.y - md.y0) < 2 && !md.moved) return;
       md.moved = true;
-      const L = md.L;
-      const box = L.box; const off = box ? (md.y0 - (box.y + box.h / 2)) : 0;
-      const target = Math.abs(md.y0 - this.yOf(L.p)) < 12 ? p.y : p.y - off - ((L.ly != null ? L.ly : this.yOf(L.p)) - this.yOf(L.p));
-      md.price = Core.roundTick(this.priceAt(target), A.tick);
-      if (L.draft) A.movePosDraft(L.f, md.price);
-      else { L.p = md.price; A.previewOrderLine(L.o, L.f, md.price); }
+      md.lastY = p.y;
+      /* Rand erreicht → Skala sanft mitschieben (siehe render) */
+      md.edge = p.y < 16 ? 1 : p.y > this.plot.h - 16 ? -1 : 0;
+      this.dragTo(md);
     } else if (md.type === 'drag') {
       const d = md.hit.d, t = this.timeAtX(p.x), pr = this.priceAt(p.y);
       if (md.hit.part === 'a') d.a = this.snap(p.x, p.y);
@@ -3223,8 +3244,10 @@ class Chart {
       else if (A.draft.type === 'measure') { A.measureKeep = A.draft; A.draft = null; A.drawings.push(A.measureKeep); A.selDrawing = A.measureKeep; A.saveDrawings(); }
       else { A.addDrawing(A.draft); A.draft = null; }
       A.setTool('cursor');
-    } else if (md.type === 'order' && md.price != null && !md.L.draft) {
-      A.modifyOrder(md.L.o, md.L.f, md.price);
+    } else if (md.type === 'order') {
+      this.view.auto = md.wasAuto; A.dragChart = null;
+      if (md.price != null && !md.L.draft) A.modifyOrder(md.L.o, md.L.f, md.price);
+      else if (!md.moved) A.toast('Linie ausgewählt: mit ↑/↓ um einen Tick verschieben (Shift = 10 Ticks).');
     } else if (md.type === 'drag') {
       A.saveDrawings();
     }
@@ -3465,7 +3488,9 @@ const App = {
     if (this._raf) return;
     this._raf = requestAnimationFrame(() => {
       this._raf = 0;
-      if (this.view === 'charts') for (const c of this.charts) { try { c.render(); } catch (err) { console.error(err); } }
+      /* Beim Ziehen nur den betroffenen Chart neu zeichnen – das hält es flüssig */
+      const list = this.dragChart ? [this.dragChart] : this.charts;
+      if (this.view === 'charts') for (const c of list) { try { c.render(); } catch (err) { console.error(err); } }
       this.updateLive();
     });
   },
@@ -3821,7 +3846,7 @@ const App = {
     if (f === 'entry') { const dlt = price - d.entry; d.entry = price; d.sl = Core.roundTick(d.sl + dlt, this.tick); d.tp = Core.roundTick(d.tp + dlt, this.tick); }
     else if (f === 'sl') { if (d.side * (d.entry - price) > 0) d.sl = price; }
     else if (f === 'tp') { if (d.side * (price - d.entry) > 0) d.tp = price; }
-    this.updatePosDraft();
+    this.requestRender();
   },
   updatePosDraft() { this.charts.forEach((c) => c.updateConfirm()); this.requestRender(); },
   confirmPosDraft() {
@@ -3829,7 +3854,21 @@ const App = {
     const o = this.placeOrder(d.side, d);
     if (o) { this.posDraft = null; this.updatePosDraft(); }
   },
-  cancelPosDraft() { if (!this.posDraft) return; this.posDraft = null; this.updatePosDraft(); },
+  cancelPosDraft() { if (!this.posDraft) return; this.posDraft = null; this.selLine = null; this.updatePosDraft(); },
+  /* Ausgewählte SL/TP/Einstiegs-Linie per Pfeiltaste verschieben */
+  nudgeLine(dir, big) {
+    const s = this.selLine; if (!s || !this.replay.active) return false;
+    const step = this.tick * (big ? 10 : 1) * dir;
+    if (s.draft) {
+      const d = this.posDraft; if (!d) { this.selLine = null; return false; }
+      const cur = s.f === 'entry' ? d.entry : s.f === 'sl' ? d.sl : d.tp;
+      this.movePosDraft(s.f, cur + step); return true;
+    }
+    const o = s.o; if (!o || (o.status !== 'open' && o.status !== 'pending')) { this.selLine = null; return false; }
+    const cur = s.f === 'price' ? o.price : s.f === 'sl' ? o.sl : o.tp;
+    if (cur == null) return false;
+    this.modifyOrder(o, s.f, Core.roundTick(cur + step, this.tick)); return true;
+  },
 
   /* ---------- Vollbild ---------- */
   setFullscreen(on) {
@@ -5564,6 +5603,7 @@ const UI = {
       if (App.view !== 'charts') return;
       const k = e.key.toLowerCase();
       if (e.key === 'Enter' && App.posDraft) { e.preventDefault(); App.confirmPosDraft(); return; }
+      if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && App.selLine) { if (App.nudgeLine(e.key === 'ArrowUp' ? 1 : -1, e.shiftKey)) { e.preventDefault(); return; } }
       if (e.key === 'ArrowRight') { e.preventDefault(); if (e.shiftKey) App.advanceTo(App.cursor + 10); else App.stepOnce(); }
       else if (e.key === ' ') { e.preventDefault(); App.togglePlay(); }
       else if (e.key === 'Delete' || e.key === 'Backspace') { if (App.deleteSelected()) e.preventDefault(); }
