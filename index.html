@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -1016,6 +1016,9 @@ mark { background: color-mix(in srgb, var(--accent) 34%, transparent); color: va
 }
 @media (pointer: coarse) { .hb-read .hb-anchor { opacity: .6; } .hb-res { min-height: 44px; } }
 
+/* Seite selbst nicht zoombar – Zoomen nur im Chart (Zwei Finger) */
+html, body { touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
 </style>
 </head>
 <body>
@@ -8370,6 +8373,15 @@ const TV = {
 };
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => UI.init()); else UI.init();
+
+/* iOS/Android: Pinch-Zoom der ganzen Seite verhindern. Im Chart übernimmt die eigene Zwei-Finger-Geste. */
+(function () {
+  const stop = (e) => { e.preventDefault(); };
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach((n) => document.addEventListener(n, stop, { passive: false }));
+  document.addEventListener('touchmove', (e) => { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
+  /* Trackpad-Pinch (Strg+Mausrad) zoomt nie die Seite */
+  window.addEventListener('wheel', (e) => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+})();
 
 
 Object.assign(window, {$, $$, APP_VERSION, Analysis, App, Archive, Binance, COL, CRYPTO_START, Chart, DEFAULTS, EMPTY_ART, FONT_MONO, FONT_UI, GLOSSARY, Gallery, Guard, HB, HBFig, HB_GLOSSAR, HB_SHOW, Handbook, IDB, Install, Lightbox, Loader, MIN_BAR_W, MISTAKES, MORE_VIEWS, NewSess, Onboard, Photos, RIGHT_PAD_BARS, SESS_FLAGS, SEV_LBL, Sheet, Start, Store, TV, TW, Tips, UI, Update, VIEWS, WD, alpha, bindTabs, closeModal, deepMerge, emptyState, esc, fmtVol, freshDefaults, getPath, hbBox, hbBtns, hbL, hbSetup, lastFocus, localMinute, openModal, raf2, readColors, selectTab, sessionFlagBits, setBusy, setPath, skeleton, store, syncModalState, textW});
