@@ -61,14 +61,28 @@ function download(inst, ym) {
 const months = monthsFrom(START);
 const current = months[months.length - 1];
 const prev = months[months.length - 2];
+const order = months.slice().reverse(); // neueste Monate zuerst
+let lastIdx = {};
+try { lastIdx = JSON.parse(readFileSync(path.join(DATA, 'index.json'), 'utf8')); } catch (_) { /* erster Lauf */ }
+const refreshDue = !lastIdx.refreshed || Date.now() - Date.parse(lastIdx.refreshed) > 20 * 3600000;
+function saveProgress(label) {
+  if (!process.env.GITHUB_ACTIONS) return;
+  try {
+    execFileSync('git', ['add', 'data'], { cwd: ROOT });
+    try { execFileSync('git', ['diff', '--cached', '--quiet'], { cwd: ROOT }); return; } catch (_) { /* es gibt Änderungen */ }
+    execFileSync('git', ['commit', '-q', '-m', 'Kursdaten: ' + label], { cwd: ROOT });
+    execFileSync('git', ['pull', '-q', '--rebase', 'origin', 'main'], { cwd: ROOT });
+    execFileSync('git', ['push', '-q', 'origin', 'HEAD:main'], { cwd: ROOT });
+  } catch (e) { console.log('Zwischenspeichern fehlgeschlagen:', e.message.split('\n')[0]); }
+}
 let stopped = false;
-const index = { updated: new Date().toISOString(), source: 'Dukascopy Bank SA, Bid-Kurse, 1 Minute', format: 't,o,h,l,c,v (t = Unix-Sekunden UTC)', instruments: [] };
+const index = { updated: new Date().toISOString(), refreshed: refreshDue ? new Date().toISOString() : lastIdx.refreshed, source: 'Dukascopy Bank SA, Bid-Kurse, 1 Minute', format: 't,o,h,l,c,v (t = Unix-Sekunden UTC)', instruments: [] };
 for (const inst of INSTRUMENTS) {
   const dir = path.join(DATA, inst.id);
   mkdirSync(dir, { recursive: true });
-  for (const ym of months) {
+  for (const ym of order) {
     const file = path.join(dir, ym + '.csv.gz');
-    const fresh = ym === current || ym === prev; // laufende Monate immer neu holen
+    const fresh = refreshDue && (ym === current || ym === prev); // laufende Monate einmal täglich neu holen
     if (existsSync(file) && !fresh) continue;
     if (Date.now() - t0 > BUDGET_MS) { stopped = true; break; }
     try {
@@ -80,7 +94,20 @@ for (const inst of INSTRUMENTS) {
   const have = readdirSync(dir).filter((x) => /^\d{4}-\d{2}\.csv\.gz$/.test(x)).map((x) => x.slice(0, 7)).sort();
   const { duka, ...meta } = inst;
   index.instruments.push({ ...meta, months: have });
+  writeIndex();
+  saveProgress(inst.name);
   if (stopped) break;
+}
+function writeIndex() {
+  const all = INSTRUMENTS.map((inst) => {
+    const done = index.instruments.find((x) => x.id === inst.id);
+    if (done) return done;
+    const dir = path.join(DATA, inst.id);
+    const have = existsSync(dir) ? readdirSync(dir).filter((x) => /^\d{4}-\d{2}\.csv\.gz$/.test(x)).map((x) => x.slice(0, 7)).sort() : [];
+    const { duka, ...meta } = inst;
+    return { ...meta, months: have };
+  });
+  writeFileSync(path.join(DATA, 'index.json'), JSON.stringify(Object.assign({}, index, { instruments: all }), null, 1));
 }
 // Instrumente, die wegen Zeitbudget nicht mehr dran waren, trotzdem im Index aufführen
 for (const inst of INSTRUMENTS) {

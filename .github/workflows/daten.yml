@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths: ['tools/**', '.github/workflows/daten.yml']
   schedule:
-    - cron: '17 4 * * *'
+    - cron: '17 */3 * * *'
 permissions:
   contents: write
 concurrency:
@@ -14,7 +14,7 @@ concurrency:
 jobs:
   daten:
     runs-on: ubuntu-latest
-    timeout-minutes: 330
+    timeout-minutes: 200
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -24,7 +24,7 @@ jobs:
         run: npm install --no-save --no-package-lock dukascopy-node@1
       - name: Kurse laden
         env:
-          BUDGET_MIN: '270'
+          BUDGET_MIN: '150'
         run: node tools/fetch-data.mjs
       - name: Speichern
         run: |
