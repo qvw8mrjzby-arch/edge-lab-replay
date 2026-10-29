@@ -795,6 +795,227 @@ body.has-draft #mAct button:not(.m-ticket) { opacity: .35; }
   #resumeBar { margin-top: 6px; }
 }
 
+/* ---------- v4: „Mehr“-Menü (Handy), Analyse, Handbuch ---------- */
+.nav-more { display: none; }
+.more-menu { position: fixed; z-index: 46; display: grid; gap: 2px; min-width: 250px; padding: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--sh-float); animation: popIn var(--t-med) var(--ease); right: 8px; bottom: calc(var(--navH) + 8px + env(safe-area-inset-bottom, 0px)); }
+.more-menu a { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 8px 12px; border-radius: var(--r-md); color: var(--text); text-decoration: none; }
+.more-menu a:hover, .more-menu a:focus-visible { background: var(--raise); }
+.more-menu svg { width: 20px; height: 20px; fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.more-menu span { display: grid; } .more-menu b { font-weight: 600; font-size: var(--fs-md); } .more-menu small { color: var(--muted); font-size: var(--fs-xs); }
+@media (max-width: 860px) {
+  #mainNav a.nav-x { display: none; }
+  #mainNav .nav-more { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 0 2px; min-width: 0; font: 10.5px var(--f-ui); color: var(--muted); background: transparent; border: 0; border-top: 2px solid transparent; cursor: pointer; }
+  #mainNav .nav-more.cur, #mainNav .nav-more[aria-expanded="true"] { color: var(--accent); }
+  #mainNav .nav-more.cur { border-top-color: var(--accent); }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  header.top #mainNav .nav-more { flex: none; height: 44px; min-height: 44px; width: 100%; padding: 0; font-size: 0; border: 0; border-left: 2px solid transparent; }
+  header.top #mainNav .nav-more.cur { border-left-color: var(--accent); }
+  header.top #mainNav .nav-more span { display: none; }
+  .more-menu { right: auto; left: calc(var(--railW) + 8px + env(safe-area-inset-left, 0px)); bottom: 8px; }
+}
+.muted { color: var(--muted); }
+.sev { flex: none; font-size: 11px; font-weight: 600; line-height: 18px; padding: 0 8px; border-radius: 99px; white-space: nowrap; }
+.sev.hoch { color: var(--bear); background: color-mix(in srgb, var(--bear) 15%, transparent); }
+.sev.mittel { color: var(--warn); background: color-mix(in srgb, var(--warn) 15%, transparent); }
+.sev.gering { color: var(--info); background: color-mix(in srgb, var(--info) 14%, transparent); }
+.an-body { display: grid; gap: var(--s4); }
+.an-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s5); border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--s5); background: radial-gradient(120% 160% at 0% 0%, color-mix(in srgb, var(--bear) 7%, transparent) 0%, transparent 55%), var(--panel); }
+.an-kick { font-size: var(--fs-xs); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--bear); }
+.an-kick.ok { color: var(--bull); }
+.an-main h2 { margin: 4px 0 6px; font-size: var(--fs-xl); font-weight: 600; text-wrap: balance; }
+.an-main p { margin: 0 0 var(--s4); color: var(--muted); max-width: 68ch; }
+.an-main p.an-cost { margin: 0 0 var(--s2); color: var(--text); }
+.an-main p.an-cost b { font-family: var(--f-mono); font-weight: 500; }
+.hb-ch-h .hb-acts { margin-top: var(--s3); }
+.an-btns { display: flex; gap: var(--s2); flex-wrap: wrap; }
+.an-btns .tag { margin-left: 2px; }
+.an-sum { display: grid; grid-template-columns: repeat(3, minmax(110px, auto)); gap: var(--s5); margin: 0; align-content: center; border-left: 1px solid var(--line); padding-left: var(--s5); }
+.an-sum div { display: grid; gap: 2px; align-content: start; }
+.an-sum dt { font-size: var(--fs-xs); color: var(--muted); }
+.an-sum dd { margin: 0; font: 500 22px var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.an-sum small { color: var(--faint); font-size: var(--fs-xs); max-width: 22ch; }
+.an-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(400px, 100%), 1fr)); gap: var(--s4); align-items: start; }
+.an-card { border: 1px solid var(--line); border-left: 3px solid var(--faint); border-radius: var(--r-lg); background: var(--panel); padding: var(--s4); display: grid; gap: var(--s3); min-width: 0; }
+.an-card.sev-hoch { border-left-color: var(--bear); } .an-card.sev-mittel { border-left-color: var(--warn); } .an-card.sev-gering { border-left-color: var(--info); }
+.an-top { display: flex; align-items: center; gap: var(--s2); min-width: 0; }
+.an-top h3 { margin: 0; font-size: var(--fs-lg); font-weight: 600; min-width: 0; }
+.an-nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin: 0; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+.an-nums div { background: var(--panel2); padding: 7px 10px; display: grid; min-width: 0; }
+.an-nums dt { font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.an-nums dd { margin: 0; font: 500 14px var(--f-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.an-nums dd.muted { font: 12.5px var(--f-ui); color: var(--muted); }
+.an-desc { margin: 0; font-size: var(--fs-md); line-height: 1.55; }
+.an-tip { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); background: var(--panel2); border-radius: var(--r-md); padding: 8px 10px; }
+.an-tip b { color: var(--accent); font-weight: 600; margin-right: 6px; }
+.an-sec h3 { margin: 0 0 var(--s3); font-size: var(--fs-lg); font-weight: 600; }
+.an-good { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: var(--s3); }
+.an-g { border: 1px solid color-mix(in srgb, var(--bull) 32%, var(--line)); background: color-mix(in srgb, var(--bull) 6%, var(--panel)); border-radius: var(--r-lg); padding: var(--s3) var(--s4); display: grid; gap: 2px; justify-items: start; }
+.an-g span { color: var(--muted); font-size: 12.5px; }
+.an-g .linkbtn { margin-top: 4px; color: var(--bull); }
+.an-low { border: 1px dashed var(--line); border-radius: var(--r-lg); padding: var(--s3) var(--s4); }
+.an-low summary { cursor: pointer; color: var(--muted); font-size: var(--fs-md); display: flex; align-items: center; gap: var(--s2); }
+.an-low ul { list-style: none; margin: var(--s3) 0 0; padding: 0; display: grid; gap: 6px; }
+.an-low li { display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr); gap: var(--s3); font-size: 12.5px; }
+.an-low li span { color: var(--muted); }
+.an-method { max-width: 100ch; line-height: 1.55; }
+.an-method b { color: var(--text); font-weight: 600; }
+.an-mini-b { display: flex; align-items: center; gap: var(--s2); min-width: 0; }
+.an-mini-b b { flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.an-mini-b .num { font-size: var(--fs-md); white-space: nowrap; }
+.filter-chip { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); flex-wrap: wrap; border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--panel)); border-radius: var(--r-lg); padding: 6px 6px 6px 14px; font-size: var(--fs-md); }
+.sess-find { border: 1px solid var(--line); border-left: 3px solid var(--warn); border-radius: var(--r-md); background: var(--panel2); padding: 10px 12px; display: grid; gap: 6px; font-size: 12.5px; justify-items: start; }
+.sess-find ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.sess-find li { display: flex; gap: 8px; align-items: baseline; }
+.sess-find p { margin: 0; color: var(--muted); }
+.sess-find .linkbtn { color: var(--accent); }
+/* Handbuch */
+.hb { display: grid; grid-template-columns: 264px minmax(0, 1fr); gap: var(--s6); align-items: start; }
+.hb-side { position: sticky; top: 0; display: grid; gap: var(--s3); max-height: calc(100dvh - 140px); overflow-y: auto; scrollbar-width: thin; padding: 2px 4px var(--s4) 2px; }
+.hb-search { position: relative; display: flex; align-items: center; }
+.hb-search svg { position: absolute; left: 10px; width: 15px; height: 15px; fill: none; stroke: var(--faint); stroke-width: 1.6; pointer-events: none; }
+.hb-search input { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-md); padding: 8px 34px 8px 32px; min-width: 0; }
+.hb-search input:focus { border-color: var(--accent); outline: none; }
+.hb-search input::-webkit-search-cancel-button { display: none; }
+.hb-search #hbQx { position: absolute; right: 4px; }
+.hb-toc-btn { display: none; }
+.hb-toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+.hb-toc > ol > li > a { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: var(--r-md); color: var(--muted); text-decoration: none; font-size: var(--fs-md); }
+.hb-toc > ol > li > a:hover { color: var(--text); background: var(--panel); }
+.hb-toc li.on > a { color: var(--text); background: var(--panel2); font-weight: 500; }
+.hb-no { width: 18px; flex: none; text-align: right; font: 11px var(--f-mono); color: var(--faint); }
+.hb-tt { flex: 1; min-width: 0; }
+.hb-ok { flex: none; width: 16px; height: 16px; border-radius: 50%; background: color-mix(in srgb, var(--bull) 22%, transparent); position: relative; }
+.hb-ok::after { content: ""; position: absolute; left: 5.5px; top: 3px; width: 4px; height: 7px; border: solid var(--bull); border-width: 0 1.6px 1.6px 0; transform: rotate(45deg); }
+.hb-toc ol ol { margin: 4px 0 8px 28px; gap: 0; }
+.hb-toc ol ol a { display: block; padding: 4px 10px; border-left: 1px solid var(--line); color: var(--muted); text-decoration: none; font-size: 12.5px; line-height: 1.4; }
+.hb-toc ol ol a:hover { color: var(--text); }
+.hb-toc ol ol a[aria-current="true"] { color: var(--accent); border-left-color: var(--accent); }
+.hb-prog { display: flex; align-items: center; gap: var(--s2); font-size: var(--fs-sm); color: var(--muted); }
+.hb-prog .meter { width: 120px; height: 5px; }
+.hb-prog .meter i { background: var(--bull); transition: width var(--t-med) var(--ease); }
+.hb-results { display: grid; gap: 2px; }
+.hb-rc { margin: 0 0 4px; font-size: var(--fs-sm); color: var(--muted); }
+.hb-res { display: grid; gap: 2px; padding: 8px 10px; border-radius: var(--r-md); color: var(--text); text-decoration: none; }
+.hb-res:hover, .hb-res:focus-visible { background: var(--panel2); }
+.hb-res small { font-size: 10.5px; color: var(--faint); text-transform: uppercase; letter-spacing: .06em; }
+.hb-res b { font-weight: 600; font-size: var(--fs-md); }
+.hb-res span { font-size: 12px; color: var(--muted); line-height: 1.45; }
+.hb-read { max-width: 72ch; min-width: 0; font-size: 14.5px; line-height: 1.68; }
+.hb-read p, .hb-read ul, .hb-read ol { margin: 0 0 12px; }
+.hb-read ul, .hb-read ol { padding-left: 22px; }
+.hb-read li { margin-bottom: 4px; }
+.hb-read li::marker { color: var(--faint); }
+.hb-read b { font-weight: 600; }
+.hb-read a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.hb-read a:hover { text-decoration-color: var(--accent); }
+.hb-ch-h { padding-bottom: var(--s4); margin-bottom: var(--s5); border-bottom: 1px solid var(--line); }
+.hb-kick { font-size: var(--fs-xs); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.hb-ch-h h2 { margin: 4px 0 6px; font-size: 30px; line-height: 1.2; font-weight: 600; letter-spacing: -.01em; }
+.hb-lead { margin: 0 !important; color: var(--muted); font-size: 15.5px; }
+.hb-read .hb-onpage { margin: var(--s4) 0 0 !important; columns: 2; column-gap: var(--s6); font-size: 13px; line-height: 1.5; }
+.hb-read .hb-onpage li { break-inside: avoid; margin-bottom: 4px; }
+.hb-read .hb-onpage a { color: var(--muted); text-decoration: none; }
+.hb-read .hb-onpage a:hover { color: var(--accent); }
+.hb-sec { scroll-margin-top: 20px; margin-bottom: var(--s6); border-radius: var(--r-md); }
+.hb-sec h3 { margin: 0 0 var(--s3); font-size: 19px; line-height: 1.3; font-weight: 600; }
+.hb-read .hb-anchor { margin-left: 8px; color: var(--faint); text-decoration: none; opacity: 0; transition: opacity var(--t-fast); }
+.hb-sec h3:hover .hb-anchor, .hb-read .hb-anchor:focus-visible { opacity: 1; }
+.hb-flash { animation: hbFlash 1.4s var(--ease); }
+@keyframes hbFlash { from { box-shadow: -12px 0 0 -8px var(--accent); } to { box-shadow: -12px 0 0 -8px transparent; } }
+.hb-f { font: 13px/1.65 var(--f-mono); background: var(--panel2); border: 1px solid var(--line); border-radius: var(--r-md); padding: 10px 14px; margin: 0 0 14px; overflow-x: auto; }
+.hb-box { border: 1px solid var(--line); border-left: 3px solid var(--info); background: var(--panel); border-radius: var(--r-md); padding: 10px 14px; margin: 0 0 14px; font-size: 13.5px; line-height: 1.6; }
+.hb-box > b { display: block; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--info); margin-bottom: 2px; }
+.hb-box p:last-child { margin-bottom: 0; }
+.hb-box.faust { border-left-color: var(--accent); } .hb-box.faust > b { color: var(--accent); }
+.hb-box.praxis { border-left-color: var(--bull); } .hb-box.praxis > b { color: var(--bull); }
+.hb-box.achtung { border-left-color: var(--warn); } .hb-box.achtung > b { color: var(--warn); }
+.hb-t { width: 100%; border-collapse: collapse; margin: 0 0 12px; font-size: 13px; line-height: 1.45; }
+.hb-t th { text-align: left; font-weight: 500; font-size: 12px; color: var(--muted); padding: 6px 10px; border-bottom: 1px solid var(--line); }
+.hb-t td { padding: 6px 10px; border-bottom: 1px solid var(--grid); }
+.hb-t td + td { font-family: var(--f-mono); font-size: 12.5px; }
+.hb-small { font-size: 12px; color: var(--faint); }
+.hb-fig { margin: 4px 0 18px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--bg); padding: 12px 12px 10px; }
+.hb-fig svg { width: 100%; height: auto; display: block; }
+.hb-fig figcaption { margin-top: 6px; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
+.hb-fig text { font: 11px var(--f-mono); fill: var(--muted); }
+.hb-fig .tw, .hb-fig .tn { fill: var(--text); } .hb-fig .tg { fill: var(--bull); } .hb-fig .tr { fill: var(--bear); } .hb-fig .tv { fill: var(--vwap); font-weight: 700; } .hb-fig .tb { fill: var(--band); } .hb-fig .tp { fill: var(--poc); font-weight: 700; }
+.hb-fig path { fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.hb-fig .px { stroke: var(--text); stroke-width: 1.3; } .hb-fig .vw { stroke: var(--vwap); stroke-width: 2.2; }
+.hb-fig .bd { stroke: var(--band); stroke-width: 1.1; stroke-dasharray: 4 4; } .hb-fig .bdf { fill: color-mix(in srgb, var(--band) 9%, transparent); stroke: none; }
+.hb-fig .ax { stroke: var(--line); stroke-width: 1; }
+.hb-fig .pocb { fill: var(--poc); } .hb-fig .vab { fill: color-mix(in srgb, var(--va) 62%, transparent); } .hb-fig .ob { fill: color-mix(in srgb, var(--va) 20%, transparent); }
+.hb-fig .val { stroke: var(--va); stroke-width: 1; stroke-dasharray: 3 3; } .hb-fig .pocl { stroke: var(--poc); stroke-width: 1.2; }
+.hb-fig .cell { fill: var(--panel2); stroke: var(--line); } .hb-fig .cellg { fill: color-mix(in srgb, var(--bull) 22%, var(--panel2)); stroke: var(--bull); } .hb-fig .cellr { fill: var(--panel2); stroke: var(--muted); stroke-dasharray: 3 2; }
+.hb-fig .arr { stroke: var(--accent); } .hb-fig .arrh { fill: var(--accent); stroke: none; }
+.hb-fig .cvd { stroke: var(--info); } .hb-fig .dvu { stroke: var(--bull); stroke-dasharray: 5 4; } .hb-fig .dvd { stroke: var(--bear); stroke-dasharray: 5 4; }
+.hb-fig .dot { fill: var(--text); } .hb-fig .dotr { fill: var(--bear); }
+.hb-fig .ibbox { fill: color-mix(in srgb, var(--rth) 13%, transparent); } .hb-fig .ibl { stroke: var(--rth); stroke-width: 1.4; } .hb-fig .ext { stroke: var(--rth); stroke-width: 1; stroke-dasharray: 4 4; opacity: .75; }
+.hb-fig .zw { fill: color-mix(in srgb, var(--bull) 13%, transparent); } .hb-fig .zl { fill: color-mix(in srgb, var(--bear) 14%, transparent); }
+.hb-fig .lg { stroke: var(--bull); } .hb-fig .lgd { stroke: var(--bull); stroke-dasharray: 3 3; } .hb-fig .le { stroke: var(--text); } .hb-fig .lr { stroke: var(--bear); }
+.hb-fig .eq { stroke: var(--bull); stroke-width: 2; } .hb-fig .eqf { fill: color-mix(in srgb, var(--bull) 9%, transparent); stroke: none; }
+.hb-fig .fl { stroke: var(--bear); stroke-width: 1.3; stroke-dasharray: 5 4; } .hb-fig .dd { stroke: var(--bear); stroke-width: 1.4; } .hb-fig .ddt { stroke: var(--faint); stroke-width: 1; stroke-dasharray: 2 3; }
+.hb-setup { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 8px 16px; margin: 0 0 12px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); font-size: 14px; line-height: 1.55; }
+.hb-setup dt { color: var(--muted); font-size: 12.5px; font-weight: 500; padding-top: 1px; }
+.hb-setup dd { margin: 0; }
+.hb-acts { display: flex; gap: var(--s2); flex-wrap: wrap; margin: 4px 0 6px; }
+.hb-gloss { display: grid; grid-template-columns: minmax(140px, 210px) minmax(0, 1fr); gap: 10px 18px; margin: 0; }
+.hb-gloss dt { font-weight: 600; }
+.hb-gloss dd { margin: 0; color: var(--muted); }
+.hb-ch-f { display: grid; gap: var(--s4); justify-items: start; margin-top: var(--s5); padding-top: var(--s4); border-top: 1px solid var(--line); }
+.btn.is-read { color: var(--bull); border-color: color-mix(in srgb, var(--bull) 45%, var(--line)); }
+.btn.is-read::before { content: ""; width: 4px; height: 8px; border: solid currentColor; border-width: 0 1.6px 1.6px 0; transform: rotate(45deg); margin: -3px 4px 0 0; }
+.hb-pn { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); }
+.hb-read .hb-pn a { display: grid; gap: 2px; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); color: var(--text); text-decoration: none; font-weight: 500; }
+.hb-read .hb-pn a:hover { border-color: var(--faint); }
+.hb-pn small { font-size: var(--fs-xs); color: var(--muted); font-weight: 400; }
+.hb-pn .hb-next { grid-column: 2; text-align: right; }
+mark { background: color-mix(in srgb, var(--accent) 34%, transparent); color: var(--text); border-radius: 2px; padding: 0 1px; }
+@media (max-width: 1100px) {
+  .an-hero { grid-template-columns: minmax(0, 1fr); }
+  .an-sum { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: var(--s4); }
+  .hb { grid-template-columns: 230px minmax(0, 1fr); gap: var(--s5); }
+}
+@media (max-width: 860px) {
+  .hb { grid-template-columns: minmax(0, 1fr); gap: var(--s4); }
+  .hb-side { position: static; max-height: none; overflow: visible; padding: 0; }
+  .hb-toc-btn { display: flex; align-items: center; gap: var(--s3); min-height: 44px; padding: 8px 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: var(--text); cursor: pointer; text-align: left; }
+  .hb-toc-btn span { color: var(--muted); font-size: var(--fs-sm); }
+  .hb-toc-btn b { flex: 1; font-weight: 600; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hb-toc-btn::after { content: ""; width: 7px; height: 7px; border-right: 1.6px solid var(--muted); border-bottom: 1.6px solid var(--muted); transform: rotate(45deg); margin-top: -4px; transition: transform var(--t-med); }
+  .hb-toc-btn[aria-expanded="true"]::after { transform: rotate(-135deg); margin-top: 4px; }
+  .hb-toc { display: none; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); padding: 6px; }
+  .hb-toc.open { display: block; }
+  .hb-toc > ol > li > a, .hb-toc ol ol a { min-height: 44px; display: flex; align-items: center; }
+  .hb-read { font-size: 15px; }
+  .hb-sec { scroll-margin-top: 64px; }
+  .hb-ch-h h2 { font-size: 24px; }
+  .hb-read .hb-onpage { columns: 1; }
+  .hb-setup { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .hb-setup dd { margin-bottom: 8px; }
+  .hb-gloss { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .hb-gloss dd { margin-bottom: 10px; }
+  .hb-t { display: block; overflow-x: auto; }
+  .hb-pn { grid-template-columns: minmax(0, 1fr); }
+  .hb-pn .hb-next { grid-column: 1; }
+  .hb-prog { flex-basis: 100%; }
+  .hb-prog .meter { flex: 1; }
+  .an-low li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
+@media (max-width: 640px) {
+  .an-hero { padding: var(--s4); }
+  .an-sum { grid-template-columns: 1fr 1fr; gap: var(--s4); }
+  .an-sum div:first-child { grid-column: 1 / -1; }
+  .an-btns .btn { flex: 1 1 auto; }
+  .an-nums div { padding: 6px 8px; }
+  /* Schaubilder: lesbare Schrift statt Mini-Grafik – waagerecht wischbar */
+  .hb-fig { overflow-x: auto; overscroll-behavior-x: contain; }
+  .hb-fig svg { min-width: 540px; }
+  .hb-fig figcaption { position: sticky; left: 0; max-width: calc(100vw - 56px); }
+  .hb-fig figcaption::after { content: " Zum Ansehen waagerecht wischen."; color: var(--faint); }
+}
+@media (pointer: coarse) { .hb-read .hb-anchor { opacity: .6; } .hb-res { min-height: 44px; } }
+
 </style>
 </head>
 <body>
@@ -812,8 +1033,11 @@ body.has-draft #mAct button:not(.m-ticket) { opacity: .35; }
       <a href="#journal" data-view="journal"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3.5" y="2.5" width="13" height="15" rx="1.5"/><path d="M7 7h6M7 10.5h6M7 14h4"/></svg><span>Journal</span></a>
       <a href="#backtests" data-view="backtests"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10a6 6 0 1 0 2-4.5"/><path d="M3.5 3v3.5H7"/><path d="M10 6.5V10l2.5 2"/></svg><span>Backtests</span></a>
       <a href="#stats" data-view="stats"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 17h14"/><rect x="4.5" y="9" width="2.6" height="6"/><rect x="8.7" y="5" width="2.6" height="10"/><rect x="12.9" y="11" width="2.6" height="4"/></svg><span>Statistik</span></a>
-      <a href="#strategien" data-view="strategien"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/><circle cx="10" cy="10" r=".6" fill="currentColor"/></svg><span>Strategien</span></a>
-      <a href="#tradingview" data-view="tradingview"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.5"/><path d="M7 17h6M10 14v3M5 11l3-3 2.5 2L15 6"/></svg><span class="full">TradingView</span><span class="short">TV-Chart</span></a>
+      <a href="#analyse" data-view="analyse"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.6 12.6L17 17"/><path d="M6.3 10.5V9M8.5 10.5V6.5M10.7 10.5V8"/></svg><span>Analyse</span></a>
+      <a href="#strategien" data-view="strategien" class="nav-x"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/><circle cx="10" cy="10" r=".6" fill="currentColor"/></svg><span>Strategien</span></a>
+      <a href="#handbuch" data-view="handbuch" class="nav-x"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 5.5C8.4 4.2 5.9 3.7 3 3.9v11.6c2.9-.2 5.4.3 7 1.6 1.6-1.3 4.1-1.8 7-1.6V3.9c-2.9-.2-5.4.3-7 1.6z"/><path d="M10 5.5v11.6"/></svg><span>Handbuch</span></a>
+      <a href="#tradingview" data-view="tradingview" class="nav-x"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.5"/><path d="M7 17h6M10 14v3M5 11l3-3 2.5 2L15 6"/></svg><span class="full">TradingView</span><span class="short">TV-Chart</span></a>
+      <button type="button" class="nav-more" id="navMore" aria-haspopup="true" aria-expanded="false" aria-controls="moreMenu"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="4.5" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="10" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10" r="1.4" fill="currentColor" stroke="none"/></svg><span>Mehr</span></button>
     </nav>
     <span class="hspace"></span>
     <span id="blindBadge" hidden title="Datum und Wochentag sind ausgeblendet, bis die Session endet">Blind-Modus</span>
@@ -1019,6 +1243,7 @@ body.has-draft #mAct button:not(.m-ticket) { opacity: .35; }
           <button class="btn sm ghost danger" id="jClear">Journal leeren</button>
         </div>
       </div>
+      <div class="filter-chip" id="jIdFilter" hidden></div>
       <p class="page-sub" id="jSummary"></p>
       <div id="jTable"></div>
     </div>
@@ -1044,11 +1269,35 @@ body.has-draft #mAct button:not(.m-ticket) { opacity: .35; }
     </div>
   </section>
 
+  <section class="view page" id="view-analyse" hidden aria-label="Analyse">
+    <div class="page-in">
+      <div class="page-h"><h1>Analyse</h1><div class="toolbar"><select id="aFilter" class="sel" aria-label="Auswahl der Trades"></select></div></div>
+      <p class="page-sub" id="aSub">Erkennt typische Fehler in deinen Trades und schätzt, was sie gekostet haben.</p>
+      <div id="aBody" class="an-body"></div>
+    </div>
+  </section>
+
   <section class="view page" id="view-strategien" hidden aria-label="Strategien">
     <div class="page-in">
       <div class="page-h"><h1>Strategien</h1><button class="btn primary" id="stratAdd">Neue Strategie</button></div>
       <p class="page-sub">Regeln stehen als Checkliste im Order-Ticket. Änderungen werden sofort gespeichert.</p>
       <div id="stratList" style="display:grid;gap:12px"></div>
+    </div>
+  </section>
+
+  <section class="view page" id="view-handbuch" hidden aria-label="Handbuch">
+    <div class="page-in">
+      <div class="page-h"><h1>Handbuch</h1><span class="hspace"></span>
+        <div class="hb-prog" id="hbProg" role="meter" aria-label="Lesefortschritt" aria-valuemin="0" aria-valuemax="11" aria-valuenow="0"><span id="hbProgTxt"></span><span class="meter"><i id="hbProgBar"></i></span></div></div>
+      <div class="hb">
+        <aside class="hb-side">
+          <div class="hb-search"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.4 10.4L14 14"/></svg><input id="hbQ" type="search" placeholder="Handbuch durchsuchen" aria-label="Handbuch durchsuchen" autocomplete="off" spellcheck="false"><button type="button" class="ib" id="hbQx" hidden aria-label="Suche löschen">✕</button></div>
+          <button type="button" class="hb-toc-btn" id="hbTocBtn" aria-expanded="false" aria-controls="hbToc"></button>
+          <nav class="hb-toc" id="hbToc" aria-label="Inhaltsverzeichnis"></nav>
+          <div class="hb-results" id="hbResults" hidden></div>
+        </aside>
+        <article class="hb-read" id="hbRead" aria-labelledby="hbTitle"></article>
+      </div>
     </div>
   </section>
 
@@ -1247,7 +1496,7 @@ body.has-draft #mAct button:not(.m-ticket) { opacity: .35; }
       </div>
       <div class="tabpanel" role="tabpanel" data-panel="ueber" hidden>
         <fieldset><legend>Edge Lab Replay</legend>
-          <dl class="kv"><dt>Version</dt><dd id="appVer">3.0</dd><dt>Daten</dt><dd>Archiv (Dukascopy), Binance, CSV, Demo</dd><dt>Speicherort</dt><dd>Nur dieser Browser – keine Konten, keine Cloud</dd></dl>
+          <dl class="kv"><dt>Version</dt><dd id="appVer">4.0</dd><dt>Daten</dt><dd>Archiv (Dukascopy), Binance, CSV, Demo</dd><dt>Speicherort</dt><dd>Nur dieser Browser – keine Konten, keine Cloud</dd></dl>
           <div class="toolbar"><button type="button" class="btn" id="setInstall" hidden>Als App installieren</button><button type="button" class="btn" id="setOnboard">Einführung erneut zeigen</button><button type="button" class="btn" id="setHelp">Hilfe öffnen</button></div>
           <p class="hint" id="setIos" hidden>Auf dem iPhone/iPad: in Safari auf <b>Teilen</b> tippen, dann <b>Zum Home-Bildschirm</b>.</p>
         </fieldset>
@@ -1263,6 +1512,7 @@ body.has-draft #mAct button:not(.m-ticket) { opacity: .35; }
     <div class="dlg-b">
       <p class="reveal" id="sessReveal" hidden></p>
       <p class="hint" id="sessAutoHint" hidden></p>
+      <div class="sess-find" id="sessFindings" hidden></div>
       <div class="grid3">
         <label class="fld"><span>Strategie</span><select name="strategy" data-strat></select></label>
         <label class="fld"><span>Markt</span><input name="sym" maxlength="20"></label>
@@ -1360,6 +1610,11 @@ body.has-draft #mAct button:not(.m-ticket) { opacity: .35; }
 </div>
 <div class="banner" id="updBanner" hidden role="status"><span>Neue Version verfügbar.</span><button class="btn sm primary" id="updReload">Neu laden</button><button class="ib" id="updLater" aria-label="Später">✕</button></div>
 <div id="tipPop" role="tooltip" hidden></div>
+<nav class="more-menu" id="moreMenu" hidden aria-label="Weitere Bereiche">
+  <a href="#strategien"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/></svg><span><b>Strategien</b><small>Regeln und Checklisten</small></span></a>
+  <a href="#handbuch"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 5.5C8.4 4.2 5.9 3.7 3 3.9v11.6c2.9-.2 5.4.3 7 1.6 1.6-1.3 4.1-1.8 7-1.6V3.9c-2.9-.2-5.4.3-7 1.6z"/><path d="M10 5.5v11.6"/></svg><span><b>Handbuch</b><small>VWAP, Profil, Orderflow, Risiko</small></span></a>
+  <a href="#tradingview"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.5"/><path d="M7 17h6M10 14v3M5 11l3-3 2.5 2L15 6"/></svg><span><b>TradingView</b><small>Live-Chart ansehen</small></span></a>
+</nav>
 <div id="toasts" aria-live="polite"></div>
 <textarea id="copyFallback" hidden aria-label="Text zum Kopieren"></textarea>
 <script type="module">
@@ -2507,6 +2762,324 @@ body.has-draft #mAct button:not(.m-ticket) { opacity: .35; }
     const tr = C.makeTrades(list);
     const bars = C.barsFromTrades(tr, 60);
     return { bars, trades: tr, tick, sess, cov: [[dayList[0] * 1000 - 23 * 3600 * 1000, endDay * 1000]] };
+  };
+
+  /* ---------- Fehler-Analyse (v4) ---------- */
+  /* Schwellen und Mindest-Datenbasis je Regel (alle in einem Objekt, damit Tests und Bericht dieselben Zahlen nutzen) */
+  C.ANALYSE = {
+    revengeMin: 10, postBars: 120, postExtraR: 0.5, riskFactor: 1.25, cvMax: 0.5, holdFactor: 1.5, groupMin: 5, overAbs: 5,
+    min: { sl: 5, frueh: 5, eng: 5, revenge: 3, over: 3, risiko: 5, schwankt: 8, halten: 5, zeit: 15, setup: 5, regeln: 5, vwap: 10, ziel: 8 }
+  };
+  const avgOf = (a) => a.length ? a.reduce((s, x) => s + x, 0) / a.length : null;
+  const sumOf = (a) => a.reduce((s, x) => s + x, 0);
+  const rOf = (x) => (x.r != null && isFinite(x.r) ? x.r : null);
+  const riskOf = (x) => (x.risk > 0 ? x.risk : null);
+  /* Kosten in $ aus Kosten in R (je Trade mit dessen Risiko) */
+  const usdFromR = (x, cr) => (riskOf(x) ? cr * x.risk : 0);
+  C.analyseSeverity = function (kostenR, anteil) {
+    if (kostenR >= 3 || anteil >= 0.3) return 'hoch';
+    if (kostenR >= 1 || anteil >= 0.15) return 'mittel';
+    return 'gering';
+  };
+  /* Nachlauf-Prüfung NACH Session-Ende: hätte der Kurs innerhalb der nächsten N Basis-Kerzen erst das Ziel
+     oder erst den (um extraR erweiterten) Stop erreicht? Gleiche Kerze → Stop zuerst (konservativ). */
+  C.postCheck = function (base, baseTf, j, opts) {
+    opts = opts || {};
+    const N = opts.bars || C.ANALYSE.postBars, xr = opts.extraR == null ? C.ANALYSE.postExtraR : opts.extraR;
+    if (!base || !base.length || !j || j.reason === 'TP' || j.sl == null || !isFinite(j.entryPrice) || !isFinite(j.exitT)) return null;
+    const side = j.side, e = j.entryPrice, riskPts = Math.abs(e - j.sl);
+    if (!(riskPts > 0)) return null;
+    const tp = j.tp != null ? j.tp : (j.plannedR > 0 ? e + side * j.plannedR * riskPts : null);
+    if (tp == null) return null;
+    const slType = j.reason === 'SL' || j.reason === 'Trailing' || j.reason === 'Einstand';
+    const stop = slType ? j.sl - side * xr * riskPts : (j.slFinal != null ? j.slFinal : j.sl);
+    let lo = 0, hi = base.length;
+    while (lo < hi) { const m = (lo + hi) >> 1; if (base[m].t <= j.exitT) lo = m + 1; else hi = m; }
+    let k = 0;
+    for (let i = lo; k < N && i < base.length; i++, k++) {
+      const b = base[i];
+      const hitS = side > 0 ? b.l <= stop : b.h >= stop;
+      const hitT = side > 0 ? b.h >= tp : b.l <= tp;
+      if (hitS) return { hitTp: false, minutes: null, n: k + 1, stopFirst: true };
+      if (hitT) return { hitTp: true, minutes: Math.max(1, Math.round((b.t + (baseTf || 60) - j.exitT) / 60)), n: k + 1 };
+    }
+    return k ? { hitTp: false, minutes: null, n: k } : null;
+  };
+  /* trades: Journal-Einträge (geschlossen), sessions: Backtest-Sessions (optional).
+     opts: {tz, riskTarget, hideWeekdayReplay, kurz (Session-Kurzcheck: nur Verhaltens-Regeln, Mindestbasis 1)}
+     → {n, sessions, befunde[], staerken[], zuWenig[], kostenUsd, kostenR} */
+  C.analyzeMistakes = function (trades, sessions, opts) {
+    opts = Object.assign({}, C.ANALYSE, opts || {});
+    const M = Object.assign({}, C.ANALYSE.min, opts.min || {});
+    const kurz = !!opts.kurz;
+    const T = (trades || []).filter((x) => x && (x.status === 'closed' || x.status == null) && isFinite(x.pnl) && isFinite(x.entryT) && isFinite(x.exitT))
+      .slice().sort((a, b) => a.entryT - b.entryT || a.exitT - b.exitT);
+    const befunde = [], staerken = [], zuWenig = [];
+    const fR = C.fmtR, fM = (v, s) => C.fmtMoney(v, s, 0), fN = C.fmtNum, fP = (v) => C.fmtPct(v * 100, 0);
+    const avgRStr = (list) => { const a = avgOf(list.map(rOf).filter((r) => r != null)); return a == null ? '–' : fR(a); };
+    const need = (id, titel, have, min, was) => {
+      if (have >= min) return true;
+      zuWenig.push({ id, titel, have, min, hinweis: 'Braucht mindestens ' + min + ' ' + was + ' – bisher ' + have + '.' });
+      return false;
+    };
+    const add = (f) => {
+      f.kostenR = Math.max(0, +(f.kostenR || 0).toFixed(4)); f.kostenUsd = Math.max(0, +(f.kostenUsd || 0).toFixed(2));
+      f.anzahl = f.anzahl != null ? f.anzahl : f.tradeIds.length;
+      if (!f.schwere) f.schwere = C.analyseSeverity(f.kostenR, f.anteil || 0);
+      befunde.push(f);
+    };
+    const keyOf = (x) => (x.replay != null ? 'r' + x.replay : x.session != null ? 's' + x.session : 'ohne');
+    const groups = new Map();
+    for (const x of T) { const k = keyOf(x); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(x); }
+    const ids = (list) => list.map((x) => x.id);
+
+    /* 1 · Stop vergrößert */
+    {
+      const el = T.filter((x) => x.sl != null && x.slFinal != null && isFinite(x.entryPrice));
+      if (need('sl-vergroessert', 'Stop vergrößert', el.length, kurz ? 1 : M.sl, 'Trades mit Stop')) {
+        const hits = el.filter((x) => { const tol = (x.tick || 1e-9) / 2; return x.side * (x.entryPrice - x.slFinal) > x.side * (x.entryPrice - x.sl) + tol; });
+        if (hits.length) {
+          let cR = 0, cU = 0, worse = 0, saved = 0, sW = 0;
+          for (const x of hits) { const r = rOf(x); if (r == null) continue; const c = Math.max(0, -1 - r); if (c > 0) { worse++; sW += r; } if (r > 0) saved++; cR += c; cU += usdFromR(x, c); }
+          add({ id: 'sl-vergroessert', titel: 'Stop nach dem Einstieg vergrößert', anteil: hits.length / el.length, kostenR: cR, kostenUsd: cU, tradeIds: ids(hits), handbuch: 'sl-verschieben',
+            schwere: cR >= 2 || hits.length / el.length >= 0.2 ? 'hoch' : cR > 0 ? 'mittel' : 'gering',
+            beschreibung: hits.length + ' von ' + el.length + ' Trades: Stop nach dem Einstieg weiter vom Einstieg weggesetzt. ' + (worse ? worse + ' davon endeten mit mehr als −1R Verlust (zusammen ' + fR(sW) + ').' : 'Keiner endete schlechter als −1R.') +
+              (saved ? ' ' + saved + ' drehten danach noch ins Plus – das Risiko war trotzdem größer als geplant.' : '') + ' Kostenschätzung: Verlust jenseits von −1R je Trade.',
+            tipp: 'Stop vor dem Einstieg dorthin legen, wo die Idee widerlegt ist – danach nur noch Richtung Gewinn nachziehen. Willst du mehr Platz: Position verkleinern oder schließen, nicht das Risiko erhöhen.' });
+        }
+      }
+    }
+    /* 2 · Zu früh raus */
+    {
+      const el = T.filter((x) => x.plannedR > 0 && rOf(x) != null);
+      if (need('zu-frueh-raus', 'Zu früh ausgestiegen', el.length, kurz ? 1 : M.frueh, 'Trades mit geplantem Ziel')) {
+        const proof = (x) => (x.mfeR != null && x.mfeR >= x.plannedR - 1e-9) || !!(x.post && x.post.hitTp);
+        const hits = el.filter((x) => x.reason === 'Manuell' && x.r < x.plannedR - 0.05 && (x.pnl >= 0 || proof(x)));
+        if (hits.length >= (kurz ? 1 : 2)) {
+          const ev = hits.filter(proof);
+          const during = ev.filter((x) => x.mfeR != null && x.mfeR >= x.plannedR - 1e-9).length;
+          let cR = 0, cU = 0; for (const x of ev) { const c = x.plannedR - x.r; cR += c; cU += usdFromR(x, c); }
+          add({ id: 'zu-frueh-raus', titel: 'Zu früh ausgestiegen', anteil: hits.length / el.length, kostenR: cR, kostenUsd: cU, tradeIds: ids(hits), handbuch: 'zu-frueh-raus',
+            beschreibung: hits.length + ' manuelle Ausstiege unter dem geplanten Ziel (realisiert Ø ' + avgRStr(hits) + ' statt geplant Ø ' + fR(avgOf(hits.map((x) => x.plannedR))) + '). ' +
+              (ev.length ? 'Bei ' + ev.length + ' davon war das Ziel nachweislich erreichbar (' + during + ' schon während des Trades, ' + (ev.length - during) + ' laut Nachlauf-Prüfung nach dem Ausstieg). Kostenschätzung: geplantes R minus realisiertes R, nur für diese ' + ev.length + ' Trades.' : 'Ob das Ziel erreichbar war, zeigen die Daten (noch) nicht – daher keine Kostenschätzung.'),
+            tipp: 'Vor dem Einstieg festlegen, wann du manuell aussteigst (z. B. nur bei Bruch der Struktur). Wer Gewinne sichern will: Teilausstieg oder Stop auf Einstand statt alles zu schließen.' });
+        }
+      }
+    }
+    /* 3 · Stop zu eng */
+    {
+      const el = T.filter((x) => x.reason === 'SL' && rOf(x) != null && x.r < 0);
+      if (need('stop-zu-eng', 'Stop zu eng', el.length, kurz ? 1 : M.eng, 'Stop-Verluste')) {
+        const a = el.filter((x) => x.mfeR != null && x.mfeR >= 1), b = el.filter((x) => x.post && x.post.hitTp);
+        const hits = el.filter((x) => (x.mfeR != null && x.mfeR >= 1) || (x.post && x.post.hitTp));
+        const withPost = el.filter((x) => x.post).length;
+        if (hits.length >= (kurz ? 1 : 2)) {
+          let cR = 0, cU = 0; for (const x of hits) { cR += -x.r; cU += usdFromR(x, -x.r); }
+          add({ id: 'stop-zu-eng', titel: 'Stop zu eng oder ungeschützt', anteil: hits.length / el.length, kostenR: cR, kostenUsd: cU, tradeIds: ids(hits), handbuch: 'stopp-setzen',
+            beschreibung: hits.length + ' von ' + el.length + ' Stop-Verlusten: ' + a.length + ' lagen vorher schon mindestens 1R im Plus, ' + b.length + ' liefen nach dem Stopp innerhalb von ' + opts.postBars + ' Kerzen noch ins Ziel' +
+              (withPost < el.length ? ' (Nachlauf-Prüfung für ' + withPost + ' von ' + el.length + ' Trades vorhanden)' : '') + '. Kostenschätzung: der Verlust dieser Trades – mit mehr Platz oder Stop auf Einstand wäre er vermeidbar gewesen.',
+            tipp: 'Stop hinter eine echte Struktur legen (Swing-Hoch/-Tief, Value-Area-Kante) plus Puffer und die Größe daraus berechnen. Liegt ein Trade 1R vorn, Stop auf Einstand oder Teilgewinn nehmen.' });
+        }
+      }
+    }
+    /* 4 · Revenge-Trades */
+    {
+      const hits = [], bigger = []; let basis = 0;
+      for (const list of groups.values()) {
+        for (let i = 1; i < list.length; i++) {
+          const x = list[i]; let prev = null;
+          for (let k = i - 1; k >= 0; k--) { const p = list[k]; if (p.exitT <= x.entryT && (!prev || p.exitT > prev.exitT)) prev = p; }
+          if (!prev || !(prev.pnl < 0)) continue;
+          basis++;
+          if (x.entryT - prev.exitT <= opts.revengeMin * 60) { hits.push(x); if (riskOf(x) && riskOf(prev) && x.risk > prev.risk * 1.1) bigger.push(x); }
+        }
+      }
+      if (need('revenge', 'Revenge-Trades', basis, kurz ? 1 : M.revenge, 'Trades nach einem Verlust')) {
+        if (hits.length >= (kurz ? 1 : 2)) {
+          const sP = sumOf(hits.map((x) => x.pnl)), sR = sumOf(hits.map((x) => rOf(x) || 0));
+          const rest = T.filter((x) => !hits.includes(x));
+          add({ id: 'revenge', titel: 'Revenge-Trades nach Verlusten', anteil: hits.length / Math.max(1, basis), kostenR: Math.max(0, -sR), kostenUsd: Math.max(0, -sP), tradeIds: ids(hits), handbuch: 'revenge',
+            schwere: bigger.length && sP < 0 ? 'hoch' : undefined,
+            beschreibung: hits.length + ' Trades innerhalb von ' + opts.revengeMin + ' Minuten nach einem Verlust eröffnet' + (bigger.length ? ', davon ' + bigger.length + ' mit größerem Risiko als der Verlust-Trade' : '') +
+              '. Ergebnis zusammen ' + fM(sP, true) + ' (Ø ' + avgRStr(hits) + '; alle übrigen Trades Ø ' + avgRStr(rest) + '). Kostenschätzung: Summe dieser Trades, wenn negativ.',
+            tipp: 'Nach jedem Verlust eine feste Pause (z. B. 10 Minuten oder bis zur nächsten 15-Minuten-Kerze) und das Risiko nie erhöhen, um etwas zurückzuholen. Nach zwei Verlusten in Folge: Session beenden.' });
+        }
+      }
+    }
+    /* 5 · Overtrading */
+    if (!kurz) {
+      const S = [...groups.values()].filter((l) => l.length);
+      if (need('overtrading', 'Overtrading', S.length, M.over, 'Sessions')) {
+        const cnt = S.map((l) => l.length), mean = avgOf(cnt), sd = Math.sqrt(avgOf(cnt.map((c) => (c - mean) * (c - mean))));
+        const thr = Math.max(opts.overAbs, mean + sd);
+        const over = S.filter((l) => l.length > thr + 1e-9);
+        const early = [], later = [];
+        for (const l of S) { const o = l.slice().sort((a, b) => a.entryT - b.entryT); o.forEach((x, i) => (i < 3 ? early : later).push(x)); }
+        const aE = avgOf(early.map(rOf).filter((r) => r != null)), aL = avgOf(later.map(rOf).filter((r) => r != null));
+        const laterBad = later.length >= 5 && aL != null && aL < 0 && (aE == null || aL < aE);
+        if (over.length || laterBad) {
+          const lo = over.length ? over.flatMap((l) => l.slice().sort((a, b) => a.entryT - b.entryT).slice(3)) : later;
+          const sR = sumOf(lo.map((x) => rOf(x) || 0)), sP = sumOf(lo.map((x) => x.pnl));
+          add({ id: 'overtrading', titel: 'Overtrading', anteil: over.length / S.length, kostenR: Math.max(0, -sR), kostenUsd: Math.max(0, -sP), tradeIds: ids(lo), handbuch: 'overtrading',
+            beschreibung: (over.length ? over.length + ' von ' + S.length + ' Sessions mit mehr als ' + fN(thr, 1) + ' Trades (Ø ' + fN(mean, 1) + ' je Session). ' : 'Keine Session sticht bei der Anzahl heraus, aber ') +
+              'Die ersten drei Trades je Session: Ø ' + (aE == null ? '–' : fR(aE)) + '; ab dem vierten: Ø ' + (aL == null ? '–' : fR(aL)) + ' (' + later.length + ' Trades). Kostenschätzung: Verlust der Trades ab Nr. 4 ' + (over.length ? 'in diesen Sessions' : 'je Session') + ', wenn negativ.',
+            tipp: 'Feste Höchstzahl je Session festlegen (z. B. 3 Trades) und nach Erreichen das Replay beenden. Die besten Gelegenheiten kommen selten in Serie.' });
+        }
+      }
+    }
+    /* 6a · Risiko über Ziel */
+    {
+      const tgt = (x) => (x.riskTarget > 0 ? x.riskTarget : opts.riskTarget > 0 ? opts.riskTarget : null);
+      const el = T.filter((x) => riskOf(x) && tgt(x));
+      if (need('risiko-zu-gross', 'Risiko über Plan', el.length, kurz ? 1 : M.risiko, 'Trades mit Risiko-Angabe')) {
+        const hits = el.filter((x) => x.risk > opts.riskFactor * tgt(x));
+        if (hits.length) {
+          let cU = 0, cR = 0;
+          for (const x of hits) if (x.pnl < 0) { const part = -x.pnl * (1 - tgt(x) / x.risk); cU += part; cR += part / tgt(x); }
+          add({ id: 'risiko-zu-gross', titel: 'Risiko größer als geplant', anteil: hits.length / el.length, kostenR: cR, kostenUsd: cU, tradeIds: ids(hits), handbuch: 'groesse',
+            beschreibung: hits.length + ' von ' + el.length + ' Trades mit mehr als dem ' + fN(opts.riskFactor, 2) + '-Fachen deines Ziel-Risikos (Ø ' + fN(avgOf(hits.map((x) => x.risk / tgt(x))), 1) + '-fach). Kostenschätzung: der Teil der Verluste, der über das geplante Risiko hinausging.',
+            tipp: 'Größe immer aus Risiko und Stop-Abstand rechnen lassen („Größe nach Risiko“) und das Risiko je Trade fest notieren. Eine einzelne zu große Position kann eine ganze Woche Arbeit kosten.' });
+        }
+      }
+    }
+    /* 6b · Schwankende Größe */
+    if (!kurz) {
+      const el = T.filter((x) => riskOf(x));
+      if (need('risiko-schwankt', 'Schwankende Positionsgröße', el.length, M.schwankt, 'Trades mit Risiko-Angabe')) {
+        const rs = el.map((x) => x.risk), m = avgOf(rs), sd = Math.sqrt(avgOf(rs.map((v) => (v - m) * (v - m)))), cv = m > 0 ? sd / m : 0;
+        if (cv > opts.cvMax) {
+          const big = el.filter((x) => x.risk > m), small = el.filter((x) => x.risk <= m);
+          add({ id: 'risiko-schwankt', titel: 'Positionsgröße schwankt stark', anteil: 0, kostenR: 0, kostenUsd: 0, tradeIds: ids(big), handbuch: 'groesse', schwere: cv > 0.8 ? 'mittel' : 'gering',
+            beschreibung: 'Dein Risiko je Trade schwankt stark (Variationskoeffizient ' + fN(cv, 2) + ', Ø ' + fM(m) + ', Spanne ' + fM(Math.min(...rs)) + ' bis ' + fM(Math.max(...rs)) + '). Trades mit überdurchschnittlichem Risiko: netto ' + fM(sumOf(big.map((x) => x.pnl)), true) + ', die übrigen: ' + fM(sumOf(small.map((x) => x.pnl)), true) + '. Keine Kostenschätzung – schwankende Größe verzerrt aber jede Statistik in $.',
+            tipp: 'Ein festes Risiko je Trade (in $ oder % vom Konto) macht Ergebnisse vergleichbar. Größer erst, wenn die Stichprobe es rechtfertigt – nie aus dem Bauch.' });
+        }
+      }
+    }
+    /* 7 · Verlierer länger gehalten */
+    if (!kurz) {
+      const W = T.filter((x) => x.pnl > 0), L = T.filter((x) => x.pnl < 0);
+      if (need('verlierer-gehalten', 'Verlierer zu lange gehalten', Math.min(W.length, L.length), M.halten, 'Gewinner und Verlierer')) {
+        const hW = avgOf(W.map((x) => x.exitT - x.entryT)), hL = avgOf(L.map((x) => x.exitT - x.entryT));
+        if (hW > 0 && hL > opts.holdFactor * hW) {
+          const long = L.filter((x) => x.exitT - x.entryT > opts.holdFactor * hW), other = L.filter((x) => !long.includes(x));
+          const aO = avgOf(other.map(rOf).filter((r) => r != null));
+          let cR = 0, cU = 0; if (aO != null) for (const x of long) { const r = rOf(x); if (r == null) continue; const c = Math.max(0, aO - r); cR += c; cU += usdFromR(x, c); }
+          const mm = (s) => Math.max(1, Math.round(s / 60)) + ' min';
+          add({ id: 'verlierer-gehalten', titel: 'Verlierer länger gehalten als Gewinner', anteil: long.length / T.length, kostenR: cR, kostenUsd: cU, tradeIds: ids(long), handbuch: 'verlierer-halten',
+            beschreibung: 'Verlierer hältst du im Schnitt ' + mm(hL) + ', Gewinner nur ' + mm(hW) + ' (' + fN(hL / hW, 1) + '-fach). ' + long.length + ' Verlierer liefen länger als das ' + fN(opts.holdFactor, 1) + '-Fache der Gewinner-Haltedauer (Ø ' + avgRStr(long) + (aO != null ? ', übrige Verlierer Ø ' + fR(aO) : '') + '). Kostenschätzung: Mehrverlust gegenüber deinen übrigen Verlierern.',
+            tipp: 'Zeit-Stop festlegen: Läuft ein Trade nach X Kerzen nicht in deine Richtung, raus. Gewinner bekommen die Zeit, Verlierer nicht.' });
+        }
+      }
+    }
+    /* 8 · Schwache Uhrzeit / schwacher Wochentag */
+    if (!kurz) {
+      const WDN = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+      const zeit = (id, titel, list, keyFn, labelFn, tipp) => {
+        const el = list.filter((x) => rOf(x) != null);
+        if (!need(id, titel, el.length, M.zeit, 'Trades')) return null;
+        const g = new Map(); for (const x of el) { const k = keyFn(x); if (!g.has(k)) g.set(k, []); g.get(k).push(x); }
+        const bad = [...g.entries()].filter(([k, l]) => l.length >= opts.groupMin && avgOf(l.map(rOf)) < 0);
+        if (!bad.length) return null;
+        const badSet = new Set(bad.flatMap(([, l]) => l)); const rest = el.filter((x) => !badSet.has(x));
+        const aRest = avgOf(rest.map(rOf));
+        if (!(rest.length >= opts.groupMin && aRest > 0)) return null;
+        bad.sort((a, b) => sumOf(a[1].map(rOf)) - sumOf(b[1].map(rOf)));
+        const all = [...badSet], sR = sumOf(all.map(rOf)), sP = sumOf(all.map((x) => x.pnl));
+        add({ id, titel, anteil: all.length / el.length, kostenR: Math.max(0, -sR), kostenUsd: Math.max(0, -sP), tradeIds: ids(all), handbuch: 'zeitfenster',
+          beschreibung: bad.slice(0, 3).map(([k, l]) => labelFn(k) + ': ' + l.length + ' Trades, Ø ' + fR(avgOf(l.map(rOf)))).join(' · ') + '. Alle übrigen Trades: Ø ' + fR(aRest) + ' (' + rest.length + ' Trades). Kostenschätzung: Verlust in diesen Zeitfenstern.', tipp });
+        return true;
+      };
+      const tz = opts.tz || 'UTC';
+      zeit('uhrzeit', 'Schwaches Zeitfenster', T, (x) => C.localParts(x.entryT, tz).h, (h) => 'Einstiege ' + String(h).padStart(2, '0') + ':00–' + String(h).padStart(2, '0') + ':59 Uhr',
+        'Prüfe, ob du dieses Zeitfenster meidest oder nur mit A-Setups handelst – aber bestätige das erst mit mehr Trades (Faustregel: mindestens 30 je Zeitfenster).');
+      zeit('wochentag', 'Schwacher Wochentag', T.filter((x) => opts.hideWeekdayReplay == null || x.replay !== opts.hideWeekdayReplay), (x) => C.localParts(x.entryT, tz).wd, (d) => WDN[d],
+        'Wochentags-Effekte sind oft Zufall oder hängen an Terminen (z. B. Arbeitsmarktdaten am Freitag). Erst mit größerer Stichprobe Regeln daraus machen.');
+    }
+    /* 9a · Ohne Strategie */
+    {
+      if (need('ohne-strategie', 'Trades ohne Strategie', T.length, kurz ? 1 : M.setup, 'Trades')) {
+        const wo = T.filter((x) => !x.setup), wi = T.filter((x) => x.setup);
+        if (wo.length >= (kurz ? 1 : 2)) {
+          const sR = sumOf(wo.map((x) => rOf(x) || 0)), sP = sumOf(wo.map((x) => x.pnl));
+          add({ id: 'ohne-strategie', titel: 'Trades ohne Strategie', anteil: wo.length / T.length, kostenR: Math.max(0, -sR), kostenUsd: Math.max(0, -sP), tradeIds: ids(wo), handbuch: 'checkliste',
+            schwere: wo.length / T.length >= 0.5 ? (sR < 0 ? 'hoch' : 'mittel') : undefined,
+            beschreibung: wo.length + ' von ' + T.length + ' Trades (' + fP(wo.length / T.length) + ') ohne zugeordnete Strategie: Ø ' + avgRStr(wo) + (wi.length ? ', mit Strategie Ø ' + avgRStr(wi) : '') + '. Kostenschätzung: Verlust der Trades ohne Strategie, wenn negativ.',
+            tipp: 'Jeden Trade einer Strategie zuordnen – sonst lässt sich nicht messen, was funktioniert. Kein passendes Setup? Dann kein Trade.' });
+        }
+      }
+    }
+    /* 9b · Regel-Check nicht erfüllt */
+    {
+      const el = T.filter((x) => x.rulesTotal > 0 || x.rulesOk != null);
+      if (need('regeln', 'Regel-Check nicht erfüllt', el.length, kurz ? 1 : M.regeln, 'Trades mit Regel-Check')) {
+        const bad = el.filter((x) => x.rulesOk === false), good = el.filter((x) => x.rulesOk === true);
+        if (bad.length) {
+          const sR = sumOf(bad.map((x) => rOf(x) || 0)), sP = sumOf(bad.map((x) => x.pnl));
+          add({ id: 'regeln', titel: 'Eingestiegen ohne alle Regeln', anteil: bad.length / el.length, kostenR: Math.max(0, -sR), kostenUsd: Math.max(0, -sP), tradeIds: ids(bad), handbuch: 'checkliste',
+            beschreibung: bad.length + ' von ' + el.length + ' Trades mit Regel-Check wurden platziert, obwohl nicht alle Regeln abgehakt waren: Ø ' + avgRStr(bad) + (good.length ? ' – vollständig abgehakt: Ø ' + avgRStr(good) + ' (' + good.length + ' Trades)' : '') + '. Kostenschätzung: Verlust der unvollständigen Trades, wenn negativ.',
+            tipp: 'Kaufen/Verkaufen erst, wenn jede Regel abgehakt ist. Fehlt eine, ist es kein Setup – auch wenn es sich so anfühlt.' });
+        }
+      }
+    }
+    /* 10 · Gegen den VWAP */
+    {
+      const el = T.filter((x) => x.ctx && (x.ctx.vwapSide === 1 || x.ctx.vwapSide === -1) && rOf(x) != null);
+      if (need('gegen-vwap', 'Gegen den VWAP', el.length, kurz ? 1 : M.vwap, 'Trades mit Einstiegs-Kontext')) {
+        const ag = el.filter((x) => x.side * x.ctx.vwapSide < 0), wi = el.filter((x) => x.side * x.ctx.vwapSide > 0);
+        const aA = avgOf(ag.map(rOf)), aW = avgOf(wi.map(rOf)), sA = sumOf(ag.map(rOf));
+        if (ag.length >= (kurz ? 1 : 3) && (sA < 0 && (aW == null || aA < aW))) {
+          const sP = sumOf(ag.map((x) => x.pnl));
+          add({ id: 'gegen-vwap', titel: 'Einstiege gegen den VWAP', anteil: ag.length / el.length, kostenR: Math.max(0, -sA), kostenUsd: Math.max(0, -sP), tradeIds: ids(ag), handbuch: 'vwap-fehler',
+            beschreibung: ag.length + ' von ' + el.length + ' Trades gegen den Session-VWAP (Long darunter, Short darüber): Ø ' + fR(aA) + (wi.length ? '; mit dem VWAP: Ø ' + fR(aW) + ' (' + wi.length + ' Trades)' : '') + '. Kostenschätzung: Verlust der Trades gegen den VWAP.',
+            tipp: 'Gegen den VWAP nur mit klarem Grund handeln (z. B. Fehlausbruch an einem Level mit Absorption). Sonst gilt: Long über dem VWAP, Short darunter.' });
+        }
+      }
+    }
+    /* 11 · Ziel zu weit */
+    if (!kurz) {
+      const el = T.filter((x) => x.plannedR > 1 && x.mfeR != null && rOf(x) != null && !x.partials);
+      if (need('ziel-zu-weit', 'Ziel zu weit', el.length, M.ziel, 'Trades mit Ziel über 1R')) {
+        const missed = el.filter((x) => x.reason !== 'TP' && x.mfeR >= 1 && x.mfeR < x.plannedR - 1e-9);
+        const reached = el.filter((x) => x.reason === 'TP');
+        let net = 0, cU = 0;
+        for (const x of missed) { const g = 0.5 * (1 - x.r); if (g > 0) { net += g; cU += usdFromR(x, g); } }
+        for (const x of reached) { const l = 0.5 * Math.max(0, x.r - 1); net -= l; cU -= usdFromR(x, l); }
+        const share = missed.length / el.length;
+        if (missed.length >= 3 && share >= 0.2 && net > 0) {
+          add({ id: 'ziel-zu-weit', titel: 'Ziel oft knapp verfehlt', anteil: share, kostenR: net, kostenUsd: cU, tradeIds: ids(missed), handbuch: 'ziele',
+            beschreibung: missed.length + ' von ' + el.length + ' Trades (' + fP(share) + ') liefen mindestens 1R in deine Richtung, erreichten das Ziel (Ø ' + fR(avgOf(missed.map((x) => x.plannedR))) + ') aber nicht. Rechnung: Die Hälfte bei 1R zu schließen hätte netto ' + fR(net) + ' gebracht – die geringeren Gewinne der ' + reached.length + ' Ziel-Treffer sind schon abgezogen.',
+            tipp: 'Teilausstieg testen (z. B. 50 % bei 1R, Rest mit Stop auf Einstand) oder das Ziel an das nächste Level legen statt an ein festes Vielfaches. Im Order-Ticket unter „Teilausstieg & Stop-Management“.' });
+        }
+      }
+    }
+
+    /* ---------- Stärken ---------- */
+    {
+      const grp = (list, fn) => { const g = new Map(); for (const x of list) { const r = rOf(x); if (r == null) continue; const k = fn(x); if (k == null || k === '') continue; if (!g.has(k)) g.set(k, []); g.get(k).push(x); } return [...g.entries()].map(([k, l]) => ({ k, l, a: avgOf(l.map(rOf)), w: l.filter((x) => x.pnl > 0).length })); };
+      const best = (arr) => arr.filter((e) => e.l.length >= opts.groupMin && e.a > 0).sort((a, b) => b.a - a.a)[0];
+      const s1 = best(grp(T, (x) => x.setup));
+      if (s1) staerken.push({ id: 'beste-strategie', titel: 'Beste Strategie: ' + s1.k, beschreibung: s1.l.length + ' Trades, Ø ' + fR(s1.a) + ', Trefferquote ' + fP(s1.w / s1.l.length) + '.', tradeIds: ids(s1.l) });
+      if (!kurz) {
+        const tz = opts.tz || 'UTC';
+        const s2 = best(grp(T, (x) => C.localParts(x.entryT, tz).h));
+        if (s2) staerken.push({ id: 'beste-uhrzeit', titel: 'Bestes Zeitfenster: ' + String(s2.k).padStart(2, '0') + ':00–' + String(s2.k).padStart(2, '0') + ':59 Uhr', beschreibung: s2.l.length + ' Trades, Ø ' + fR(s2.a) + '.', tradeIds: ids(s2.l) });
+      }
+      const cond = [];
+      const vw = T.filter((x) => x.ctx && x.side * x.ctx.vwapSide > 0 && rOf(x) != null);
+      if (vw.length >= opts.groupMin && avgOf(vw.map(rOf)) > 0) cond.push({ id: 'mit-vwap', titel: 'Mit dem VWAP gehandelt', l: vw });
+      const ok = T.filter((x) => x.rulesOk === true && rOf(x) != null);
+      if (ok.length >= opts.groupMin && avgOf(ok.map(rOf)) > 0) cond.push({ id: 'regeln-ok', titel: 'Alle Regeln abgehakt', l: ok });
+      cond.sort((a, b) => avgOf(b.l.map(rOf)) - avgOf(a.l.map(rOf)));
+      if (cond[0]) staerken.push({ id: cond[0].id, titel: 'Beste Bedingung: ' + cond[0].titel, beschreibung: cond[0].l.length + ' Trades, Ø ' + fR(avgOf(cond[0].l.map(rOf))) + '.', tradeIds: ids(cond[0].l) });
+      const slEl = T.filter((x) => x.sl != null && x.slFinal != null);
+      if (!kurz && slEl.length >= 10 && !befunde.some((f) => f.id === 'sl-vergroessert')) staerken.push({ id: 'stop-disziplin', titel: 'Stop-Disziplin', beschreibung: 'In ' + slEl.length + ' Trades nie den Stop vergrößert.', tradeIds: [] });
+    }
+    const rank = { hoch: 0, mittel: 1, gering: 2 };
+    befunde.sort((a, b) => b.kostenUsd - a.kostenUsd || b.kostenR - a.kostenR || rank[a.schwere] - rank[b.schwere] || b.anzahl - a.anzahl);
+    return {
+      n: T.length, sessions: groups.size, befunde, staerken, zuWenig,
+      kostenUsd: +sumOf(befunde.map((f) => f.kostenUsd)).toFixed(2), kostenR: +sumOf(befunde.map((f) => f.kostenR)).toFixed(4)
+    };
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = C;
@@ -3799,6 +4372,7 @@ const DEFAULTS = {
   ticket: { type: 'market', slPts: 10, tpR: 2, riskMode: 'money', risk: 500, qtyMode: 'risk', qty: 1, setup: '', note: '', price: '', tp1R: 0, tp1Pct: 50, beR: 0, trail: 0 },
   replay: { speed: 4, unit: 'base', pauseOnFill: true },
   statsFilter: 'all',
+  aFilter: 'all',
   jf: { sym: '', strat: '', res: '', sess: '' },
   binance: { market: 'spot', symbol: 'BTCUSDT', interval: '1m', days: 7 },
   newSess: { market: 'ar:NAS100', when: 'random', y0: 2021, y1: 2024, start: 'ny', blind: true, sym: 'BTCUSDT', bnMarket: 'spot' },
@@ -4170,8 +4744,10 @@ const App = {
     if (this.sessions) { const s = this.sessions.find((x) => x.replayId === this.replay.id); if (s && s.running) { s.running = false; s.to = this.nowT(); this.saveSessions(); } }
     this.pause();
     this.cancelPosDraft();
+    const endedRid = this.replay.id;
     this.replay.active = false; this.replay.picking = false; this.replay.blind = false; this.engine = null; this.preview = null;
     this.clearResume();
+    try { this.runPostChecks(endedRid); } catch (e) { console.warn('Nachlauf-Prüfung fehlgeschlagen', e); }
     if (this.tool === 'long' || this.tool === 'short') this.tool = 'cursor';
     this.cursor = this.base.length - 1;
     this.charts.forEach((c) => { c.view.rightIdx = null; c.lastN = 0; });
@@ -4218,7 +4794,8 @@ const App = {
       sl: o.slInit != null ? o.slInit : o.sl, slFinal: o.sl, tp: o.tp, reason: o.reason, pnl: o.pnl, gross: o.gross, fees: o.fees, r: o.r, risk: o.risk,
       points: o.points, mae: o.mae, mfe: o.mfe, maeR: o.maeR, mfeR: o.mfeR, plannedR: o.plannedR,
       partials: o.partials && o.partials.length > 1 ? o.partials.map((p) => ({ qty: p.qty, price: p.price, t: p.t, reason: p.reason, pnl: p.pnl })) : undefined,
-      setup: o.setup || '', note: o.note || '', pv: this.pv, tick: this.tick, sess: this.sess, status: 'closed'
+      setup: o.setup || '', note: o.note || '', pv: this.pv, tick: this.tick, sess: this.sess, status: 'closed',
+      riskTarget: o.riskTarget || undefined, rulesTotal: o.rulesTotal || undefined, rulesChecked: o.rulesTotal ? o.rulesChecked : undefined, rulesOk: o.rulesTotal ? o.rulesOk : undefined, ctx: o.ctx || undefined
     });
     this.saveJournal();
     this.autoPhoto(o, 'auto-exit');
@@ -4301,12 +4878,35 @@ const App = {
     const T = this.settings.ticket;
     /* Doppelklick-Schutz: Klicks kurz nach dem Platzieren treffen sonst die neu eingeblendete Positionskarte */
     this.clickLockUntil = Date.now() + 450;
-    const o = this.engine.place({ side, type: b.type, price: b.price, qty: b.qty, sl: b.sl, tp: b.tp, setup: T.setup, note: T.note, mgmt: this.mgmt() }, this.base[this.cursor], this.cursor);
+    /* Für die Fehler-Analyse: Ziel-Risiko, Regel-Check und Markt-Kontext beim Platzieren (nur Werte bis zum Cursor) */
+    const boxes = T.setup ? $$('#tkRules input') : [];
+    const extra = { riskTarget: b.riskMoney > 0 ? +b.riskMoney.toFixed(2) : undefined, ctx: this.entryCtx(b.type === 'market' ? b.estEntry : b.price) };
+    if (boxes.length) Object.assign(extra, { rulesTotal: boxes.length, rulesChecked: boxes.filter((c) => c.checked).length, rulesOk: boxes.every((c) => c.checked) });
+    const o = this.engine.place(Object.assign({ side, type: b.type, price: b.price, qty: b.qty, sl: b.sl, tp: b.tp, setup: T.setup, note: T.note, mgmt: this.mgmt() }, extra), this.base[this.cursor], this.cursor);
     o.slInit = o.sl;
     if (b.type === 'market') { this.setStatus((side > 0 ? 'Long' : 'Short') + ' ' + this.fmtQ(o.qty) + ' @ ' + this.fmtP(o.entryPrice) + (o.risk ? ' · Risiko ' + this.fmtMoney(o.risk) : '')); this.autoPhoto(o, 'auto-entry'); }
     else this.setStatus((side > 0 ? 'Buy ' : 'Sell ') + (b.type === 'limit' ? 'Limit' : 'Stop') + ' ' + this.fmtQ(o.qty) + ' @ ' + this.fmtP(o.price) + ' platziert');
     this.updatePanels(); this.requestRender();
     return o;
+  },
+  /* Kontext am Cursor: Seite/Abstand zum Session-VWAP, ATR, Delta der letzten Kerze, CVD-Steigung (10 Kerzen) */
+  entryCtx(px) {
+    const s = this.series, i = this.cursor; if (!s || !this.base || !isFinite(px)) return undefined;
+    const vw = s.vwap[i], sd = s.sd[i], d = this.dec() + 1, atr = this.atrNow(this.baseTf);
+    return { vwapSide: Math.abs(px - vw) < this.tick / 2 ? 0 : px > vw ? 1 : -1, vwapDist: +(px - vw).toFixed(d), vwapSd: sd > 0 ? +((px - vw) / sd).toFixed(2) : null,
+      atr: isFinite(atr) ? +atr.toFixed(d) : null, deltaLast: Math.round(this.base[i].d), cvdSlope: i >= 10 ? Math.round(s.cvd[i] - s.cvd[i - 10]) : null };
+  },
+  /* Nachlauf-Prüfung erst NACH dem Ende der Session (Daten liegen vor, Replay ist aus) – während des Replays nie */
+  runPostChecks(rid) {
+    if (this.replay.active || !this.base || rid == null) return 0;
+    let n = 0;
+    for (const j of this.journal) {
+      if (j.replay !== rid || j.sym !== this.symbol || j.post) continue;
+      const p = Core.postCheck(this.base, this.baseTf, j, { bars: Core.ANALYSE.postBars });
+      if (p) { j.post = p; n++; }
+    }
+    if (n) this.saveJournal();
+    return n;
   },
   linePrice(o, f, def) { return this.preview && this.preview.o === o && this.preview.f === f ? this.preview.price : def; },
   previewOrderLine(o, f, price) { this.preview = { o, f, price }; },
@@ -5059,6 +5659,7 @@ Object.assign(App, {
     $('#sessTradesBox').hidden = !tr.length;
     $('#sessTrades').innerHTML = tr.map((j) => '<div><span>' + (j.side > 0 ? 'Long' : 'Short') + ' ' + esc(j.setup || '') + ' · ' + this.fmtT(j.entryT, 60) + '</span><span class="' + (j.pnl >= 0 ? 'up' : 'dn') + '">' + this.fmtMoney(j.pnl, true) + ' · ' + this.fmtR(j.r) + '</span></div>').join('');
     $('#sessDelete').hidden = isNew;
+    this.renderSessFindings(e);
     openModal('#sessModal');
     Gallery.render($('#sessPhotos'), 'sess:' + e.id);
   },
@@ -5724,7 +6325,7 @@ const NewSess = {
 
 /* Edge Lab Replay — Übersicht, Einführung, Erklärungen, Installation/Update, Fehler-Netz, Bottom-Sheet */
 'use strict';
-const APP_VERSION = '3.0';
+const APP_VERSION = '4.0';
 
 /* ---------- Begriffe (kurze Erklärungen für das „i“) ---------- */
 const GLOSSARY = {
@@ -5864,7 +6465,7 @@ Object.assign(App, {
     right += '<section class="card"><div class="card-h"><h3>Häufigste Fehler</h3></div>';
     right += top.length ? '<div class="mk-list">' + top.map(([m, n]) => '<div class="mk-row"><span>' + esc(m) + '</span><span class="meter"><i style="width:' + (n / top[0][1] * 100).toFixed(0) + '%"></i></span><b>' + n + '</b></div>').join('') + '</div>' : '<p class="hint">Noch keine Fehler markiert – gut so, oder noch keine Session ausgewertet.</p>';
     right += '</section>';
-    body.innerHTML = h + '<div class="dash"><div class="dash-col">' + left + '</div><div class="dash-col">' + right + '</div></div>';
+    body.innerHTML = h + '<div class="dash"><div class="dash-col">' + left + '</div><div class="dash-col">' + this.bigIssueCard(J) + right + '</div></div>';
     Tips.decorate(body);
     this.drawMiniEquity($('#stEq'), s.equity);
   },
@@ -6124,6 +6725,763 @@ const Sheet = {
   }
 };
 
+/* Edge Lab Replay — Fehler-Analyse: Bereich #analyse, Kurzhinweise nach Session-Ende, Karte „Größte Baustelle“ in der Übersicht, „Mehr“-Menü */
+'use strict';
+EMPTY_ART.analyse = '<svg viewBox="0 0 88 64"><path d="M12 50h46"/><path d="M18 44V34M28 44V26M38 44V30"/><circle class="acc" cx="58" cy="26" r="12"/><path class="acc" d="M67 35l9 9"/><path class="acc" d="M53 26h10"/></svg>';
+const SEV_LBL = { hoch: 'Hoch', mittel: 'Mittel', gering: 'Gering' };
+
+Object.assign(App, {
+  /* Ziel-Risiko aus dem Ticket (nur bei $-Risiko eindeutig), Wochentag der laufenden Blind-Session ausblenden */
+  analysisOpts(extra) {
+    const T = this.settings.ticket;
+    return Object.assign({ tz: this.settings.tz, riskTarget: T.riskMode === 'money' && +T.risk > 0 ? +T.risk : null, hideWeekdayReplay: this.isBlind() ? this.replay.id : null }, extra || {});
+  },
+  analysisBase() { return this.visibleJournal().filter((j) => j.status === 'closed' || j.status == null); },
+  /* Filter: alle / strat:<Name> / last:<N> (letzte N Sessions nach Zeit) */
+  analysisList(f) {
+    const J = this.analysisBase();
+    if (!f || f === 'all') return J;
+    if (f.startsWith('strat:')) { const n = f.slice(6); return J.filter((j) => (n === '-' ? !j.setup : j.setup === n)); }
+    if (f.startsWith('last:')) {
+      const last = new Map(); for (const j of J) last.set(j.replay, Math.max(last.get(j.replay) || 0, j.exitT));
+      const keep = new Set([...last.entries()].sort((a, b) => b[1] - a[1]).slice(0, +f.slice(5) || 5).map((e) => e[0]));
+      return J.filter((j) => keep.has(j.replay));
+    }
+    return J;
+  },
+  fillAnalysisFilter() {
+    const sel = $('#aFilter'), J = this.analysisBase();
+    const st = [...new Set(J.map((j) => j.setup).filter(Boolean))].sort();
+    const opts = [['all', 'Alle Trades'], ['last:5', 'Letzte 5 Sessions'], ['last:10', 'Letzte 10 Sessions'], ['last:20', 'Letzte 20 Sessions']]
+      .concat(st.map((s) => ['strat:' + s, 'Strategie: ' + s]), J.some((j) => !j.setup) && st.length ? [['strat:-', '(ohne Strategie)']] : []);
+    sel.innerHTML = opts.map(([v, l]) => '<option value="' + esc(v) + '">' + esc(l) + '</option>').join('');
+    if (!opts.some((o) => o[0] === this.settings.aFilter)) this.settings.aFilter = 'all';
+    sel.value = this.settings.aFilter;
+  },
+  costTxt(f) { return f.kostenUsd > 0 ? Core.fmtMoney(-f.kostenUsd, false, 0) : f.kostenR > 0 ? '−' + this.fmtN(f.kostenR, 2) + 'R' : 'keine Schätzung'; },
+  renderAnalysis() {
+    this.fillAnalysisFilter();
+    const el = $('#aBody'), all = this.analysisBase();
+    if (!all.length) {
+      $('#aSub').textContent = 'Erkennt typische Fehler in deinen Trades und schätzt, was sie gekostet haben.';
+      el.innerHTML = emptyState('analyse', 'Noch nichts zu analysieren', 'Nach deinen ersten Trades erkennt die Analyse typische Fehler – vergrößerte Stops, Revenge-Trades, Overtrading, schwache Zeitfenster – und schätzt, was sie dich gekostet haben.', '<button class="btn primary" data-empty="session">Session starten</button>');
+      return;
+    }
+    const list = this.analysisList(this.settings.aFilter);
+    const res = Core.analyzeMistakes(list, this.sessions, this.analysisOpts());
+    this._an = res;
+    $('#aSub').textContent = res.n + ' Trades in ' + res.sessions + (res.sessions === 1 ? ' Session' : ' Sessions') + ' ausgewertet' + (this.isBlind() ? ' · laufende Blind-Session ohne Datumsbezug' : '') + '. Kosten sind Schätzungen aus deinem Journal.';
+    if (!res.n) { el.innerHTML = emptyState('analyse', 'Keine Trades für diese Auswahl', 'Wähle oben „Alle Trades“ oder eine andere Strategie.', ''); return; }
+    const B = res.befunde, top = B[0];
+    const cnt = (k) => B.filter((f) => f.schwere === k).length;
+    let h = '<section class="an-hero" aria-label="Zusammenfassung"><div class="an-main">';
+    if (top) {
+      h += '<span class="an-kick">Größte Baustelle</span><h2>' + esc(top.titel) + '</h2><p class="an-cost">' + (top.kostenUsd > 0 || top.kostenR > 0 ? 'Geschätzt <b class="dn">' + this.costTxt(top) + '</b> in ' : 'Betrifft ') + top.anzahl + (top.anzahl === 1 ? ' Trade' : ' Trades') + '</p><p>' + esc(top.tipp) + '</p>' +
+        '<div class="an-btns">' + this.anBtns(top, true) + '</div>';
+    } else {
+      h += '<span class="an-kick ok">Keine Baustelle gefunden</span><h2>Keine auffälligen Fehler-Muster</h2><p>In ' + res.n + ' Trades hat keine Regel angeschlagen. ' + (res.zuWenig.length ? 'Einige Prüfungen brauchen aber noch mehr Daten – siehe unten.' : 'Weiter so – und regelmäßig wieder hineinschauen.') + '</p>';
+    }
+    h += '</div><dl class="an-sum">' +
+      '<div><dt>Geschätzte Kosten</dt><dd class="' + (res.kostenUsd > 0 ? 'dn' : '') + '">' + (res.kostenUsd > 0 ? Core.fmtMoney(-res.kostenUsd, false, 0) : '–') + '</dd><small>' + (res.kostenR > 0 ? '≈ ' + this.fmtN(res.kostenR, 1) + 'R · ' : '') + 'Befunde können sich überschneiden</small></div>' +
+      '<div><dt>Befunde</dt><dd>' + B.length + '</dd><small>' + (B.length ? cnt('hoch') + ' hoch · ' + cnt('mittel') + ' mittel · ' + cnt('gering') + ' gering' : 'keine') + '</small></div>' +
+      '<div><dt>Datenbasis</dt><dd>' + res.n + ' Trades</dd><small>' + res.sessions + (res.sessions === 1 ? ' Session' : ' Sessions') + '</small></div></dl></section>';
+    if (B.length) h += '<div class="an-cards">' + B.map((f) => this.anCard(f)).join('') + '</div>';
+    if (res.staerken.length) {
+      h += '<section class="an-sec"><h3>Deine Stärken</h3><div class="an-good">' + res.staerken.map((s) => '<div class="an-g"><b>' + esc(s.titel) + '</b><span>' + esc(s.beschreibung) + '</span>' +
+        (s.tradeIds.length ? '<button type="button" class="linkbtn" data-a-ids="' + esc(s.id) + '">Trades ansehen</button>' : '') + '</div>').join('') + '</div></section>';
+    }
+    if (res.zuWenig.length) {
+      h += '<details class="an-low"><summary>Noch nicht auswertbar <span class="tag">' + res.zuWenig.length + '</span></summary><ul>' +
+        res.zuWenig.map((z) => '<li><b>' + esc(z.titel) + '</b><span>' + esc(z.hinweis) + '</span></li>').join('') + '</ul></details>';
+    }
+    h += '<p class="hint an-method"><b>So rechnet die Analyse:</b> Alle Werte stammen aus deinem Journal und sind netto (nach Gebühren und Slippage). Die Kosten schätzen, was ein Muster ungefähr gekostet hat – nicht, was ohne den Fehler sicher passiert wäre. Die Nachlauf-Prüfung läuft erst nach dem Ende einer Session: Hätte der Kurs in den nächsten ' + Core.ANALYSE.postBars + ' Basis-Kerzen erst das Ziel oder erst Stop + 0,5R erreicht? Während des Replays gibt es keine Information aus der Zukunft.</p>';
+    el.innerHTML = h;
+  },
+  anBtns(f, big) {
+    return '<button type="button" class="btn ' + (big ? '' : 'sm') + '" data-a-trades="' + esc(f.id) + '">Betroffene Trades <span class="tag">' + f.tradeIds.length + '</span></button>' +
+      '<button type="button" class="btn ghost ' + (big ? '' : 'sm') + '" data-a-hb="' + esc(f.handbuch) + '">Im Handbuch lesen</button>';
+  },
+  anCard(f) {
+    const c = this.costTxt(f);
+    return '<article class="an-card sev-' + f.schwere + '" data-id="' + esc(f.id) + '"><div class="an-top"><span class="sev ' + f.schwere + '">' + SEV_LBL[f.schwere] + '</span><h3>' + esc(f.titel) + '</h3></div>' +
+      '<dl class="an-nums"><div><dt>Betroffen</dt><dd>' + f.anzahl + (f.anzahl === 1 ? ' Trade' : ' Trades') + '</dd></div><div><dt>Kosten</dt><dd class="' + (f.kostenUsd > 0 || f.kostenR > 0 ? 'dn' : 'muted') + '">' + c + '</dd></div>' +
+      '<div><dt>in R</dt><dd class="' + (f.kostenR > 0 ? 'dn' : 'muted') + '">' + (f.kostenR > 0 ? '−' + this.fmtN(f.kostenR, 2) + 'R' : '–') + '</dd></div></dl>' +
+      '<p class="an-desc">' + esc(f.beschreibung) + '</p><p class="an-tip"><b>Tipp</b>' + esc(f.tipp) + '</p><div class="an-btns">' + this.anBtns(f, false) + '</div></article>';
+  },
+  /* 1–3 Befunde einer beendeten Session (Kurzcheck) für den Session-Dialog */
+  renderSessFindings(e) {
+    const box = $('#sessFindings'); if (!box) return;
+    const show = e && e.replayId && !this.isRunning(e);
+    const tr = show ? this.journal.filter((j) => j.replay === e.replayId && (j.status === 'closed' || j.status == null)) : [];
+    if (!tr.length) { box.hidden = true; box.innerHTML = ''; return; }
+    const res = Core.analyzeMistakes(tr, [], this.analysisOpts({ kurz: true, hideWeekdayReplay: null }));
+    const B = res.befunde.slice(0, 3);
+    box.hidden = false;
+    box.innerHTML = B.length ? '<b>Auffällig in dieser Session</b><ul>' + B.map((f) => '<li><span class="sev ' + f.schwere + '">' + SEV_LBL[f.schwere] + '</span><span><b>' + esc(f.titel) + '</b> – ' + f.anzahl + (f.anzahl === 1 ? ' Trade' : ' Trades') + (f.kostenUsd > 0 ? ', ' + Core.fmtMoney(-f.kostenUsd, false, 0) : '') + '. <button type="button" class="linkbtn" data-sf-hb="' + esc(f.handbuch) + '">Im Handbuch</button></span></li>').join('') + '</ul>' +
+      '<button type="button" class="linkbtn" data-sf-an>Ganze Analyse öffnen</button>'
+      : '<b>Sauber gespielt</b><p>In dieser Session hat keine der Verhaltens-Regeln angeschlagen (Stop, Ausstieg, Revenge, Risiko, Regeln).</p>';
+  },
+  /* Karte für die Übersicht */
+  bigIssueCard(J) {
+    if (!J || J.length < 3) return '';
+    const res = Core.analyzeMistakes(J, this.sessions, this.analysisOpts());
+    const f = res.befunde[0];
+    let h = '<section class="card an-mini"><div class="card-h"><h3>Größte Baustelle</h3><a href="#analyse">Analyse öffnen</a></div>';
+    if (!f) return h + '<p class="hint">Keine auffälligen Fehler-Muster in ' + res.n + ' Trades.</p></section>';
+    return h + '<div class="an-mini-b"><span class="sev ' + f.schwere + '">' + SEV_LBL[f.schwere] + '</span><b>' + esc(f.titel) + '</b><span class="num ' + (f.kostenUsd > 0 ? 'dn' : 'muted') + '">' + this.costTxt(f) + '</span></div>' +
+      '<p class="hint">' + esc(f.tipp) + '</p>' + (res.befunde.length > 1 ? '<p class="hint">+ ' + (res.befunde.length - 1) + ' weitere Befunde · zusammen ' + (res.kostenUsd > 0 ? Core.fmtMoney(-res.kostenUsd, false, 0) : '–') + '</p>' : '') + '</section>';
+  }
+});
+
+const Analysis = {
+  bind() {
+    $('#aFilter').addEventListener('change', (e) => { App.settings.aFilter = e.target.value; App.saveSettings(); App.renderAnalysis(); });
+    $('#view-analyse').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b || !App._an) return;
+      if (b.dataset.aTrades) { const f = App._an.befunde.find((x) => x.id === b.dataset.aTrades); if (f) UI.showTradeIds(f.tradeIds, f.titel); }
+      else if (b.dataset.aIds) { const s = App._an.staerken.find((x) => x.id === b.dataset.aIds); if (s) UI.showTradeIds(s.tradeIds, s.titel); }
+      else if (b.dataset.aHb) location.hash = '#handbuch-' + b.dataset.aHb;
+    });
+    $('#sessFindings').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.hasAttribute('data-sf-an')) { closeModal('#sessModal'); location.hash = '#analyse'; }
+      else if (b.dataset.sfHb) { closeModal('#sessModal'); location.hash = '#handbuch-' + b.dataset.sfHb; }
+    });
+    /* Handy: „Mehr“ bündelt Strategien, Handbuch und TradingView */
+    const more = $('#navMore'), menu = $('#moreMenu');
+    const set = (on) => { menu.hidden = !on; more.setAttribute('aria-expanded', String(on)); };
+    more.addEventListener('click', (e) => { e.preventDefault(); set(menu.hidden); if (!menu.hidden) { const a = menu.querySelector('a'); if (a) a.focus({ preventScroll: true }); } });
+    menu.addEventListener('click', (e) => { if (e.target.closest('a')) set(false); });
+    document.addEventListener('pointerdown', (e) => { if (!menu.hidden && !e.target.closest('#moreMenu') && !e.target.closest('#navMore')) set(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) { set(false); more.focus(); } });
+    window.addEventListener('hashchange', () => set(false));
+  }
+};
+
+/* Edge Lab Replay — Trading-Handbuch: Inhalte (statisch), eigene Schaubilder (SVG, Theme-Farben), Lese-Ansicht mit Suche und Lesefortschritt */
+'use strict';
+
+/* ---------- Schaubilder: aus echten Formeln berechnet (VWAP, Value Area), Farben über CSS-Klassen ---------- */
+const HBFig = {
+  P(pts) { return pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(''); },
+  wrap(svg, cap, label) { return '<figure class="hb-fig"><svg viewBox="0 0 560 230" role="img" aria-label="' + label + '">' + svg + '</svg><figcaption>' + cap + '</figcaption></figure>'; },
+  t(x, y, s, cls, anchor) { return '<text x="' + x + '" y="' + y + '"' + (cls ? ' class="' + cls + '"' : '') + (anchor ? ' text-anchor="' + anchor + '"' : '') + '>' + s + '</text>'; },
+  vwap() {
+    const R = Core.rng(5), n = 70, px = [], vw = [], sd = [];
+    let pv = 0, pv2 = 0, vol = 0, p = 100;
+    for (let i = 0; i < n; i++) {
+      p = 100 + 5 * Math.sin(i / 8) + i * 0.09 + (R() - 0.5) * 1.6;
+      const v = 40 + R() * 80 * (i < 12 ? 1.6 : 1);
+      pv += p * v; pv2 += p * p * v; vol += v;
+      const m = pv / vol; px.push(p); vw.push(m); sd.push(Math.sqrt(Math.max(0, pv2 / vol - m * m)));
+    }
+    let lo = Infinity, hi = -Infinity;
+    for (let i = 0; i < n; i++) { lo = Math.min(lo, px[i], vw[i] - 2 * sd[i]); hi = Math.max(hi, px[i], vw[i] + 2 * sd[i]); }
+    const X = (i) => 30 + i * (440 / (n - 1)), Y = (v) => 20 + (hi - v) / (hi - lo) * 190;
+    const line = (k, cls) => '<path class="' + cls + '" d="' + this.P(vw.map((m, i) => [X(i), Y(m + k * sd[i])])) + '"/>';
+    const fill = '<path class="bdf" d="' + this.P(vw.map((m, i) => [X(i), Y(m + 2 * sd[i])]).concat(vw.map((m, i) => [X(i), Y(m - 2 * sd[i])]).reverse())) + 'Z"/>';
+    const L = n - 1, lab = (k, s) => this.t(478, Y(vw[L] + k * sd[L]) + 4, s, k ? 'tb' : 'tv');
+    return this.wrap(fill + line(2, 'bd') + line(1, 'bd') + line(-1, 'bd') + line(-2, 'bd') + '<path class="px" d="' + this.P(px.map((v, i) => [X(i), Y(v)])) + '"/>' + line(0, 'vw') +
+      lab(2, '+2σ') + lab(1, '+1σ') + lab(0, 'VWAP') + lab(-1, '−1σ') + lab(-2, '−2σ') + this.t(30, 14, 'Session-Beginn: Bänder starten eng und weiten sich mit dem Volumen', 'tm'),
+    'VWAP (gold) mit ±1σ- und ±2σ-Bändern, berechnet aus Kerzen mit Volumen. Zu Beginn der Session ist der VWAP noch „leicht“ – wenige Kerzen bewegen ihn stark.', 'VWAP mit Standardabweichungs-Bändern');
+  },
+  profile() {
+    const v = [2, 4, 3, 6, 10, 16, 24, 30, 37, 44, 41, 34, 24, 14, 7, 3, 2, 3, 8, 15, 20, 17, 10, 5, 2];
+    const va = Core.valueArea({ r0: 0, row: 1, v: Float64Array.from(v) }, 0.7);
+    const n = v.length, mx = Math.max(...v), rowH = 7.8, top = 14, X0 = 60, BW = 250;
+    const Y = (i) => top + (n - 1 - i) * rowH, W = (i) => v[i] / mx * BW;
+    let s = '';
+    for (let i = 0; i < n; i++) {
+      const cls = i === va.pocIdx ? 'pocb' : i >= va.loIdx && i <= va.hiIdx ? 'vab' : 'ob';
+      s += '<rect class="' + cls + '" x="' + X0 + '" y="' + (Y(i) + 1).toFixed(1) + '" width="' + W(i).toFixed(1) + '" height="' + (rowH - 1.6) + '" rx="1"/>';
+    }
+    const ln = (y, cls, lbl) => '<path class="' + cls + '" d="M' + X0 + ' ' + y.toFixed(1) + 'H350"/>' + this.t(356, y + 4, lbl, cls === 'pocl' ? 'tp' : 'tm');
+    s += ln(Y(va.hiIdx), 'val', 'VAH') + ln(Y(va.pocIdx) + rowH / 2, 'pocl', 'POC') + ln(Y(va.loIdx) + rowH, 'val', 'VAL');
+    s += this.t(392, Y(va.hiIdx) + 4, 'Value Area (70 %)', 'tm') + '<path class="val" d="M386 ' + Y(va.hiIdx) + 'V' + (Y(va.loIdx) + rowH) + '"/>';
+    s += this.t(X0 + W(16) + 10, Y(16) + 6, '← LVN: wenig Volumen', 'tw') + this.t(X0 + W(20) + 10, Y(20) + 6, '← HVN: zweiter Knoten', 'tw');
+    s += this.t(16, Y(va.pocIdx) + 8, 'Preis', 'tm');
+    return this.wrap(s, 'Volume Profile: Volumen je Preisstufe. Der POC (gelb) ist die Stufe mit dem meisten Volumen, die Value Area (heller) enthält 70 % des Volumens – hier mit dem CBOT-Verfahren berechnet. Darüber liegt ein LVN zwischen zwei Volumen-Knoten.', 'Volume Profile mit POC, VAH, VAL, LVN und HVN');
+  },
+  footprint() {
+    const rows = [['21.001,00', 8, 14], ['21.000,75', 5, 42], ['21.000,50', 9, 20], ['21.000,25', 16, 11], ['21.000,00', 22, 6]];
+    let s = this.t(196, 20, 'Bid', 'tm', 'middle') + this.t(276, 20, 'Ask', 'tm', 'middle') + this.t(150, 20, 'Preis', 'tm', 'end');
+    rows.forEach((r, i) => {
+      const y = 30 + i * 36;
+      s += this.t(150, y + 23, r[0], 'tm', 'end');
+      s += '<rect class="' + (i === 2 ? 'cellr' : 'cell') + '" x="160" y="' + y + '" width="72" height="32" rx="3"/><rect class="' + (i === 1 ? 'cellg' : 'cell') + '" x="240" y="' + y + '" width="72" height="32" rx="3"/>';
+      s += this.t(196, y + 21, String(r[1]), i === 2 ? 'tn' : 'tw', 'middle') + this.t(276, y + 21, String(r[2]), i === 1 ? 'tg' : 'tw', 'middle');
+    });
+    s += '<path class="arr" d="M262 76 L214 100"/><path class="arrh" d="M214 100 l9 -1 l-4 -7z"/>';
+    s += this.t(330, 70, 'Ask 42 auf 21.000,75', 'tw') + this.t(330, 88, 'gegen Bid 9 eine Stufe tiefer:', 'tm') + this.t(330, 108, '42 ≥ 3 × 9 = 27', 'tg') + this.t(330, 126, '→ Kauf-Imbalance', 'tg');
+    s += this.t(330, 170, 'Diagonal vergleichen, nicht', 'tm') + this.t(330, 186, 'waagerecht: Ask und Bid', 'tm') + this.t(330, 202, 'liegen eine Stufe auseinander.', 'tm');
+    return this.wrap(s, 'Footprint-Zellen (Bid × Ask je Preis, NQ in 0,25-Schritten). Diagonale Imbalance mit Faktor 3 – der Standard in Edge Lab, einstellbar.', 'Footprint mit diagonaler Kauf-Imbalance');
+  },
+  divergence() {
+    const pr = [[30, 120], [70, 96], [110, 104], [150, 70], [175, 52], [200, 74], [240, 92], [280, 86], [320, 78], [360, 60], [395, 40], [420, 34], [445, 58], [480, 82], [520, 96]];
+    const cv = [[30, 205], [70, 188], [110, 192], [150, 170], [175, 150], [200, 166], [240, 178], [280, 176], [320, 172], [360, 166], [395, 160], [420, 162], [445, 176], [480, 190], [520, 198]];
+    let s = '<path class="ax" d="M20 128H540M20 214H540"/>' + this.t(24, 16, 'Preis', 'tm') + this.t(24, 142, 'CVD (kumuliertes Delta)', 'tm');
+    s += '<path class="px" d="' + this.P(pr) + '"/><path class="cvd" d="' + this.P(cv) + '"/>';
+    s += '<path class="dvu" d="M175 52 L420 34"/><path class="dvd" d="M175 150 L395 160"/>';
+    s += '<circle class="dot" cx="175" cy="52" r="3.5"/><circle class="dot" cx="420" cy="34" r="3.5"/><circle class="dot" cx="175" cy="150" r="3.5"/><circle class="dot" cx="395" cy="160" r="3.5"/>';
+    s += this.t(300, 30, 'höheres Hoch', 'tw', 'middle') + this.t(300, 150, 'tieferes Hoch', 'tr', 'middle');
+    return this.wrap(s, 'Delta-Divergenz am Hoch: Der Preis steigt weiter, aber die aggressiven Käufe (CVD) lassen nach. Ein Hinweis auf Erschöpfung – kein Signal für sich allein.', 'Delta-Divergenz zwischen Preis und CVD');
+  },
+  ib() {
+    const ibh = 92, ibl = 138, rng = ibl - ibh;
+    const pr = [[30, 120], [45, 100], [60, 130], [75, 94], [90, 136], [105, 110], [120, 104], [150, 112], [180, 96], [200, 90], [230, 76], [260, 82], [290, 66], [320, 70], [350, 72], [390, 60], [420, 74], [460, 70], [500, 78]];
+    let s = '<rect class="ibbox" x="30" y="' + ibh + '" width="90" height="' + rng + '"/>' + this.t(75, ibl + 16, '1. Stunde', 'tm', 'middle');
+    const ln = (y, cls, lbl) => '<path class="' + cls + '" d="M30 ' + y + 'H470"/>' + this.t(476, y + 4, lbl, 'tm');
+    s += ln(ibh - rng, 'ext', '+100 %') + ln(ibh - rng / 2, 'ext', '+50 %') + ln(ibh, 'ibl', 'IB-Hoch') + ln(ibl, 'ibl', 'IB-Tief') + ln(ibl + rng / 2, 'ext', '−50 %') + ln(ibl + rng, 'ext', '−100 %');
+    s += '<path class="px" d="' + this.P(pr) + '"/>' + this.t(330, ibh + 20, '↑ Ausbruch über das IB-Hoch', 'tw', 'middle');
+    return this.wrap(s, 'Initial Balance (Spanne der ersten Handelsstunde ab 9:30 ET) und Erweiterungen um 50 % und 100 % der IB-Spanne – Orientierungsmarken, keine Garantie.', 'Initial Balance mit Erweiterungen');
+  },
+  rmult() {
+    const e = 106, st = 142, t1 = 70, t2 = 34;
+    let s = '<rect class="zw" x="40" y="' + t2 + '" width="240" height="' + (e - t2) + '"/><rect class="zl" x="40" y="' + e + '" width="240" height="' + (st - e) + '"/>';
+    const ln = (y, cls, lbl) => '<path class="' + cls + '" d="M40 ' + y + 'H280"/>' + this.t(288, y + 4, lbl, 'tw');
+    s += ln(t2, 'lg', 'Ziel 2R: 21.030 (+30 Pkt)') + ln(t1, 'lgd', '1R: 21.015') + ln(e, 'le', 'Einstieg 21.000') + ln(st, 'lr', 'Stop 20.985 (−15 Pkt = 1R)');
+    s += this.t(40, 176, 'Risiko je NQ: 15 Pkt × 20 $ = 300 $', 'tm') + this.t(40, 194, 'Geplantes Risiko 300 $ → 300 ÷ 300 = 1 NQ', 'tw') + this.t(40, 212, 'oder 10 MNQ: 300 ÷ (15 Pkt × 2 $) = 10 Kontrakte', 'tm');
+    return this.wrap(s, 'R-Multiple und Positionsgröße: 1R ist der Abstand zum Stop mal Punktwert mal Menge. Das Ziel wird in Vielfachen davon geplant.', 'R-Multiple und Positionsgröße am Beispiel NQ');
+  },
+  equity() {
+    const eq = [50000, 50400, 50900, 50600, 51300, 51800, 51200, 50500, 50000, 50300, 50900, 51600, 52100, 52400];
+    const lo = 47500, hi = 52500, X = (i) => 40 + i * (420 / (eq.length - 1)), Y = (v) => 18 + (hi - v) / (hi - lo) * 190;
+    let peak = eq[0];
+    const floor = eq.map((v) => { peak = Math.max(peak, v); return Math.min(50000, peak - 2000); });
+    const step = []; floor.forEach((f, i) => { if (i) step.push([X(i), Y(floor[i - 1])]); step.push([X(i), Y(f)]); });
+    let s = '<path class="ax" d="M40 ' + Y(50000) + 'H470"/>' + this.t(476, Y(50000) + 4, 'Start 50.000', 'tm');
+    s += '<path class="fl" d="' + this.P(step) + '"/>' + this.t(44, Y(floor[0]) + 16, 'Verlustgrenze (2.000 $ unter dem Tagesschluss-Hoch)', 'tr');
+    s += '<path class="eqf" d="' + this.P(eq.map((v, i) => [X(i), Y(v)])) + 'L' + X(eq.length - 1) + ' 208L40 208Z"/><path class="eq" d="' + this.P(eq.map((v, i) => [X(i), Y(v)])) + '"/>';
+    s += '<circle class="dot" cx="' + X(5) + '" cy="' + Y(51800) + '" r="4"/><circle class="dotr" cx="' + X(8) + '" cy="' + Y(50000) + '" r="4"/>';
+    s += '<path class="dd" d="M' + (X(8) + 14) + ' ' + Y(51800) + 'V' + Y(50000) + '"/><path class="ddt" d="M' + (X(5) + 4) + ' ' + Y(51800) + 'H' + (X(8) + 20) + '"/>';
+    s += this.t(X(8) + 22, (Y(51800) + Y(50000)) / 2 + 4, 'Max. Drawdown −1.800 $', 'tr');
+    s += this.t(X(8) + 22, Y(49800) + 16, 'Puffer am Tief: nur 200 $', 'tm');
+    return this.wrap(s, 'Kontokurve mit Drawdown (Hoch 51.800 → Tief 50.000) und nachziehender Verlustgrenze bei 2.000 $ Max-Drawdown auf Tagesschluss-Basis, gedeckelt beim Startkapital.', 'Kontokurve mit Drawdown und Trailing-Grenze');
+  }
+};
+
+/* ---------- „Im Chart zeigen“: welche Anzeigen eingeschaltet werden ---------- */
+const HB_SHOW = {
+  vwap: { ind: { vwap: true, bands: true }, label: 'VWAP mit σ-Bändern' },
+  profil: { ind: { vp: true, prev: true }, label: 'Volume Profile und Vortages-Level' },
+  rth: { ind: { rth: true }, label: 'RTH-Levels (Overnight, Opening Range, Initial Balance)' },
+  footprint: { ind: { fp: true, lower: 'delta' }, label: 'Footprint und Delta' },
+  cvd: { ind: { lower: 'cvd' }, label: 'CVD im unteren Fenster' },
+  sessions: { ind: { sessions: true }, label: 'Session-Zeiten' }
+};
+const hbBtns = (show) => '<div class="hb-acts">' + (show ? '<button type="button" class="btn sm" data-hb-show="' + show + '">Im Chart zeigen</button>' : '') + '<button type="button" class="btn sm ghost" data-hb-practice>Üben im Replay</button></div>';
+const hbBox = (k, html) => '<div class="hb-box ' + k + '"><b>' + ({ merke: 'Merke', faust: 'Faustregel', praxis: 'In Edge Lab', achtung: 'Achtung' }[k]) + '</b>' + html + '</div>';
+const hbSetup = (rows) => '<dl class="hb-setup">' + rows.map(([k, v]) => '<dt>' + k + '</dt><dd>' + v + '</dd>').join('') + '</dl>';
+const hbL = (id, txt) => '<a href="#handbuch-' + id + '">' + txt + '</a>';
+
+/* ---------- Inhalte ---------- */
+const HB = [
+  { id: 'einleitung', titel: 'Einleitung', kurz: 'Wofür dieses Handbuch da ist und wie du es mit Edge Lab nutzt.', abschnitte: [
+    { id: 'ueber-das-handbuch', titel: 'Wofür dieses Handbuch da ist', html:
+      '<p>Dieses Handbuch erklärt die Werkzeuge, mit denen viele Futures- und Orderflow-Trader arbeiten: Risiko in R, Prop-Firm-Regeln, VWAP, Volume Profile, Delta und Footprint, Session-Zeiten und typische Setups. Jedes Kapitel folgt demselben Aufbau: <b>Was ist das?</b> – <b>Wie wird es berechnet?</b> – <b>Wie lesen Profis es?</b> – <b>Typische Setups und Fehler</b> – <b>Praxis in Edge Lab</b>.</p>' +
+      '<p>Die Inhalte sind bewusst nüchtern. Kein Werkzeug funktioniert immer, und keine Regel ersetzt deinen eigenen, sauberen Backtest. Wo etwas eine Faustregel ist, steht es dabei.</p>' },
+    { id: 'so-nutzt-du-es', titel: 'So nutzt du es', html:
+      '<ul><li><b>Lesen, dann üben:</b> Unter vielen Kapiteln schaltet „Im Chart zeigen“ den passenden Indikator ein, „Üben im Replay“ startet eine neue Backtest-Session.</li>' +
+      '<li><b>Aus Fehlern lernen:</b> Die ' + '<a href="#analyse">Analyse</a> verlinkt jeden Befund auf den passenden Abschnitt – zum Beispiel „Stop verschoben“ oder „Revenge-Trade“.</li>' +
+      '<li><b>Suchen:</b> Das Suchfeld durchsucht alle Kapitel. Treffer werden im Text markiert.</li>' +
+      '<li><b>Fortschritt:</b> Unten in jedem Kapitel kannst du es als gelesen markieren. Der Haken erscheint im Inhaltsverzeichnis.</li></ul>' },
+    { id: 'hinweis', titel: 'Wichtiger Hinweis', html:
+      hbBox('achtung', '<p>Dieses Handbuch ist Lernmaterial und keine Anlageberatung. Trading mit Hebelprodukten wie Futures birgt ein hohes Verlustrisiko; Verluste können schnell und in großer Höhe entstehen. Ergebnisse aus Backtests – auch aus Edge Lab – sind keine Garantie für zukünftige Ergebnisse.</p>') +
+      '<p>Kontraktspezifikationen, Handelszeiten und vor allem Prop-Firm-Regeln können sich ändern. Prüfe die aktuellen Angaben immer direkt bei Börse, Broker oder Firma.</p>' }
+  ] },
+
+  { id: 'risiko', titel: 'Risiko & Positionsgröße', kurz: 'R-Multiple, Positionsgröße, Kontrakte, Erwartungswert, Drawdown und Verlustserien.', abschnitte: [
+    { id: 'r-multiple', titel: 'R-Multiple: Ergebnisse in Risiko messen', html:
+      '<p><b>Was ist das?</b> 1R ist der Betrag, den du bei einem Trade planmäßig riskierst: Abstand vom Einstieg zum Stop × Punktwert × Menge. Jedes Ergebnis lässt sich als Vielfaches davon ausdrücken.</p>' +
+      '<div class="hb-f">R = Ergebnis ÷ anfängliches Risiko</div>' +
+      '<p>Beispiel: Du riskierst 200 $ und gewinnst 500 $ → +2,5R. Du verlierst 260 $ → −1,3R (der Stop wurde mit Slippage gefüllt oder vergrößert).</p>' +
+      '<p><b>Warum Profis in R denken:</b> R macht Trades mit unterschiedlicher Größe und unterschiedlichen Märkten vergleichbar. Eine Strategie mit Ø +0,3R je Trade bleibt +0,3R, egal ob du 1 MNQ oder 3 NQ handelst.</p>' + HBFig.rmult() },
+    { id: 'positionsgroesse', titel: 'Positionsgröße berechnen', html:
+      '<div class="hb-f">Kontrakte = Risiko ($) ÷ (Stop-Abstand in Punkten × Punktwert)</div>' +
+      '<p>Immer <b>abrunden</b> – aufrunden heißt, mehr zu riskieren als geplant. Beispiel: 300 $ Risiko, Stop 15 Punkte im NQ (20 $ je Punkt): 300 ÷ (15 × 20) = 1 Kontrakt. Im MNQ (2 $ je Punkt): 300 ÷ (15 × 2) = 10 Kontrakte. Bei 18 Punkten Stop: 300 ÷ 360 = 0,83 → 0 NQ, aber 8 MNQ (288 $ Risiko).</p>' +
+      '<table class="hb-t"><thead><tr><th>Kontrakt</th><th>Tick</th><th>Tickwert</th><th>Punktwert</th></tr></thead><tbody>' +
+      '<tr><td>NQ – E-mini Nasdaq-100</td><td>0,25</td><td>5,00 $</td><td>20 $</td></tr>' +
+      '<tr><td>MNQ – Micro E-mini Nasdaq-100</td><td>0,25</td><td>0,50 $</td><td>2 $</td></tr>' +
+      '<tr><td>ES – E-mini S&amp;P 500</td><td>0,25</td><td>12,50 $</td><td>50 $</td></tr>' +
+      '<tr><td>MES – Micro E-mini S&amp;P 500</td><td>0,25</td><td>1,25 $</td><td>5 $</td></tr>' +
+      '<tr><td>GC – Gold</td><td>0,10</td><td>10,00 $</td><td>100 $</td></tr></tbody></table>' +
+      '<p class="hb-small">Quelle: Kontraktspezifikationen der CME Group. Vor dem Handel beim Broker prüfen.</p>' +
+      hbBox('praxis', '<p>Im Order-Ticket gibst du das Risiko in $ oder % und den Stop in Punkten ein. Bei „Größe nach Risiko“ rechnet Edge Lab die Menge genau nach dieser Formel – inklusive Slippage beim Einstieg.</p>') },
+    { id: 'erwartungswert', titel: 'Erwartungswert: Was ein Trade im Schnitt bringt', html:
+      '<div class="hb-f">Erwartung = Trefferquote × Ø Gewinn − Verlustquote × Ø Verlust</div>' +
+      '<p>In R: Bei 40 % Treffern, Ø Gewinn +2R und Ø Verlust −1R ist die Erwartung 0,4 × 2 − 0,6 × 1 = <b>+0,2R je Trade</b>. Über 100 Trades sind das rechnerisch +20R – vor Schwankungen, die erheblich sein können.</p>' +
+      '<p><b>Warum die Trefferquote allein nichts sagt:</b> 70 % Treffer mit Ø +0,4R Gewinn und Ø −1,2R Verlust ergeben 0,7 × 0,4 − 0,3 × 1,2 = −0,08R – ein Verlustsystem trotz hoher Trefferquote.</p>' +
+      '<p>Die <b>Break-even-Trefferquote</b> (ohne Kosten) hängt nur vom Chance-Risiko-Verhältnis ab:</p>' +
+      '<div class="hb-f">Break-even-Trefferquote = 1 ÷ (1 + R:R)</div>' +
+      '<table class="hb-t"><thead><tr><th>Chance : Risiko</th><th>Break-even-Trefferquote</th></tr></thead><tbody>' +
+      '<tr><td>0,5 : 1</td><td>66,7 %</td></tr><tr><td>1 : 1</td><td>50,0 %</td></tr><tr><td>1,5 : 1</td><td>40,0 %</td></tr><tr><td>2 : 1</td><td>33,3 %</td></tr><tr><td>3 : 1</td><td>25,0 %</td></tr><tr><td>4 : 1</td><td>20,0 %</td></tr></tbody></table>' +
+      '<p>Gebühren und Slippage verschieben diese Werte nach oben. Bei kleinen Zielen (wenige Ticks) fallen Kosten besonders ins Gewicht.</p>' },
+    { id: 'drawdown', titel: 'Drawdown-Mathematik', html:
+      '<p>Ein Drawdown ist der Rückgang vom höchsten Kontostand bis zum folgenden Tief. Verluste und Gewinne sind nicht symmetrisch:</p>' +
+      '<div class="hb-f">nötiger Gewinn zur Erholung = Verlust ÷ (1 − Verlust)</div>' +
+      '<table class="hb-t"><thead><tr><th>Verlust</th><th>nötiger Gewinn</th></tr></thead><tbody>' +
+      '<tr><td>−10 %</td><td>+11,1 %</td></tr><tr><td>−20 %</td><td>+25,0 %</td></tr><tr><td>−30 %</td><td>+42,9 %</td></tr><tr><td>−50 %</td><td>+100 %</td></tr><tr><td>−75 %</td><td>+300 %</td></tr></tbody></table>' +
+      HBFig.equity() + '<p>Bei Prop-Firmen zählt nicht nur der Drawdown in Prozent, sondern der Abstand zur Verlustgrenze in Dollar – siehe ' + hbL('trailing-drawdown', 'Trailing-Drawdown') + '.</p>' },
+    { id: 'verlustserien', titel: 'Verlustserien einplanen', html:
+      '<p>Die Wahrscheinlichkeit, dass die nächsten k Trades alle verlieren, ist (1 − Trefferquote)<sup>k</sup>. Bei 50 % Treffern: 5 Verluste in Folge = 0,5<sup>5</sup> ≈ 3,1 %. Das klingt selten – über viele Trades sind solche Serien aber fast sicher.</p>' +
+      hbBox('faust', '<p>Längste zu erwartende Verlustserie in n Trades ≈ log(n × p) ÷ log(1 ÷ (1 − p)), mit p = Trefferquote. Bei 50 % und 100 Trades sind das etwa 5–6 Verluste in Folge, bei 40 % etwa 7.</p>') +
+      '<p>Plane dein Risiko so, dass du mehrere solcher Serien übersteht. Die Monte-Carlo-Simulation in der ' + '<a href="#stats">Statistik</a> zeigt die Verlustserie, die in 95 % der Durchläufe nicht überschritten wurde.</p>' },
+    { id: 'stopp-setzen', titel: 'Stops setzen: Struktur statt Wunschbetrag', html:
+      '<p>Ein Stop gehört an die Stelle, an der deine Trade-Idee widerlegt ist – hinter ein Swing-Hoch oder -Tief, jenseits einer Value-Area-Kante oder eines Levels – plus ein kleiner Puffer gegen das bloße Antesten. Erst <b>danach</b> folgt die Größe aus der Formel oben.</p>' +
+      '<p>Der häufigste Fehler ist der umgekehrte Weg: „Ich will 2 NQ handeln, also passt nur ein 7-Punkte-Stop.“ Solche Stops liegen oft mitten im normalen Rauschen.</p>' +
+      hbBox('faust', '<p>Als Orientierung für das Rauschen dient die ATR (durchschnittliche Kerzenspanne). Ein Stop deutlich unter 1 ATR des Einstiegs-Timeframes wird häufig zufällig ausgelöst.</p>') +
+      hbBox('praxis', '<p>„Stop aus ATR setzen“ im Order-Ticket setzt den Abstand auf 1,5 × ATR(14) des aktiven Charts. Die Analyse meldet „Stop zu eng“, wenn Verlierer vorher schon 1R im Plus lagen oder nach dem Stopp noch ins Ziel liefen.</p>') },
+    { id: 'ziele', titel: 'Ziele und Teilausstieg', html:
+      '<p>Ziele an feste R-Vielfache zu hängen ist einfach zu testen, ignoriert aber den Markt. Viele Trader legen Ziele an das nächste relevante Level: VWAP-Band, POC, Value-Area-Kante, Vortageshoch/-tief oder eine IB-Erweiterung.</p>' +
+      '<p><b>Teilausstieg</b> (z. B. 50 % bei 1R, Rest mit Stop auf Einstand) glättet die Kontokurve und erhöht die Trefferquote. Er kostet aber Erwartung, wenn dein volles Ziel oft erreicht wird. Ob er sich lohnt, zeigt nur dein Journal: Wie viele Trades erreichten 1R, aber nicht das Ziel (MFE)?</p>' +
+      hbBox('praxis', '<p>Teilausstieg, Stop auf Einstand und Trailing-Stop stellst du im Order-Ticket unter „Teilausstieg &amp; Stop-Management“ ein. Die Analyse rechnet beim Befund „Ziel oft knapp verfehlt“ aus, was 50 % bei 1R netto gebracht hätten.</p>') }
+  ] },
+
+  { id: 'prop', titel: 'Prop-Firm-Regeln', kurz: 'Trailing-Drawdown, Tagesverlust-Limit, Konsistenzregeln und die typischen Fehler in der Challenge.', abschnitte: [
+    { id: 'prop-ablauf', titel: 'Wie eine Prop-Challenge funktioniert', html:
+      '<p>Eine Prop-Firm stellt Kapital (meist zunächst ein Prüfungskonto) unter festen Regeln zur Verfügung. Typisch sind: ein <b>Gewinnziel</b>, eine <b>maximale Verlustgrenze</b> (oft als Trailing-Drawdown), ein <b>Tagesverlust-Limit</b>, eine Höchstzahl an Kontrakten, teils <b>Mindest-Handelstage</b> und <b>Konsistenzregeln</b>. Wer eine Grenze verletzt, verliert das Konto – egal, wie gut die Woche davor war.</p>' +
+      hbBox('achtung', '<p>Die Regeln sind je Firma unterschiedlich und ändern sich regelmäßig. Lies immer die aktuellen Regeln deiner Firma, bevor du handelst – dieses Kapitel erklärt nur die Mechanik.</p>') },
+    { id: 'trailing-drawdown', titel: 'Trailing-Drawdown: Tagesschluss vs. intraday', html:
+      '<p>Beim Trailing-Drawdown liegt die Verlustgrenze einen festen Betrag unter dem bisher höchsten Kontostand – und zieht mit, wenn das Konto steigt. Entscheidend ist, <b>welcher</b> Höchststand zählt:</p>' +
+      '<ul><li><b>End-of-Day (Tagesschluss):</b> Die Grenze zieht nur mit dem Kontostand bei Handelsschluss nach. Schwankungen während des Tages verschieben sie nicht.</li>' +
+      '<li><b>Intraday (Echtzeit):</b> Die Grenze zieht mit dem höchsten Stand während des Tages nach – häufig inklusive unrealisierter Gewinne. Ein Trade, der +1.500 $ im Plus war und mit +200 $ endet, hat die Grenze trotzdem um 1.500 $ angehoben.</li></ul>' +
+      '<p>Beispiel mit 50.000 $ Konto und 2.000 $ Drawdown: Startgrenze 48.000 $. Ein Tag mit Höchststand 51.500 $ (unrealisiert) und Schluss bei 50.200 $ ergibt intraday eine Grenze von 49.500 $, auf Tagesschluss-Basis 48.200 $.</p>' +
+      '<p>Bei vielen Firmen hört das Nachziehen auf, sobald die Grenze das Startkapital erreicht – auch das ist je Firma geregelt.</p>' },
+    { id: 'tagesverlust', titel: 'Tagesverlust-Limit und Konsistenzregeln', html:
+      '<p>Das <b>Tagesverlust-Limit</b> begrenzt den Verlust eines Handelstages. Je nach Firma zählen nur realisierte oder auch offene Verluste, und ein Verstoß beendet entweder nur den Tag oder das ganze Konto.</p>' +
+      '<p><b>Konsistenzregeln</b> sollen verhindern, dass ein einziger Glückstag die Prüfung entscheidet. Beispiel einer 40-%-Regel: Bei 3.000 $ Gesamtgewinn darf kein einzelner Tag mehr als 1.200 $ beitragen. Die Prozentsätze und Details unterscheiden sich je Firma.</p>' },
+    { id: 'prop-fehler', titel: 'Typische Fehler in der Challenge', html:
+      '<ul><li><b>Zu große Positionen für den Drawdown.</b> Bei 2.000 $ Drawdown und 500 $ Risiko je Trade beenden vier Verluste in Folge das Konto. Faustregel: Risiko je Trade so wählen, dass mehrere ' + hbL('verlustserien', 'Verlustserien') + ' hineinpassen.</li>' +
+      '<li><b>Gewinne zurückgeben bei Intraday-Trailing:</b> Offene Gewinne heben die Grenze an. Wer große Gewinne wieder laufen lässt, verliert Puffer, ohne Geld verloren zu haben.</li>' +
+      '<li><b>Weiterhandeln nahe am Tageslimit</b> – meist mit größerer Position, um den Tag zu „retten“ (' + hbL('revenge', 'Revenge') + ').</li>' +
+      '<li><b>News-Regeln ignorieren:</b> Manche Firmen verbieten Positionen rund um bestimmte Termine.</li>' +
+      '<li><b>Zeitdruck:</b> Mindest- oder Höchstzahl an Tagen verleitet zu Trades ohne Setup.</li></ul>' +
+      hbBox('praxis', '<p>Unter Einstellungen → Prop-Regeln legst du Max-Drawdown (Tagesschluss-Basis, gedeckelt beim Startkapital), Tageslimit und Ziel fest. Jede Backtest-Session wird als eigenes Konto geprüft. Die Monte-Carlo-Simulation in der Statistik schätzt, wie oft deine Trades das Ziel vor der Grenze erreicht hätten.</p>') }
+  ] },
+
+  { id: 'vwap', titel: 'VWAP', show: 'vwap', kurz: 'Volumengewichteter Durchschnittspreis, Standardabweichungs-Bänder, Anchored VWAP und Setups.', abschnitte: [
+    { id: 'vwap-was', titel: 'Was ist der VWAP?', html:
+      '<p>Der VWAP (Volume Weighted Average Price) ist der volumengewichtete Durchschnittspreis seit Beginn der Session. Er zeigt, zu welchem Preis im Schnitt gehandelt wurde – Preise mit viel Volumen zählen stärker.</p>' +
+      '<div class="hb-f">VWAP = Σ (typischer Preis × Volumen) ÷ Σ Volumen<br>typischer Preis = (Hoch + Tief + Schluss) ÷ 3 je Kerze</div>' +
+      '<p>Die Summen laufen ab Session-Beginn und werden dann zurückgesetzt. In Edge Lab beginnt die Session bei Index-Futures um 18:00 New Yorker Zeit (CME-Handelstag). Manche Plattformen setzen den VWAP erst zur US-Eröffnung um 9:30 ET zurück – dann weichen die Werte ab. Wichtig ist, dass du beim Backtest und live dieselbe Definition nutzt.</p>' + HBFig.vwap() },
+    { id: 'vwap-baender', titel: 'Standardabweichungs-Bänder', html:
+      '<p>Die Bänder zeigen, wie weit der Preis volumengewichtet um den VWAP streut:</p>' +
+      '<div class="hb-f">σ = √( Σ(tp² × v) ÷ Σv − VWAP² )<br>Bänder: VWAP ± 1σ, ± 2σ (± 3σ)</div>' +
+      '<p>Am ruhigen Tag pendelt der Kurs meist zwischen den ±1σ-Bändern um den VWAP. Am Trendtag läuft er am 1σ- oder 2σ-Band entlang, und Rücksetzer enden oft am VWAP oder am 1σ-Band.</p>' },
+    { id: 'anchored-vwap', titel: 'Anchored VWAP', html:
+      '<p>Ein Anchored VWAP beginnt nicht zum Session-Start, sondern an einem selbst gewählten Punkt – etwa an der US-Eröffnung, einem markanten Hoch oder Tief, einer News-Kerze oder dem Beginn eines Ausbruchs. Er zeigt den Durchschnittspreis aller, die seit diesem Ereignis gehandelt haben.</p>' +
+      '<p>Lesart: Hält der Kurs über einem vom Tief verankerten VWAP, liegen die Käufer seit diesem Tief im Schnitt im Gewinn.</p>' +
+      hbBox('praxis', '<p>Werkzeug „Anchored VWAP“ (Taste V) wählen und auf die Ankerkerze klicken. Rechtsklick auf den Knopf entfernt ihn.</p>') },
+    { id: 'vwap-lesen', titel: 'Wie Profis den VWAP lesen', html:
+      '<ul><li><b>Fairer Preis des Tages:</b> Über dem VWAP haben Käufer seit Session-Beginn im Schnitt Gewinn, darunter Verkäufer.</li>' +
+      '<li><b>Benchmark:</b> Viele institutionelle Orders werden am VWAP gemessen oder per Algorithmus über den Tag verteilt. Deshalb reagiert der Kurs dort häufig.</li>' +
+      '<li><b>Steigung und Abstand:</b> Ein steigender VWAP mit Kurs darüber spricht für Käuferkontrolle. Weit entfernte Kurse (2σ und mehr) sind gedehnt – Fortsetzung ist möglich, Einstiege dort haben aber einen weiten Weg zum Stop.</li></ul>' },
+    { id: 'vwap-setups', titel: 'Setups: Rückeroberung, Ablehnung, Band-Fade, Band-Trend', html:
+      '<ul><li><b>Rückeroberung (Reclaim):</b> Kurs fällt unter den VWAP, findet keine Anschlussverkäufe und schließt wieder darüber – Long mit Stop unter dem Tief. Details im ' + hbL('setup-vwap-reclaim', 'Setup') + '.</li>' +
+      '<li><b>Ablehnung (Reject):</b> Rücklauf von unten an den VWAP, Verkäufer verteidigen ihn – Short mit Stop über dem Ablehnungshoch.</li>' +
+      '<li><b>Band-Fade:</b> Am Balance-Tag am ±2σ-Band gegen die Bewegung, Ziel VWAP. Gefährlich am Trendtag.</li>' +
+      '<li><b>Band-Trend:</b> Am Trendtag Rücksetzer zum VWAP oder 1σ-Band in Trendrichtung handeln.</li></ul>' +
+      '<p>Woran erkennst du den Tagestyp? Hinweise sind eine Eröffnung außerhalb der Vortages-Value-Area, eine früh weite ' + hbL('initial-balance', 'Initial Balance') + ' und ein klar steigender oder fallender VWAP.</p>' },
+    { id: 'vwap-fehler', titel: 'Typische Fehler mit dem VWAP', html:
+      '<ul><li>Gegen einen klar steigenden VWAP shorten (oder gegen einen fallenden kaufen), ohne Level und Orderflow als Grund.</li>' +
+      '<li>Band-Fades am Trendtag: Das 2σ-Band ist dann kein Widerstand, sondern die Laufbahn.</li>' +
+      '<li>Den VWAP in den ersten Minuten der Session überbewerten – mit wenig Volumen springt er stark.</li>' +
+      '<li>Unterschiedliche Reset-Zeiten mischen (18:00 ET vs. 9:30 ET).</li></ul>' +
+      hbBox('praxis', '<p>Die Analyse speichert beim Platzieren, ob du über oder unter dem Session-VWAP eingestiegen bist, und vergleicht deine Ergebnisse mit und gegen den VWAP.</p>') + hbBtns('vwap') }
+  ] },
+
+  { id: 'profil', titel: 'Volume Profile & Market Profile', show: 'profil', kurz: 'POC, Value Area, HVN/LVN, Profilformen, 80-%-Regel, Initial Balance, Overnight und Opening Range.', abschnitte: [
+    { id: 'volume-profile', titel: 'Volume Profile: POC und Value Area', html:
+      '<p>Ein Volume Profile zeigt, wie viel Volumen auf jeder Preisstufe gehandelt wurde – über einen Zeitraum, nicht über die Zeit. Daraus ergeben sich:</p>' +
+      '<ul><li><b>POC</b> (Point of Control): die Preisstufe mit dem meisten Volumen.</li>' +
+      '<li><b>Value Area</b>: der Bereich um den POC, in dem 70 % des Volumens gehandelt wurden. Die 70 % sind eine Konvention, angelehnt an eine Standardabweichung (≈ 68 %).</li>' +
+      '<li><b>VAH / VAL</b>: Ober- und Unterkante der Value Area.</li></ul>' +
+      '<p><b>Berechnung (CBOT-Verfahren):</b> Vom POC ausgehend werden jeweils die zwei nächsten Preisstufen oberhalb und unterhalb verglichen. Die Seite mit mehr Volumen wird hinzugenommen. Das wiederholt sich, bis 70 % des Gesamtvolumens erreicht sind.</p>' + HBFig.profile() },
+    { id: 'hvn-lvn', titel: 'HVN und LVN', html:
+      '<p><b>HVN</b> (High Volume Node): Bereiche mit viel Volumen – der Markt hat diese Preise akzeptiert, der Kurs verweilt dort gern. <b>LVN</b> (Low Volume Node): Bereiche mit wenig Volumen – Preise, die abgelehnt wurden. Der Kurs läuft oft schnell durch LVNs, und sie trennen häufig zwei Verteilungen.</p>' +
+      hbBox('faust', '<p>LVNs sind gute Orte für Stops (dahinter) und Ziele (davor). HVNs sind eher Ziele als Einstiege, weil der Kurs dort häufig hin und her pendelt.</p>') },
+    { id: 'profilformen', titel: 'Profilformen und Market Profile', html:
+      '<ul><li><b>D-Form:</b> ausgewogene Verteilung mit POC in der Mitte – Balance.</li>' +
+      '<li><b>P-Form:</b> dicker Bauch oben, dünner Schwanz unten – oft nach einem Anstieg mit Akzeptanz höherer Preise (z. B. durch Short-Eindeckungen).</li>' +
+      '<li><b>b-Form:</b> dicker Bauch unten – das Gegenstück, oft nach Liquidation von Long-Positionen.</li>' +
+      '<li><b>Dünnes, gestrecktes Profil:</b> Trendtag, wenig Akzeptanz auf einzelnen Preisen.</li></ul>' +
+      '<p>Das <b>Market Profile</b> (TPO) arbeitet mit Zeit statt Volumen: Jede 30-Minuten-Periode bekommt einen Buchstaben auf allen Preisen, die sie erreicht hat. POC und Value Area werden dann aus der Zeit am Preis berechnet. Volume und Market Profile ähneln sich meist, weichen aber bei schnellen Bewegungen mit viel Volumen voneinander ab.</p>' },
+    { id: 'vortag', titel: 'Vortages-Werte und die 80-%-Regel', html:
+      '<p>VAH, VAL und POC des Vortages sind für viele Trader die ersten Referenzen des neuen Tages. Wichtig ist, wo der Markt eröffnet: innerhalb der Vortages-Value-Area (eher Balance) oder außerhalb (möglicher Richtungstag).</p>' +
+      hbBox('faust', '<p><b>80-%-Regel</b> aus dem Market Profile: Eröffnet der Markt außerhalb der Vortages-Value-Area und kehrt in sie zurück (oft verlangt: zwei aufeinanderfolgende 30-Minuten-Perioden darin), läuft er häufig bis zur anderen Seite der Value Area. Der Name ist keine verlässliche Trefferquote – teste die Regel für deinen Markt selbst.</p>') },
+    { id: 'initial-balance', titel: 'Initial Balance und Erweiterungen', html:
+      '<p>Die <b>Initial Balance</b> (IB) ist die Spanne der ersten Handelsstunde der regulären Sitzung, bei US-Index-Futures 9:30–10:30 ET. Sie zeigt, wie weit sich Käufer und Verkäufer früh einig waren.</p>' + HBFig.ib() +
+      hbBox('faust', '<p>Eine im Vergleich enge IB wird häufiger ausgedehnt, eine sehr weite IB spricht eher für Balance. Erweiterungen um 50 % und 100 % der IB-Spanne dienen vielen als Orientierungsziele.</p>') + hbBtns('rth') },
+    { id: 'overnight-opening-range', titel: 'Overnight-Hoch/-Tief und Opening Range', html:
+      '<p><b>Overnight-Hoch/-Tief</b> (ONH/ONL): Extremwerte des Handels zwischen 18:00 ET und der US-Eröffnung um 9:30 ET. Sie werden oft in der ersten Stunde getestet.</p>' +
+      '<p><b>Opening Range</b>: die Spanne der ersten Minuten nach 9:30 ET (üblich sind 5, 15 oder 30 Minuten). Ausbrüche aus der Opening Range sind ein klassisches ' + hbL('setup-orb', 'Setup') + '.</p>' +
+      hbBox('praxis', '<p>„RTH-Levels“ zeigt Overnight-Hoch/-Tief, RTH-Eröffnung, Opening Range (15 Minuten) und Initial Balance – immer nur aus Kerzen bis zum Cursor. „Vortag“ zeigt Hoch, Tief, Schluss, POC, VAH und VAL des Vortages, „Profil“ das Volume Profile des sichtbaren Bereichs.</p>') + hbBtns('profil') }
+  ] },
+
+  { id: 'orderflow', titel: 'Orderflow-Grundlagen', show: 'footprint', kurz: 'Bid/Ask, Aggressor, Delta, CVD, Footprint, Imbalances, Absorption, Exhaustion und die Grenzen der Daten.', abschnitte: [
+    { id: 'bid-ask', titel: 'Bid, Ask und der Aggressor', html:
+      '<p>Das <b>Bid</b> ist das höchste Kaufgebot, der <b>Ask</b> das niedrigste Verkaufsangebot. Wer sofort handeln will, schickt eine <b>Market-Order</b> und ist der <b>Aggressor</b>: Er kauft am Ask oder verkauft am Bid. Wer eine <b>Limit-Order</b> ins Orderbuch legt, handelt <b>passiv</b> und wartet, bis ein Aggressor kommt.</p>' +
+      '<p>Jeder Trade hat einen Käufer und einen Verkäufer. Orderflow-Analyse fragt deshalb nicht „Wer hat gekauft?“, sondern „Wer war aggressiv?“.</p>' },
+    { id: 'delta-cvd', titel: 'Delta und CVD', html:
+      '<div class="hb-f">Delta = Volumen der Kauf-Aggressoren − Volumen der Verkauf-Aggressoren</div>' +
+      '<p>Ein positives Delta je Kerze heißt: Mehr Volumen wurde aggressiv gekauft als verkauft. Das <b>CVD</b> (Cumulative Volume Delta) summiert das Delta fortlaufend – in Edge Lab standardmäßig ab Session-Beginn, einstellbar.</p>' +
+      '<p>Delta allein sagt nicht, wohin der Kurs geht. Interessant wird es im Verhältnis zur Preisbewegung: Viel positives Delta ohne steigenden Preis kann auf passive Verkäufer hindeuten (' + hbL('absorption', 'Absorption') + ').</p>' + hbBtns('cvd') },
+    { id: 'footprint', titel: 'Footprint und diagonale Imbalance', html:
+      '<p>Ein <b>Footprint</b> zeigt je Preisstufe einer Kerze das Volumen am Bid (Verkauf-Aggressoren, links) und am Ask (Kauf-Aggressoren, rechts) – „Bid × Ask“.</p>' +
+      '<p><b>Diagonale Imbalance:</b> Verglichen wird das Ask-Volumen auf Preis P mit dem Bid-Volumen <i>eine Stufe darunter</i> – denn zum selben Zeitpunkt liegen Bid und Ask eine Stufe auseinander. Ist das Ask-Volumen mindestens um einen Faktor größer, ist das eine Kauf-Imbalance; umgekehrt (Bid auf P gegen Ask eine Stufe darüber) eine Verkaufs-Imbalance.</p>' + HBFig.footprint() +
+      '<p><b>Stacked Imbalances:</b> Mehrere Imbalances derselben Seite direkt übereinander (Faustregel: drei oder mehr) zeigen eine Zone mit einseitigem, aggressivem Druck. Solche Zonen werden später oft als Unterstützung oder Widerstand beobachtet.</p>' },
+    { id: 'absorption', titel: 'Absorption und Exhaustion', html:
+      '<p><b>Absorption:</b> Viel aggressives Volumen in eine Richtung, aber der Preis kommt nicht weiter – große passive Limit-Orders nehmen alles auf. Beispiel: Am Vortagestief wird stark aggressiv verkauft (tiefrotes Delta), der Kurs hält trotzdem. Kippt danach das Delta, ist das ein mögliches Long-' + hbL('setup-absorption', 'Setup') + '.</p>' +
+      '<p><b>Exhaustion (Erschöpfung):</b> Eine Bewegung läuft aus, weil die Aggressoren fehlen – am Hoch oder Tief stehen auffallend kleine Volumina im Footprint. Der letzte Käufer hat gekauft.</p>' },
+    { id: 'delta-divergenz', titel: 'Delta-Divergenz und große Trades', html:
+      '<p>Eine <b>Delta-Divergenz</b> liegt vor, wenn der Preis ein neues Hoch macht, das Delta oder CVD aber nicht (oder umgekehrt am Tief). Die Aggression lässt nach, während der Preis noch läuft.</p>' + HBFig.divergence() +
+      '<p><b>Große Trades</b> (große Einzelausführungen) fallen im Footprint auf. Vorsicht: Große Marktteilnehmer zerlegen ihre Orders meist in viele kleine – oder zeigen nur einen Teil (Iceberg-Orders). Ein großer Print ist kein Beweis für eine Richtung.</p>' },
+    { id: 'orderflow-grenzen', titel: 'Grenzen: echte und geschätzte Daten', html:
+      '<p>Echtes Delta und echte Footprints brauchen jeden einzelnen Trade mit Aggressor-Seite. Fehlen diese Daten, lässt sich Delta nur aus der Kerzenform schätzen (Schluss nahe am Hoch → eher Käufer). Das ist eine grobe Näherung.</p>' +
+      '<ul><li><b>Index-Archiv in Edge Lab:</b> 1-Minuten-Kerzen eines Datenanbieters ohne Börsen-Einzeltrades. Delta ist geschätzt, Volumen ist Anbieter-Volumen und weicht vom CME-Volumen ab, kein Footprint.</li>' +
+      '<li><b>Krypto (Binance):</b> echtes Taker-Kaufvolumen je Kerze, also echtes Delta. Mit „Trades laden“ auch echte Footprints.</li>' +
+      '<li><b>CSV-Import:</b> Trade-Dateien mit Aggressor-Seite (z. B. Databento) liefern echtes Delta und Footprint.</li></ul>' +
+      '<p>Das <b>Orderbuch (DOM)</b> zeigt wartende Limit-Orders. Es ändert sich ständig, Orders werden storniert und verschoben. Edge Lab enthält kein historisches Orderbuch.</p>' + hbBtns('footprint') }
+  ] },
+
+  { id: 'sessions', titel: 'Sessions & Zeitfenster', show: 'sessions', kurz: 'Asien, London, New York, CME-Handelstag, wichtige Uhrzeiten und Sommerzeit.', abschnitte: [
+    { id: 'handelszeiten', titel: 'Der CME-Handelstag', html:
+      '<p>US-Index-Futures wie NQ und ES sowie Gold (GC) werden auf CME Globex fast rund um die Uhr gehandelt: von Sonntag 18:00 bis Freitag 17:00 New Yorker Zeit (ET), mit einer täglichen Pause von 17:00 bis 18:00 ET. Ein neuer Handelstag beginnt also um 18:00 ET am Vorabend.</p>' +
+      '<p>Die <b>reguläre Sitzung</b> (RTH) entspricht dem US-Aktienmarkt: 9:30–16:00 ET. Die übrige Zeit heißt ETH oder Overnight. In der RTH ist das Volumen in der Regel deutlich höher.</p>' },
+    { id: 'drei-sessions', titel: 'Asien, London, New York', html:
+      '<table class="hb-t"><thead><tr><th>Session</th><th>Ortszeit</th><th>Deutsche Zeit (Normalfall)</th></tr></thead><tbody>' +
+      '<tr><td>Asien (Tokio)</td><td>9:00–15:30</td><td>1:00–7:30 (Winter) / 2:00–8:30 (Sommer)</td></tr>' +
+      '<tr><td>London</td><td>8:00–16:30</td><td>9:00–17:30</td></tr>' +
+      '<tr><td>New York (Kassa)</td><td>9:30–16:00 ET</td><td>15:30–22:00</td></tr></tbody></table>' +
+      '<p>Japan kennt keine Sommerzeit, deshalb verschiebt sich die Tokio-Session aus deutscher Sicht um eine Stunde.</p>' },
+    { id: 'wichtige-zeiten', titel: 'Wichtige Uhrzeiten', html:
+      '<ul><li><b>8:30 ET (14:30 deutscher Zeit):</b> viele US-Wirtschaftsdaten, z. B. Arbeitsmarktbericht (meist erster Freitag im Monat), Verbraucherpreise (CPI), Erstanträge auf Arbeitslosenhilfe (donnerstags).</li>' +
+      '<li><b>9:30 ET (15:30):</b> Eröffnung des US-Kassamarkts, Beginn von Opening Range und Initial Balance.</li>' +
+      '<li><b>10:00 ET (16:00):</b> weitere Daten, z. B. ISM-Einkaufsmanagerindex, Verbrauchervertrauen, JOLTS.</li>' +
+      '<li><b>14:00 ET (20:00):</b> Zinsentscheid der US-Notenbank (acht planmäßige Sitzungen im Jahr), Pressekonferenz 14:30 ET.</li>' +
+      '<li><b>16:00 ET (22:00):</b> Schluss des Kassamarkts; Futures handeln bis 17:00 ET weiter.</li></ul>' +
+      '<p>Termine schwanken; nutze einen Wirtschaftskalender. Im Blind-Modus kennst du das Datum nicht – genau deshalb lohnt es sich, Verhalten um 8:30 und 10:00 ET grundsätzlich vorsichtig zu üben.</p>' },
+    { id: 'sommerzeit', titel: 'Sommerzeit-Verschiebung', html:
+      '<p>Die USA stellen am zweiten Sonntag im März auf Sommerzeit um und am ersten Sonntag im November zurück. Europa stellt am letzten Sonntag im März und am letzten Sonntag im Oktober um.</p>' +
+      '<p>In den Wochen dazwischen beträgt der Abstand zwischen Deutschland und New York nur fünf statt sechs Stunden: Die US-Eröffnung liegt dann bei <b>14:30</b> statt 15:30 deutscher Zeit, die 8:30-Daten bei 13:30.</p>' +
+      hbBox('praxis', '<p>Edge Lab rechnet Session-Zeiten intern in New Yorker Zeit und zeigt sie in deiner Anzeige-Zeitzone (Einstellungen → Konto). Sommerzeitwechsel sind berücksichtigt.</p>') },
+    { id: 'zeitfenster', titel: 'Zeitfenster auswerten', html:
+      '<p>Viele Strategien funktionieren nur in bestimmten Phasen – etwa in der ersten Stunde nach 9:30 ET. Die Statistik zeigt deine Ergebnisse nach Uhrzeit und Wochentag, die Analyse meldet Zeitfenster mit mindestens fünf Trades und negativem Ø R, wenn der Rest positiv ist.</p>' +
+      hbBox('faust', '<p>Fünf Trades sind ein Hinweis, kein Beweis. Bevor du ein Zeitfenster sperrst, sammle mindestens 30 Trades darin – und prüfe, ob es an der Uhrzeit liegt oder an einem Setup, das du nur dann handelst.</p>') +
+      hbBox('praxis', '<p>Im Dialog „Neue Session“ wählst du die Startzeit: New York 9:30 ET (Start 9:15), London 8:00, Asien 9:00 Tokio oder zufällig.</p>') + hbBtns('sessions') }
+  ] },
+
+  { id: 'setups', titel: 'Setups-Bibliothek', kurz: 'Sieben Setups mit Kontext, Auslöser, Stop, Ziel, Invalidierung und Backtest-Plan.', abschnitte: [
+    { id: 'setups-intro', titel: 'So sind die Setups aufgebaut', html:
+      '<p>Die folgenden Setups sind <b>Ausgangspunkte zum Testen</b>, keine Empfehlungen. Jedes ist gleich aufgebaut: Kontext (wann überhaupt), Auslöser (der genaue Einstieg), Stop, Ziel, Invalidierung (wann die Idee nicht mehr gilt) und wie du es in Edge Lab prüfst.</p>' +
+      hbBox('praxis', '<p>Lege jedes Setup als Strategie an und schreibe die Regeln als Checkliste. Sie erscheinen vor jedem Einstieg im Order-Ticket, und die Analyse vergleicht Trades mit vollständig abgehakten Regeln mit den übrigen.</p>') },
+    { id: 'setup-vwap-reclaim', titel: 'VWAP-Rückeroberung', html: hbSetup([
+      ['Kontext', 'Kurs fällt unter den Session-VWAP, idealerweise an ein Level (Vortages-VAL, Overnight-Tief).'],
+      ['Auslöser', 'Eine Kerze schließt wieder über dem VWAP, Delta der Kerze positiv.'],
+      ['Stop', 'Unter dem Tief der Bewegung unter den VWAP.'],
+      ['Ziel', '+1σ-Band oder nächstes Level (POC, VAH), alternativ 2R.'],
+      ['Invalidierung', 'Kurs fällt direkt wieder unter den VWAP und schließt darunter.'],
+      ['Backtest', 'Ergebnisse mit und ohne Level-Kontext getrennt notieren (z. B. als zwei Strategien).']]) + hbBtns('vwap') },
+    { id: 'setup-fehlausbruch', titel: 'Fehlausbruch an VAH/VAL', html: hbSetup([
+      ['Kontext', 'Eröffnung innerhalb der Vortages-Value-Area, Balance-Bedingungen.'],
+      ['Auslöser', 'Kurs handelt über VAH (unter VAL), findet keine Anschlusskäufe (-verkäufe) und schließt wieder innerhalb der Value Area.'],
+      ['Stop', 'Hinter das Extrem des Fehlausbruchs.'],
+      ['Ziel', 'POC, danach die gegenüberliegende Kante (vgl. 80-%-Regel).'],
+      ['Invalidierung', 'Akzeptanz außerhalb: mehrere Kerzen schließen jenseits der Kante.'],
+      ['Backtest', 'Startzeit New York, „Vortag“ einschalten; Tage mit Eröffnung außerhalb der Value Area getrennt betrachten.']]) + hbBtns('profil') },
+    { id: 'setup-ib-ausbruch', titel: 'Initial-Balance-Ausbruch', html: hbSetup([
+      ['Kontext', 'Vergleichsweise enge Initial Balance, Kurs auf der Ausbruchsseite des VWAP.'],
+      ['Auslöser', 'Schluss außerhalb von IB-Hoch oder -Tief nach 10:30 ET, Delta in Ausbruchsrichtung.'],
+      ['Stop', 'Zurück in die IB, z. B. Mitte der IB oder unter die Ausbruchskerze.'],
+      ['Ziel', 'IB-Erweiterung +50 % / +100 %.'],
+      ['Invalidierung', 'Schneller Rücklauf in die IB (Fehlausbruch – möglicherweise ein Setup in Gegenrichtung).'],
+      ['Backtest', '„RTH-Levels“ einschalten. Notiere die IB-Spanne in Punkten, um später enge und weite IBs zu vergleichen.']]) + hbBtns('rth') },
+    { id: 'setup-orb', titel: 'Opening-Range-Breakout', html: hbSetup([
+      ['Kontext', 'Erste 15 Minuten nach 9:30 ET, klare Spanne; Eröffnung nahe einem Vortages-Extrem erhöht die Bedeutung.'],
+      ['Auslöser', 'Schluss außerhalb der Opening Range (oder Stop-Order knapp dahinter).'],
+      ['Stop', 'Gegenüberliegende Seite oder Mitte der Opening Range.'],
+      ['Ziel', 'Vielfaches der Spanne, Overnight-Extrem oder Vortages-Level.'],
+      ['Invalidierung', 'Rückkehr in die Opening Range innerhalb weniger Kerzen.'],
+      ['Backtest', 'Viele Fehlausbrüche sind normal – die Erwartung entscheidet, nicht die Trefferquote. Kosten realistisch ansetzen, weil Stop-Einstiege Slippage haben.']]) + hbBtns('rth') },
+    { id: 'setup-absorption', titel: 'Absorption am Level', html: hbSetup([
+      ['Kontext', 'Bekanntes Level (Vortageshoch/-tief, VAH/VAL, Overnight-Extrem).'],
+      ['Auslöser', 'Starkes aggressives Volumen ins Level, aber kein Durchbruch; danach kippt das Delta in die Gegenrichtung.'],
+      ['Stop', 'Wenige Ticks hinter das Level bzw. das Extrem der Absorption.'],
+      ['Ziel', 'VWAP oder POC.'],
+      ['Invalidierung', 'Durchbruch mit Anschluss – die passive Seite hat aufgegeben.'],
+      ['Backtest', 'Braucht echte Trade-Daten (Krypto oder Trade-CSV). Mit geschätztem Delta nicht sinnvoll prüfbar.']]) + hbBtns('footprint') },
+    { id: 'setup-delta-divergenz', titel: 'Delta-Divergenz am Hoch/Tief', html: hbSetup([
+      ['Kontext', 'Ausgedehnte Bewegung bis an ein Level oder das 2σ-Band.'],
+      ['Auslöser', 'Neues Hoch ohne neues CVD-Hoch, dann Bruch des letzten kleinen Tiefs.'],
+      ['Stop', 'Über dem Hoch.'],
+      ['Ziel', 'VWAP oder 1σ-Band.'],
+      ['Invalidierung', 'Neues Hoch mit neuem CVD-Hoch.'],
+      ['Backtest', 'Divergenzen gibt es viele – nur mit Level-Kontext zählen. CVD im unteren Fenster einschalten.']]) + hbBtns('cvd') },
+    { id: 'setup-pullback', titel: 'Trend-Pullback zur EMA oder zum VWAP', html: hbSetup([
+      ['Kontext', 'Klarer Trend: Kurs auf einer Seite des VWAP, steigender (fallender) VWAP, EMA 21 in Trendrichtung.'],
+      ['Auslöser', 'Rücksetzer an EMA 21 oder VWAP, Umkehrkerze in Trendrichtung.'],
+      ['Stop', 'Hinter das Pullback-Extrem.'],
+      ['Ziel', 'Letztes Hoch (Tief) oder 2R; Rest laufen lassen mit Trailing-Stop.'],
+      ['Invalidierung', 'Schluss auf der anderen Seite des VWAP.'],
+      ['Backtest', 'Trendtage sind seltener als Balance-Tage. Prüfe, wie viele Verluste an Nicht-Trendtagen entstehen.']]) + hbBtns('vwap') }
+  ] },
+
+  { id: 'backtesten', titel: 'Sauber backtesten', kurz: 'Stichprobe, Look-ahead, Rosinenpicken, Kosten, Intrabar-Annahme, Overfitting und Kennzahlen.', abschnitte: [
+    { id: 'stichprobe', titel: 'Stichprobengröße und Zufall', html:
+      '<p>Wenige Trades sagen wenig. Die Unsicherheit der Trefferquote lässt sich abschätzen:</p>' +
+      '<div class="hb-f">Standardfehler = √( p × (1 − p) ÷ n )</div>' +
+      '<p>Bei 50 % Treffern und 30 Trades ist der Standardfehler etwa 9 Prozentpunkte – das 95-%-Intervall reicht ungefähr von 32 % bis 68 %. Bei 100 Trades schrumpft es auf etwa 40–60 %.</p>' +
+      hbBox('faust', '<p>Ab etwa 30 Trades je Setup gibt es eine erste Tendenz, ab 100 eine belastbarere Aussage. Je seltener die großen Gewinner, desto mehr Trades brauchst du.</p>') },
+    { id: 'lookahead', titel: 'Look-ahead und Rückschaufehler', html:
+      '<p><b>Look-ahead:</b> Informationen nutzen, die zum Zeitpunkt der Entscheidung noch nicht existierten – etwa das Tageshoch, ein fertiges Tagesprofil oder eine Kerze, die noch läuft. <b>Rückschaufehler</b> (Hindsight): Im fertigen Chart sieht jedes Setup offensichtlich aus.</p>' +
+      hbBox('praxis', '<p>Im Replay ist alles rechts vom Cursor unsichtbar; laufende Kerzen höherer Timeframes werden nur bis zum Cursor gebildet, Indikatoren rechnen nur mit Vergangenheit. Die Nachlauf-Prüfung der Analyse läuft erst nach dem Ende einer Session.</p>') },
+    { id: 'rosinen', titel: 'Rosinenpicken und Blind-Modus', html:
+      '<p>Wer sich die Tage aussucht, testet seine Erinnerung, nicht seine Strategie. Typisch: nur bekannte Trendtage oder „interessante“ Tage durchspielen.</p>' +
+      '<p>Gegenmittel: zufällige Tage und der <b>Blind-Modus</b>, der Datum und Wochentag bis zum Ende der Session verbirgt. So handelst du ohne Wissen über Nachrichten oder den weiteren Verlauf.</p>' },
+    { id: 'kosten', titel: 'Kosten realistisch ansetzen', html:
+      '<p>Gebühren (Börse, Broker, Plattform) und Slippage entscheiden bei kurzfristigen Strategien oft über Gewinn oder Verlust. Rechne mit beiden – lieber etwas zu hoch.</p>' +
+      '<ul><li>Market- und Stop-Orders werden mit Slippage gefüllt, Limit-Orders zum Limitpreis (dafür nicht immer).</li><li>Bei engen Stops und kleinen Zielen machen Kosten einen großen Teil von 1R aus.</li></ul>' +
+      hbBox('praxis', '<p>Unter Einstellungen → Kosten legst du Slippage in Ticks und Gebühren je Seite fest. Alle R-Werte in Edge Lab sind netto, also nach Kosten.</p>') },
+    { id: 'intrabar', titel: 'Intrabar-Annahme', html:
+      '<p>Berührt eine Kerze sowohl Stop als auch Ziel, weiß niemand, was zuerst kam. Wer immer das Ziel annimmt, überschätzt seine Strategie.</p>' +
+      hbBox('praxis', '<p>Standard ist „Konservativ: SL zuerst“. Mit 1-Minuten-Basisdaten kommt der Fall selten vor; bei größeren Basis-Timeframes häufiger.</p>') },
+    { id: 'overfitting', titel: 'Overfitting und Out-of-Sample', html:
+      '<p><b>Overfitting:</b> Regeln so lange anpassen, bis sie die Vergangenheit perfekt erklären – und dann live versagen. Warnzeichen sind viele Parameter, sehr spezifische Filter („nur dienstags zwischen 10:05 und 10:20“) und große Unterschiede zwischen ähnlichen Einstellungen.</p>' +
+      '<p><b>Out-of-Sample:</b> Daten trennen. Beispiel: Regeln an 2021–2023 entwickeln, unverändert an 2024 prüfen. Erst wenn beide Teile ähnlich aussehen, ist das Ergebnis glaubwürdiger.</p>' },
+    { id: 'kennzahlen', titel: 'Kennzahlen lesen', html:
+      '<ul><li><b>Profit-Faktor:</b> Summe der Gewinne ÷ Summe der Verluste. Über 1 verdient die Strategie (netto), Werte deutlich über 1 sind robuster.</li>' +
+      '<li><b>Erwartung:</b> Ø Ergebnis je Trade, in $ und in R – siehe ' + hbL('erwartungswert', 'Erwartungswert') + '.</li>' +
+      '<li><b>Max. Drawdown:</b> größter Rückgang vom Hoch der Kontokurve.</li>' +
+      '<li><b>Monte Carlo:</b> Trades zufällig neu ziehen, um zu sehen, wie verschieden derselbe Edge verlaufen kann – inklusive Drawdown und Prop-Ergebnis.</li></ul>' },
+    { id: 'journal-routine', titel: 'Journal-Routine', html:
+      '<ol><li>Vor der Session: Strategie wählen, Regeln lesen, Risiko festlegen.</li><li>Während: nur Trades mit abgehakten Regeln; Grund kurz notieren.</li><li>Nach der Session: Disziplin bewerten, Fehler markieren, ein Learning aufschreiben.</li><li>Wöchentlich: Analyse und Statistik ansehen, eine Sache gezielt verbessern.</li></ol>' }
+  ] },
+
+  { id: 'psychologie', titel: 'Psychologie & Fehler', kurz: 'Die Fehler aus der Analyse – woran du sie erkennst und was dagegen hilft.', abschnitte: [
+    { id: 'sl-verschieben', titel: 'Stop verschieben', html:
+      '<p><b>Was passiert:</b> Der Kurs nähert sich dem Stop, und du ziehst ihn weiter weg, „damit der Trade noch Luft hat“. Aus geplanten −1R werden −2R oder mehr. Manchmal dreht der Trade danach – das verstärkt die Gewohnheit, obwohl das Risiko jedes Mal größer war als geplant.</p>' +
+      '<p><b>Gegenmaßnahmen:</b> Stop vor dem Einstieg an die Struktur legen (' + hbL('stopp-setzen', 'Stops setzen') + '), danach nur Richtung Gewinn bewegen. Brauchst du mehr Platz, war die Position zu groß – nächstes Mal kleiner handeln.</p>' },
+    { id: 'zu-frueh-raus', titel: 'Zu früh aussteigen', html:
+      '<p><b>Was passiert:</b> Ein Trade läuft ins Plus, die Angst, den Gewinn wieder zu verlieren, wird größer als der Plan. Du schließt bei +0,5R, obwohl das Ziel bei +2R lag. Bei einer Strategie, die auf wenigen großen Gewinnern beruht, zerstört das die Erwartung.</p>' +
+      '<p><b>Gegenmaßnahmen:</b> Manuelle Ausstiege nur bei vorher festgelegten Gründen. Wer Gewinne sichern will, nutzt Teilausstieg oder Stop auf Einstand – geplant, nicht spontan.</p>' },
+    { id: 'revenge', titel: 'Revenge-Trading', html:
+      '<p><b>Was passiert:</b> Nach einem Verlust folgt sofort der nächste Trade, oft größer und ohne Setup – das Geld soll „zurück“. Revenge-Trades sind eine der häufigsten Ursachen für verletzte Tageslimits.</p>' +
+      '<p><b>Gegenmaßnahmen:</b> Feste Pause nach jedem Verlust (z. B. 10 Minuten), Risiko nach Verlusten nie erhöhen, nach zwei Verlusten in Folge die Session beenden.</p>' },
+    { id: 'overtrading', titel: 'Overtrading', html:
+      '<p><b>Was passiert:</b> Mehr Trades als die Strategie hergibt – aus Langeweile, um Verluste aufzuholen oder weil gerade „etwas los ist“. Typisch: Die ersten Trades einer Session sind ordentlich, die späteren deutlich schlechter.</p>' +
+      '<p><b>Gegenmaßnahmen:</b> Höchstzahl an Trades je Session festlegen und danach beenden. A-Setups aufschreiben und nur diese handeln.</p>' },
+    { id: 'fomo', titel: 'FOMO – Angst, etwas zu verpassen', html:
+      '<p><b>Was passiert:</b> Der Kurs läuft ohne dich los, du springst spät hinterher – weit weg vom Level, mit großem Stop oder schlechtem Chance-Risiko-Verhältnis.</p>' +
+      '<p><b>Gegenmaßnahmen:</b> Verpasste Trades notieren statt nachlaufen. Einstiege nur an vorher markierten Levels oder mit Limit-Order auf den Rücksetzer.</p>' },
+    { id: 'groesse', titel: 'Positionsgröße', html:
+      '<p><b>Was passiert:</b> Die Größe schwankt mit dem Gefühl: nach Gewinnen größer, nach Verlusten aus Trotz ebenfalls größer. Ein einzelner zu großer Verlust kann dann die Arbeit von Wochen kosten – oder ein Prop-Konto.</p>' +
+      '<p><b>Gegenmaßnahmen:</b> Festes Risiko je Trade (in $ oder % vom Konto), Größe immer aus Risiko und Stop rechnen (' + hbL('positionsgroesse', 'Formel') + '). Größe nur nach einer vorher festgelegten Regel erhöhen, etwa nach 100 Trades mit positiver Erwartung.</p>' },
+    { id: 'verlierer-halten', titel: 'Verlierer halten, Gewinner abschneiden', html:
+      '<p><b>Was passiert:</b> Verluste realisieren tut weh, also bleiben Verlierer offen, „bis sie zurückkommen“. Gewinner werden dagegen schnell geschlossen. Das Ergebnis: viele kleine Gewinne, wenige große Verluste.</p>' +
+      '<p><b>Gegenmaßnahmen:</b> Zeit-Stop festlegen (läuft der Trade nach X Kerzen nicht, raus), Stop nie entfernen, Ziele planen.</p>' },
+    { id: 'checkliste', titel: 'Ohne Plan handeln', html:
+      '<p><b>Was passiert:</b> Trades ohne zugeordnete Strategie oder mit nicht erfüllten Regeln. Sie lassen sich weder auswerten noch verbessern.</p>' +
+      '<p><b>Gegenmaßnahmen:</b> Jede Strategie als Checkliste aufschreiben. Erst wenn alle Punkte erfüllt sind, wird gehandelt. Kein passendes Setup bedeutet: kein Trade.</p>' },
+    { id: 'gegenmassnahmen', titel: 'Konkrete Gegenmaßnahmen im Überblick', html:
+      '<ul><li><b>Regeln schriftlich:</b> Strategie mit Checkliste, Risiko je Trade, Höchstzahl Trades.</li>' +
+      '<li><b>Tageslimit:</b> fester Maximalverlust je Session – erreicht, Session beenden.</li>' +
+      '<li><b>Pause nach zwei Verlusten</b> in Folge, mindestens bis zur nächsten Stunde oder bis zum nächsten Tag.</li>' +
+      '<li><b>Vorher entscheiden:</b> Stop, Ziel und Ausstiegsgründe stehen vor dem Einstieg fest.</li>' +
+      '<li><b>Wöchentliche Auswertung:</b> den teuersten Befund der Analyse auswählen und genau den eine Woche lang gezielt angehen.</li></ul>' }
+  ] },
+
+  { id: 'glossar', titel: 'Glossar', kurz: 'Begriffe von A bis Z, kurz erklärt und verlinkt.', abschnitte: [] }
+];
+
+const HB_GLOSSAR = [
+  ['80-%-Regel', 'Faustregel aus dem Market Profile: Rückkehr in die Vortages-Value-Area führt häufig zur anderen Kante.', 'vortag'],
+  ['Absorption', 'Viel aggressives Volumen, aber kein Fortschritt im Preis – passive Orders nehmen es auf.', 'absorption'],
+  ['Aggressor', 'Die Seite, die mit einer Market-Order sofort handelt: Käufer am Ask, Verkäufer am Bid.', 'bid-ask'],
+  ['Anchored VWAP', 'VWAP ab einem selbst gewählten Startpunkt statt ab Session-Beginn.', 'anchored-vwap'],
+  ['Ask', 'Niedrigstes Verkaufsangebot im Orderbuch.', 'bid-ask'],
+  ['ATR', 'Average True Range: durchschnittliche Kerzenspanne inklusive Lücken, Maß für das Rauschen.', 'stopp-setzen'],
+  ['Bid', 'Höchstes Kaufgebot im Orderbuch.', 'bid-ask'],
+  ['Blind-Modus', 'Datum und Wochentag bleiben bis zum Session-Ende verborgen.', 'rosinen'],
+  ['Break-even-Trefferquote', 'Trefferquote, bei der eine Strategie bei gegebenem Chance-Risiko-Verhältnis ohne Kosten genau null verdient.', 'erwartungswert'],
+  ['CME Globex', 'Elektronische Handelsplattform der CME Group, auf der NQ, ES und GC gehandelt werden.', 'handelszeiten'],
+  ['CVD', 'Cumulative Volume Delta: fortlaufend summiertes Delta.', 'delta-cvd'],
+  ['Delta', 'Kauf-Aggressor-Volumen minus Verkauf-Aggressor-Volumen.', 'delta-cvd'],
+  ['Delta-Divergenz', 'Preis macht ein neues Extrem, Delta/CVD nicht.', 'delta-divergenz'],
+  ['DOM / Orderbuch', 'Liste der wartenden Limit-Orders je Preis.', 'orderflow-grenzen'],
+  ['Drawdown', 'Rückgang vom Hoch der Kontokurve bis zum folgenden Tief.', 'drawdown'],
+  ['EMA', 'Exponentieller gleitender Durchschnitt, gewichtet jüngere Kurse stärker.', 'setup-pullback'],
+  ['Erwartungswert', 'Durchschnittliches Ergebnis je Trade aus Trefferquote, Ø Gewinn und Ø Verlust.', 'erwartungswert'],
+  ['Exhaustion', 'Erschöpfung: Bewegung endet, weil die Aggressoren fehlen.', 'absorption'],
+  ['FOMO', 'Angst, etwas zu verpassen – führt zu späten Einstiegen.', 'fomo'],
+  ['Footprint', 'Volumen je Preisstufe einer Kerze, getrennt nach Bid und Ask.', 'footprint'],
+  ['HVN', 'High Volume Node: Preisbereich mit viel Volumen im Profil.', 'hvn-lvn'],
+  ['Imbalance', 'Deutliches Übergewicht einer Seite im diagonalen Footprint-Vergleich.', 'footprint'],
+  ['Initial Balance', 'Spanne der ersten Handelsstunde (US-Index-Futures: 9:30–10:30 ET).', 'initial-balance'],
+  ['Intrabar-Annahme', 'Regel, ob Stop oder Ziel zuerst gilt, wenn beide in einer Kerze liegen.', 'intrabar'],
+  ['Konsistenzregel', 'Prop-Regel, die den Anteil einzelner Tage am Gesamtgewinn begrenzt.', 'tagesverlust'],
+  ['Limit-Order', 'Order zu einem festen Preis oder besser; handelt passiv.', 'bid-ask'],
+  ['LVN', 'Low Volume Node: Preisbereich mit wenig Volumen, oft schnell durchlaufen.', 'hvn-lvn'],
+  ['MAE / MFE', 'Größte Bewegung gegen bzw. für den Trade während seiner Laufzeit.', 'ziele'],
+  ['Market-Order', 'Order zum nächsten verfügbaren Preis; handelt aggressiv.', 'bid-ask'],
+  ['Monte Carlo', 'Simulation durch zufälliges Neuziehen der eigenen Trades.', 'kennzahlen'],
+  ['Opening Range', 'Spanne der ersten Minuten nach 9:30 ET.', 'overnight-opening-range'],
+  ['Out-of-Sample', 'Prüfung an Daten, die bei der Entwicklung nicht benutzt wurden.', 'overfitting'],
+  ['Overfitting', 'Regeln zu genau an vergangene Daten angepasst.', 'overfitting'],
+  ['Overnight-Hoch/-Tief', 'Extremwerte zwischen 18:00 ET und 9:30 ET.', 'overnight-opening-range'],
+  ['POC', 'Point of Control: Preisstufe mit dem meisten Volumen.', 'volume-profile'],
+  ['Profit-Faktor', 'Summe der Gewinne geteilt durch Summe der Verluste.', 'kennzahlen'],
+  ['Prop-Firm', 'Firma, die Handelskapital unter festen Regeln bereitstellt.', 'prop-ablauf'],
+  ['Punktwert', 'Dollar-Betrag je ganzem Indexpunkt eines Kontrakts (NQ 20 $, ES 50 $).', 'positionsgroesse'],
+  ['R-Multiple', 'Ergebnis geteilt durch das anfängliche Risiko.', 'r-multiple'],
+  ['RTH / ETH', 'Reguläre Handelszeit (9:30–16:00 ET) bzw. erweiterte Zeit außerhalb.', 'handelszeiten'],
+  ['Slippage', 'Differenz zwischen erwartetem und tatsächlichem Füllpreis.', 'kosten'],
+  ['Stacked Imbalances', 'Mehrere Imbalances derselben Seite direkt übereinander.', 'footprint'],
+  ['Stop-Order', 'Order, die erst bei Erreichen eines Preises zur Market-Order wird.', 'kosten'],
+  ['Tagesverlust-Limit', 'Maximaler Verlust je Handelstag bei Prop-Konten.', 'tagesverlust'],
+  ['Tick / Tickwert', 'Kleinste Preisänderung und ihr Dollarwert (NQ 0,25 = 5 $).', 'positionsgroesse'],
+  ['Trailing-Drawdown', 'Verlustgrenze, die mit dem höchsten Kontostand nachzieht.', 'trailing-drawdown'],
+  ['Trefferquote', 'Anteil der Gewinner an allen Trades.', 'erwartungswert'],
+  ['Value Area', 'Bereich mit 70 % des Volumens; Kanten VAH und VAL.', 'volume-profile'],
+  ['Volume Profile', 'Volumen je Preisstufe über einen Zeitraum.', 'volume-profile'],
+  ['VWAP', 'Volumengewichteter Durchschnittspreis seit Session-Beginn.', 'vwap-was']
+];
+HB[HB.length - 1].abschnitte = [{ id: 'glossar-az', titel: 'Begriffe A–Z', html:
+  '<dl class="hb-gloss">' + HB_GLOSSAR.map(([t, d, s]) => '<dt>' + t + '</dt><dd>' + d + ' ' + hbL(s, 'Mehr') + '</dd>').join('') + '</dl>' }];
+
+/* ---------- Lese-Ansicht ---------- */
+const Handbook = {
+  cur: null, q: '', terms: [], idx: null,
+  /* Abschnitt- oder Kapitel-ID → Kapitel */
+  find(id) {
+    for (const ch of HB) { if (ch.id === id) return { ch, sec: null }; const s = ch.abschnitte.find((x) => x.id === id); if (s) return { ch, sec: s }; }
+    return null;
+  },
+  read() { const r = store.get('elr.hb.read', {}); return r && typeof r === 'object' ? r : {}; },
+  setRead(id, on) { const r = this.read(); if (on) r[id] = 1; else delete r[id]; store.set('elr.hb.read', r); },
+  index() {
+    if (this.idx) return this.idx;
+    const strip = (h) => h.replace(/<svg[\s\S]*?<\/svg>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/\s+/g, ' ').trim();
+    this.idx = [];
+    for (const ch of HB) for (const s of ch.abschnitte) this.idx.push({ ch, s, title: s.titel, text: strip(s.html), hay: (ch.titel + ' ' + s.titel + ' ' + strip(s.html)).toLowerCase() });
+    return this.idx;
+  },
+  /* target: Kapitel- oder Abschnitt-ID (aus #handbuch-<id>) */
+  open(target) {
+    let hit = target ? this.find(target) : null;
+    if (target && !hit) App.toast('Abschnitt „' + target + '“ gibt es im Handbuch nicht. Das Inhaltsverzeichnis hilft weiter.', 'warn');
+    if (!hit) hit = this.find(this.cur || store.get('elr.hb.last', 'einleitung')) || { ch: HB[0], sec: null };
+    const ch = hit.ch;
+    if (this.cur !== ch.id || !$('#hbRead').firstChild) this.renderChapter(ch);
+    else if (this.terms.length) this.mark();
+    this.cur = ch.id; store.set('elr.hb.last', ch.id);
+    this.renderToc(hit.sec ? hit.sec.id : null);
+    this.renderProgress();
+    $('#hbToc').classList.remove('open'); $('#hbTocBtn').setAttribute('aria-expanded', 'false');
+    const go = () => {
+      const el = hit.sec ? $('#hb-s-' + hit.sec.id) : null;
+      const firstMark = !hit.sec && this.terms.length ? $('#hbRead mark') : null;
+      if (el) el.scrollIntoView({ block: 'start' });
+      else if (firstMark) firstMark.scrollIntoView({ block: 'center' });
+      else { $('#view-handbuch').scrollTop = 0; window.scrollTo(0, 0); }
+      if (el) { el.classList.add('hb-flash'); setTimeout(() => el.classList.remove('hb-flash'), 1400); }
+    };
+    requestAnimationFrame(() => setTimeout(go, 0));
+  },
+  renderChapter(ch) {
+    const i = HB.indexOf(ch), prev = HB[i - 1], next = HB[i + 1];
+    const read = !!this.read()[ch.id];
+    const kick = i === 0 ? 'Einleitung' : 'Kapitel ' + i + ' von ' + (HB.length - 1);
+    let h = '<header class="hb-ch-h"><span class="hb-kick">' + kick + '</span><h2 id="hbTitle">' + ch.titel + '</h2><p class="hb-lead">' + ch.kurz + '</p>' + (ch.show ? hbBtns(ch.show) : '') +
+      (ch.abschnitte.length > 2 ? '<ol class="hb-onpage">' + ch.abschnitte.map((s) => '<li><a href="#handbuch-' + s.id + '">' + s.titel + '</a></li>').join('') + '</ol>' : '') + '</header>';
+    h += ch.abschnitte.map((s) => '<section class="hb-sec" id="hb-s-' + s.id + '" aria-labelledby="hb-h-' + s.id + '"><h3 id="hb-h-' + s.id + '">' + s.titel + '<a class="hb-anchor" href="#handbuch-' + s.id + '" aria-label="Link zu „' + s.titel + '“" title="Link zu diesem Abschnitt">#</a></h3>' + s.html + '</section>').join('');
+    h += '<footer class="hb-ch-f"><button type="button" class="btn' + (read ? ' is-read' : '') + '" data-hb-read aria-pressed="' + read + '">' + (read ? 'Gelesen' : 'Als gelesen markieren') + '</button>' +
+      '<div class="hb-pn">' + (prev ? '<a class="hb-prev" href="#handbuch-' + prev.id + '"><small>Zurück</small>' + prev.titel + '</a>' : '<span></span>') +
+      (next ? '<a class="hb-next" href="#handbuch-' + next.id + '"><small>Weiter</small>' + next.titel + '</a>' : '') + '</div></footer>';
+    $('#hbRead').innerHTML = h;
+    this.mark();
+  },
+  renderToc(secId) {
+    const r = this.read();
+    $('#hbToc').innerHTML = '<ol>' + HB.map((ch, i) => {
+      const on = ch.id === this.cur;
+      return '<li class="' + (on ? 'on' : '') + '"><a href="#handbuch-' + ch.id + '"' + (on ? ' aria-current="true"' : '') + '><span class="hb-no">' + (i || '·') + '</span><span class="hb-tt">' + ch.titel + '</span>' + (r[ch.id] ? '<span class="hb-ok" aria-label="gelesen" title="gelesen"></span>' : '') + '</a>' +
+        (on && ch.abschnitte.length > 1 ? '<ol>' + ch.abschnitte.map((s) => '<li><a href="#handbuch-' + s.id + '"' + (s.id === secId ? ' aria-current="true"' : '') + '>' + s.titel + '</a></li>').join('') + '</ol>' : '') + '</li>';
+    }).join('') + '</ol>';
+    const c = HB.find((x) => x.id === this.cur);
+    $('#hbTocBtn').innerHTML = '<span>Inhalt</span><b>' + (c ? c.titel : '') + '</b>';
+  },
+  renderProgress() {
+    const r = this.read(), n = HB.filter((c) => r[c.id]).length;
+    $('#hbProgBar').style.width = (n / HB.length * 100).toFixed(1) + '%';
+    $('#hbProgTxt').textContent = n + ' von ' + HB.length + ' Kapiteln gelesen';
+    $('#hbProg').setAttribute('aria-valuenow', String(n));
+  },
+  search(q) {
+    this.q = q.trim();
+    this.terms = this.q.toLowerCase().split(/\s+/).filter((t) => t.length >= 2).slice(0, 5);
+    const box = $('#hbResults');
+    $('#hbQx').hidden = !this.q;
+    if (!this.terms.length) { box.hidden = true; $('#hbToc').hidden = false; this.mark(); return; }
+    const res = this.index().filter((e) => this.terms.every((t) => e.hay.indexOf(t) >= 0))
+      .map((e) => ({ e, score: this.terms.reduce((s, t) => s + (e.title.toLowerCase().indexOf(t) >= 0 ? 10 : 0) + (e.hay.split(t).length - 1), 0) }))
+      .sort((a, b) => b.score - a.score).slice(0, 30);
+    const re = new RegExp('(' + this.terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'gi');
+    const snip = (txt) => {
+      const low = txt.toLowerCase(); let p = -1;
+      for (const t of this.terms) { const k = low.indexOf(t); if (k >= 0 && (p < 0 || k < p)) p = k; }
+      const a = Math.max(0, p - 50), s = (a ? '… ' : '') + txt.slice(a, p + 90) + (p + 90 < txt.length ? ' …' : '');
+      return esc(s).replace(re, '<mark>$1</mark>');
+    };
+    box.hidden = false; $('#hbToc').hidden = true;
+    box.innerHTML = '<p class="hb-rc" role="status">' + (res.length ? res.length + (res.length === 1 ? ' Treffer' : ' Treffer') : 'Keine Treffer für „' + esc(this.q) + '“') + '</p>' +
+      res.map(({ e }) => '<a class="hb-res" href="#handbuch-' + e.s.id + '"><small>' + esc(e.ch.titel) + '</small><b>' + esc(e.s.titel).replace(re, '<mark>$1</mark>') + '</b><span>' + snip(e.text) + '</span></a>').join('');
+    this.mark();
+  },
+  /* Suchbegriffe im Lesetext markieren (ohne Schaubilder und Knöpfe) */
+  mark() {
+    const root = $('#hbRead');
+    for (const m of $$('mark.hb-mark', root)) { const t = document.createTextNode(m.textContent); m.replaceWith(t); }
+    root.normalize();
+    if (!this.terms.length) return;
+    const re = new RegExp(this.terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'gi');
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: (n) => (n.parentElement.closest('svg, button, .hb-anchor') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT) });
+    const nodes = []; while (w.nextNode()) nodes.push(w.currentNode);
+    for (const n of nodes) {
+      const s = n.nodeValue; re.lastIndex = 0; if (!re.test(s)) continue;
+      re.lastIndex = 0; const frag = document.createDocumentFragment(); let last = 0, m;
+      while ((m = re.exec(s))) { frag.appendChild(document.createTextNode(s.slice(last, m.index))); const mk = document.createElement('mark'); mk.className = 'hb-mark'; mk.textContent = m[0]; frag.appendChild(mk); last = m.index + m[0].length; }
+      frag.appendChild(document.createTextNode(s.slice(last)));
+      n.replaceWith(frag);
+    }
+  },
+  showInChart(key) {
+    const s = HB_SHOW[key]; if (!s) return;
+    Object.assign(App.settings.ind, s.ind); App.saveSettings(); App.updateHeader();
+    location.hash = '#charts';
+    App.toast(s.label + ' im Chart eingeschaltet.', 'good');
+  },
+  bind() {
+    const v = $('#view-handbuch');
+    let t = 0;
+    $('#hbQ').addEventListener('input', (e) => { clearTimeout(t); t = setTimeout(() => this.search(e.target.value), 120); });
+    $('#hbQ').addEventListener('keydown', (e) => { if (e.key === 'Escape' && e.target.value) { e.stopPropagation(); e.target.value = ''; this.search(''); } if (e.key === 'Enter') { const a = $('#hbResults a'); if (a) a.click(); } });
+    $('#hbQx').addEventListener('click', () => { $('#hbQ').value = ''; this.search(''); $('#hbQ').focus(); });
+    $('#hbTocBtn').addEventListener('click', () => { const o = $('#hbToc').classList.toggle('open'); $('#hbTocBtn').setAttribute('aria-expanded', String(o)); });
+    v.addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.hbShow) this.showInChart(b.dataset.hbShow);
+      else if (b.hasAttribute('data-hb-practice')) { if (typeof NewSess !== 'undefined') NewSess.open(); }
+      else if (b.hasAttribute('data-hb-read')) {
+        const on = b.getAttribute('aria-pressed') !== 'true';
+        this.setRead(this.cur, on);
+        b.setAttribute('aria-pressed', String(on)); b.classList.toggle('is-read', on); b.textContent = on ? 'Gelesen' : 'Als gelesen markieren';
+        this.renderToc(null); this.renderProgress();
+        if (on) App.toast('Kapitel als gelesen markiert.', 'good');
+      }
+    });
+  }
+};
+
 /* Edge Lab Replay — Bedienung, Bereiche, Routing */
 'use strict';
 let lastFocus = null;
@@ -6143,7 +7501,8 @@ function closeModal(sel) {
 }
 function getPath(o, p) { return p.split('.').reduce((a, k) => (a == null ? a : a[k]), o); }
 function setPath(o, p, v) { const ks = p.split('.'); let a = o; for (let i = 0; i < ks.length - 1; i++) a = a[ks[i]]; a[ks[ks.length - 1]] = v; }
-const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'strategien', 'tradingview'];
+const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'analyse', 'strategien', 'handbuch', 'tradingview'];
+const MORE_VIEWS = ['strategien', 'handbuch', 'tradingview'];
 
 const UI = {
   async init() {
@@ -6153,7 +7512,7 @@ const UI = {
     this.wasMobile = App.isMobile();
     App.buildCharts();
     this.bindHeader(); this.bindTools(); this.bindTicket(); this.bindSide(); this.bindReplay(); this.bindPages(); this.bindModals(); this.bindKeys();
-    Tips.init(); Start.bind(); Onboard.bind(); Sheet.bind(); Install.init(); Update.init();
+    Tips.init(); Start.bind(); Onboard.bind(); Sheet.bind(); Install.init(); Update.init(); Analysis.bind(); Handbook.bind();
     this.fillTicket();
     App.onPhotosChanged = () => { if (App.view === 'journal') this.renderJournal(); };
     /* Daten aus IndexedDB (mit einmaliger Migration aus dem localStorage) */
@@ -6206,11 +7565,16 @@ const UI = {
   /* ---------- Bereiche ---------- */
   route() {
     if (Tips.hide) Tips.hide();
-    let v = (location.hash || '#start').slice(1);
+    let v = (location.hash || '#start').slice(1), sub = null;
+    /* Deep-Link ins Handbuch: #handbuch-<kapitel oder abschnitt> (nur Buchstaben, Ziffern, Bindestrich) */
+    const m = v.match(/^handbuch-([A-Za-z0-9-]{1,60})$/);
+    if (m) { v = 'handbuch'; sub = m[1].toLowerCase(); }
     if (!VIEWS.includes(v)) v = 'start';
-    this.showView(v);
+    this.showView(v, sub);
   },
-  showView(v) {
+  showView(v, sub) {
+    if (v !== 'journal') this.idFilter = null;
+    const mb = $('#navMore'); if (mb) mb.classList.toggle('cur', MORE_VIEWS.includes(v));
     App.view = v;
     if (v !== 'charts' && App.isFs()) App.setFullscreen(false);
     for (const n of VIEWS) $('#view-' + n).hidden = n !== v;
@@ -6226,7 +7590,9 @@ const UI = {
     if (v === 'stats') this.renderStats();
     if (v === 'strategien') App.renderStrategies();
     if (v === 'tradingview') TV.open();
+    if (v === 'analyse') App.renderAnalysis();
     if (v !== 'charts') window.scrollTo(0, 0);
+    if (v === 'handbuch') Handbook.open(sub);
   },
 
   bindHeader() {
@@ -6395,7 +7761,13 @@ const UI = {
     $('#rpUnit').value = R.unit; $('#rpSpeed').value = R.speed; $('#rpSpeedVal').textContent = R.speed + '/s'; $('#rpPause').checked = R.pauseOnFill;
   },
   /* ---------- Journal ---------- */
+  /* „Betroffene Trades“ aus der Analyse: Journal auf genau diese Trades filtern */
+  showTradeIds(ids, label) {
+    this.idFilter = { ids: new Set(ids), label };
+    if (location.hash === '#journal') this.renderJournal(); else location.hash = '#journal';
+  },
   journalList() {
+    if (this.idFilter) { const s = this.idFilter.ids; return App.visibleJournal().filter((j) => s.has(j.id)); }
     const F = App.settings.jf;
     return App.visibleJournal().filter((j) => (!F.sym || j.sym === F.sym) && (!F.strat || (F.strat === '-' ? !j.setup : j.setup === F.strat)) &&
       (!F.res || (F.res === 'win' ? j.pnl > 0 : j.pnl <= 0)) && (!F.sess || String(j.replay) === F.sess));
@@ -6422,6 +7794,9 @@ const UI = {
   fmtTs(t) { if (App.isBlind() && App.inData(t)) return App.fmtT(t, 60); const p = Core.localParts(t, App.settings.tz); return String(p.d).padStart(2, '0') + '.' + String(p.m).padStart(2, '0') + '.' + String(p.y).slice(2) + ' ' + App.hm(p); },
   async renderJournal() {
     this.fillJournalFilters();
+    const chip = $('#jIdFilter');
+    chip.hidden = !this.idFilter;
+    if (this.idFilter) chip.innerHTML = '<span>Aus der Analyse: <b>' + esc(this.idFilter.label) + '</b></span><button type="button" class="btn sm ghost" id="jIdClear">Filter aufheben</button>';
     const list = this.journalList().slice().sort((a, b) => b.entryT - a.entryT);
     const el = $('#jTable');
     const st = Core.stats(list, 0);
@@ -6670,7 +8045,8 @@ const UI = {
 
   /* ---------- Seiten-Bindungen ---------- */
   bindPages() {
-    const jf = (id, k) => $(id).addEventListener('change', (e) => { App.settings.jf[k] = e.target.value; App.saveSettings(); this.renderJournal(); });
+    const jf = (id, k) => $(id).addEventListener('change', (e) => { this.idFilter = null; App.settings.jf[k] = e.target.value; App.saveSettings(); this.renderJournal(); });
+    $('#jIdFilter').addEventListener('click', (e) => { if (e.target.closest('#jIdClear')) { this.idFilter = null; this.renderJournal(); } });
     jf('#jfSym', 'sym'); jf('#jfStrat', 'strat'); jf('#jfRes', 'res'); jf('#jfSess', 'sess');
     $('#jTable').addEventListener('click', (e) => { const r = e.target.closest('.jrow'); if (r) this.openTrade(r.dataset.id); });
     /* Knöpfe in leeren Zuständen */
@@ -6996,7 +8372,7 @@ const TV = {
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => UI.init()); else UI.init();
 
 
-Object.assign(window, {$, $$, APP_VERSION, App, Archive, Binance, COL, CRYPTO_START, Chart, DEFAULTS, EMPTY_ART, FONT_MONO, FONT_UI, GLOSSARY, Gallery, Guard, IDB, Install, Lightbox, Loader, MIN_BAR_W, MISTAKES, NewSess, Onboard, Photos, RIGHT_PAD_BARS, SESS_FLAGS, Sheet, Start, Store, TV, TW, Tips, UI, Update, VIEWS, WD, alpha, bindTabs, closeModal, deepMerge, emptyState, esc, fmtVol, freshDefaults, getPath, lastFocus, localMinute, openModal, raf2, readColors, selectTab, sessionFlagBits, setBusy, setPath, skeleton, store, syncModalState, textW});
+Object.assign(window, {$, $$, APP_VERSION, Analysis, App, Archive, Binance, COL, CRYPTO_START, Chart, DEFAULTS, EMPTY_ART, FONT_MONO, FONT_UI, GLOSSARY, Gallery, Guard, HB, HBFig, HB_GLOSSAR, HB_SHOW, Handbook, IDB, Install, Lightbox, Loader, MIN_BAR_W, MISTAKES, MORE_VIEWS, NewSess, Onboard, Photos, RIGHT_PAD_BARS, SESS_FLAGS, SEV_LBL, Sheet, Start, Store, TV, TW, Tips, UI, Update, VIEWS, WD, alpha, bindTabs, closeModal, deepMerge, emptyState, esc, fmtVol, freshDefaults, getPath, hbBox, hbBtns, hbL, hbSetup, lastFocus, localMinute, openModal, raf2, readColors, selectTab, sessionFlagBits, setBusy, setPath, skeleton, store, syncModalState, textW});
 </script>
 <script>
 if ('serviceWorker' in navigator && location.protocol === 'https:') addEventListener('load', () => {
