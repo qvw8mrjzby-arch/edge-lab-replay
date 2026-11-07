@@ -13,6 +13,19 @@ const PassCore = (() => {
     day: 10, strategy: 15, strategyMax: 5, noteChars: 25, noteWords: 3
   };
   const STREAK_BONUS = [[3, 30], [7, 80], [14, 150], [30, 300]];
+  /* Wochenziele: immer Prozess, nie „mehr Trades“. Jede Woche (Mo–So) kommen 3 davon, reihum und für alle Wochen gleich berechenbar. */
+  const WEEK_XP = { goal: 40, all: 60 };
+  const WEEK_POOL = [
+    { id: 'checkliste', label: 'Checkliste ernst nehmen', desc: 'Sessions, in denen mindestens 80 % der Trades die Regel-Checkliste komplett erfüllen (ab 3 Trades)', target: 2, key: 'checklist' },
+    { id: 'rueckblick', label: 'Ehrlich zurückblicken', desc: 'Sessions mit ausgefülltem „Was lief schlecht“', target: 2, key: 'review' },
+    { id: 'disziplin', label: 'Disziplin bewerten', desc: 'Sessions mit eigener Disziplin-Bewertung', target: 3, key: 'disc' },
+    { id: 'stopp', label: 'Stopp stehen lassen', desc: 'Sessions, in denen kein Stop weiter weggeschoben wurde', target: 2, key: 'stops' },
+    { id: 'blind', label: 'Blind fliegen', desc: 'Eine Blind-Session auswerten', target: 1, key: 'blind' },
+    { id: 'tage', label: 'Dranbleiben', desc: 'An verschiedenen Tagen gebacktestet – nicht am Stück nötig', target: 3, key: 'days' },
+    { id: 'geduld', label: 'Geduld zahlt sich aus', desc: 'Eine Session mit 2 bis 6 Trades, alle mit komplett erfüllter Checkliste', target: 1, key: 'patience' }
+  ];
+  const weekOf = (dn) => Math.floor((dn + 3) / 7); /* Woche beginnt Montag */
+  const goalsFor = (wk) => { const s = (wk * 3) % WEEK_POOL.length; return [0, 1, 2].map((i) => WEEK_POOL[(s + i) % WEEK_POOL.length]); };
   const LEVEL_MAX = 50, TRACK_MAX = 30;
   /* Gesamt-XP, die für Level n nötig sind (Level 30 ≈ 9.200 XP ≈ 42 gründliche Sessions) */
   const need = (n) => (n <= 1 ? 0 : Math.round(30 * Math.pow(n - 1, 1.7)));
@@ -75,7 +88,7 @@ const PassCore = (() => {
   function calc(journal, sessions, strategies, opt) {
     opt = opt || {};
     const dayKey = opt.dayKey || utcDay;
-    const cat = { trades: 0, rules: 0, reflexion: 0, routine: 0 };
+    const cat = { trades: 0, rules: 0, reflexion: 0, routine: 0, weekly: 0 };
     const n = { trades: 0, notes: 0, rulesOk: 0, sessions: 0, blind: 0, bad: 0, strategies: 0, stopKept: 0 };
 
     const perSess = new Map(), notesSeen = new Map(), rulesBy = new Map(), bySess = new Map();
@@ -108,7 +121,7 @@ const PassCore = (() => {
       cat.rules += q >= XP.rulesAllAt ? XP.rulesAll : q >= XP.rulesHalfAt ? XP.rulesHalf : 0;
     }
 
-    const days = new Set();
+    const days = new Set(), weeks = new Map();
     for (const e of sessions || []) {
       if (!e || e.running) continue;
       const disc = +e.discipline || 0;
@@ -126,8 +139,23 @@ const PassCore = (() => {
       /* Importierte Sessions ohne eigenes Datum (created wurde beim Import auf „jetzt“ gesetzt) zählen nicht als aktiver Tag */
       const t = e.createdAuto ? e.updated : (e.created || e.updated); if (t) days.add(dayKey(t));
       /* Stopp gehalten: kein Stop wurde weiter vom Einstieg weggeschoben (side: 1 = Long, -1 = Short) */
+      let kept = false;
       const withStop = (bySess.get(e.id) || []).filter((j) => j.sl != null && j.slFinal != null && isFinite(j.sl) && isFinite(j.slFinal) && (j.side === 1 || j.side === -1));
-      if (withStop.length && withStop.every((j) => j.side * (j.sl - j.slFinal) <= (j.tick || 1e-9) / 2)) n.stopKept++;
+      if (withStop.length && withStop.every((j) => j.side * (j.sl - j.slFinal) <= (j.tick || 1e-9) / 2)) { n.stopKept++; kept = true; }
+      /* Wochenziele: nach dem echten Kalendertag der Session einsortieren */
+      if (t) {
+        const dn = dayNo(dayKey(t)), wk = weekOf(dn);
+        const w = weeks.get(wk) || { days: new Set(), checklist: 0, review: 0, disc: 0, stops: 0, blind: 0, patience: 0 };
+        const r = rulesBy.get(e.id);
+        w.days.add(dn);
+        if (r && r.n >= XP.rulesMinTrades && r.ok / r.n >= XP.rulesAllAt) w.checklist++;
+        if (txt(e.bad)) w.review++;
+        if (disc > 0) w.disc++;
+        if (kept) w.stops++;
+        if (e.blind) w.blind++;
+        if (r && r.n >= 2 && r.n <= 6 && r.ok === r.n) w.patience++;
+        weeks.set(wk, w);
+      }
     }
 
     /* Routine: aktive Tage und Serien (echte Kalendertage, nicht die Kurstage des Replays) */
@@ -145,7 +173,20 @@ const PassCore = (() => {
     for (const s of strategies || []) if (s && (s.rules || '').split('\n').filter((x) => x.trim()).length >= 3) n.strategies++;
     cat.routine += Math.min(n.strategies, XP.strategyMax) * XP.strategy;
 
-    const total = cat.trades + cat.rules + cat.reflexion + cat.routine;
+    /* Wochenziele: Fortschritt je Woche, abgeschlossene Wochen bringen Bonus-XP (rückwirkend aus den Daten) */
+    const evalWeek = (wk) => {
+      const w = weeks.get(wk);
+      const goals = goalsFor(wk).map((g) => { const v = w ? (g.key === 'days' ? w.days.size : w[g.key]) : 0; return { id: g.id, label: g.label, desc: g.desc, target: g.target, cur: Math.min(v, g.target), done: v >= g.target }; });
+      const done = goals.filter((g) => g.done).length;
+      return { wk, goals, done, bonus: done * WEEK_XP.goal + (done === goals.length ? WEEK_XP.all : 0) };
+    };
+    cat.weekly = 0;
+    for (const wk of weeks.keys()) cat.weekly += evalWeek(wk).bonus;
+    const todayNo = dayNo(dayKey(opt.today != null ? opt.today : Date.now() / 1000));
+    const week = evalWeek(weekOf(todayNo));
+    week.daysLeft = 6 - ((todayNo + 3) % 7);
+
+    const total = cat.trades + cat.rules + cat.reflexion + cat.routine + cat.weekly;
     const level = levelOf(total);
     const badges = [
       ['erster-trade', 'Erster Trade', 'Einen Trade im Journal haben', n.trades, 1],
@@ -166,12 +207,12 @@ const PassCore = (() => {
     ].map(([id, label, desc, c, t]) => ({ id, label, desc, cur: Math.min(c, t), target: t, done: c >= t }));
 
     return {
-      total, level, cat, n, badges, activeDays: nums.length, streak: { cur, best },
+      total, level, cat, n, badges, week, activeDays: nums.length, streak: { cur, best },
       from: need(level), to: level >= LEVEL_MAX ? null : need(level + 1)
     };
   }
 
-  return { XP, STREAK_BONUS, LEVEL_MAX, TRACK_MAX, need, levelOf, calc, THEMES, AVATARS, FRAMES, TITLES, REWARDS, nameOf, typeLabel, levelOfReward, highestTitle, catalog };
+  return { XP, WEEK_XP, WEEK_POOL, goalsFor, weekOf, STREAK_BONUS, LEVEL_MAX, TRACK_MAX, need, levelOf, calc, THEMES, AVATARS, FRAMES, TITLES, REWARDS, nameOf, typeLabel, levelOfReward, highestTitle, catalog };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = PassCore;
 
@@ -261,11 +302,11 @@ const Pass = {
     /* Abschluss einer Session: ruhige Zusammenfassung, nie mit Gewinn oder Verlust */
     let line = '';
     if (ended && prev) {
-      const parts = [['Trades', sum('trades')], ['Regeln', sum('rules')], ['Rückblick', sum('reflexion')], ['Routine', sum('routine')]].filter((x) => x[1] > 0);
+      const parts = [['Trades', sum('trades')], ['Regeln', sum('rules')], ['Rückblick', sum('reflexion')], ['Routine', sum('routine')], ['Wochenziele', sum('weekly')]].filter((x) => x[1] > 0);
       const tot = parts.reduce((a, x) => a + x[1], 0);
       if (tot > 0) line = '+' + tot + ' XP: ' + parts.map((x) => x[0] + ' ' + x[1]).join(', ');
     }
-    const snap = { trades: cat.trades, rules: cat.rules, reflexion: cat.reflexion, routine: cat.routine };
+    const snap = { trades: cat.trades, rules: cat.rules, reflexion: cat.reflexion, routine: cat.routine, weekly: cat.weekly };
     if (!prev || JSON.stringify(prev) !== JSON.stringify(snap)) { L.last = snap; dirty = true; }
     if (dirty) this.saveLoc();
     if (intro) App.toast('Dein bisheriger Fortschritt zählt: Level ' + c.level + ' im Pass.', 'good');
@@ -323,7 +364,7 @@ const Pass = {
     return '<a class="pass-chip" href="#pass" aria-label="Pass öffnen">' + this.avatarHtml('s') +
       '<span class="pc-main"><b>Level ' + c.level + ' · ' + esc(PassCore.TITLES[this.titleId()]) + '</b>' +
       '<span class="pbar" aria-hidden="true"><i style="width:' + pct.toFixed(1) + '%"></i></span>' +
-      '<small>' + (c.to == null ? 'Höchstes Level erreicht' : App.fmtN(c.to - c.total, 0) + ' XP bis Level ' + (c.level + 1)) + '</small></span>' +
+      '<small>' + (c.to == null ? 'Höchstes Level erreicht' : App.fmtN(c.to - c.total, 0) + ' XP bis Level ' + (c.level + 1)) + ' · Wochenziele ' + c.week.done + '/' + c.week.goals.length + '</small></span>' +
       (c.streak.cur >= 2 ? '<span class="pc-streak num">' + c.streak.cur + ' Tage</span>' : '') + '</a>';
   },
 
@@ -350,6 +391,11 @@ const Pass = {
       '<div class="ph-sub"><span class="num">' + fmt(c.total) + (c.to == null ? '' : ' / ' + fmt(c.to)) + ' XP</span>' +
       (c.to == null ? '<span>Höchstes Level erreicht</span>' : '<span>noch ' + fmt(c.to - c.total) + ' XP bis Level ' + (c.level + 1) + (nextR.length ? ' · ' + esc(nextR.map((r) => PassCore.typeLabel[r.type] + ' ' + PassCore.nameOf(r)).join(', ')) : '') + '</span>') + '</div></div>' +
       '<div class="ph-stats"><div><b class="num">' + c.streak.cur + '</b><span>Tage in Serie</span></div><div><b class="num">' + c.streak.best + '</b><span>Beste Serie</span></div><div><b class="num">' + c.activeDays + '</b><span>Aktive Tage</span></div></div></section>';
+    /* Wochenziele */
+    const wk = c.week;
+    h += '<section class="card"><div class="card-h"><h3>Wochenziele</h3><span class="hint">' + (wk.daysLeft === 0 ? 'Letzter Tag der Woche' : 'Noch ' + wk.daysLeft + ' Tage · Woche endet Sonntag') + ' · je +' + PassCore.WEEK_XP.goal + ' XP, alle drei +' + PassCore.WEEK_XP.all + '</span></div><div class="pgoals">' +
+      wk.goals.map((g) => '<div class="pg' + (g.done ? ' done' : '') + '"><div class="pb-h"><b>' + esc(g.label) + '</b><span class="num">' + (g.done ? '✓' : g.cur + '/' + g.target) + '</span></div><small>' + esc(g.desc) + '</small><span class="pbar" aria-hidden="true"><i style="width:' + (g.cur / g.target * 100).toFixed(0) + '%"></i></span></div>').join('') +
+      '</div><p class="hint">Ziele verlangen nie mehr Trades – nur sauberere Arbeit. Verpasste Wochen kosten nichts.</p></section>';
     /* Spur */
     h += '<section class="card"><div class="card-h"><h3>Belohnungen</h3><span class="hint">Tippe auf eine freigeschaltete Belohnung, um sie zu tragen.</span></div><div class="ptrack" id="pTrack">';
     for (let L = 1; L <= PassCore.TRACK_MAX; L++) {
@@ -364,7 +410,7 @@ const Pass = {
     }
     h += '</div></section>';
     /* Woher kommt XP */
-    const rows = [['Trades', c.cat.trades, 'Journal, Notizen, Stop gesetzt'], ['Regeln', c.cat.rules, 'Checkliste vor dem Einstieg'], ['Rückblick', c.cat.reflexion, 'Sessions auswerten, ehrlich bleiben'], ['Routine', c.cat.routine, 'Aktive Tage, Serien, Strategien']];
+    const rows = [['Trades', c.cat.trades, 'Journal, Notizen, Stop gesetzt'], ['Regeln', c.cat.rules, 'Checkliste vor dem Einstieg'], ['Rückblick', c.cat.reflexion, 'Sessions auswerten, ehrlich bleiben'], ['Routine', c.cat.routine, 'Aktive Tage, Serien, Strategien'], ['Wochenziele', c.cat.weekly, 'Erfüllte Wochenziele']];
     if (c.legacy > 0) rows.push(['Bestand (gelöschte Daten)', c.legacy, 'Höchster erreichter Stand, auch wenn Trades oder Sessions gelöscht wurden']);
     const mx = Math.max(1, ...rows.map((r) => r[1]));
     h += '<div class="dash"><div class="dash-col"><section class="card"><div class="card-h"><h3>Woher dein XP kommt</h3><span class="hint num">' + fmt(c.total) + ' gesamt</span></div><div class="mk-list">' +
@@ -381,6 +427,7 @@ const Pass = {
       '<li><span>Aktiver Tag</span><b class="num">+' + X.day + '</b></li>' +
       '<li><span>Serie von ' + PassCore.STREAK_BONUS.map((x) => x[0]).join(' / ') + ' Tagen</span><b class="num">+' + PassCore.STREAK_BONUS.map((x) => x[1]).join(' / ') + '</b></li>' +
       '<li><span>Strategie mit mindestens 3 Regeln<small>bis zu ' + X.strategyMax + '</small></span><b class="num">+' + X.strategy + '</b></li>' +
+      '<li><span>Wochenziel geschafft<small>alle drei der Woche: zusätzlich +' + PassCore.WEEK_XP.all + '</small></span><b class="num">+' + PassCore.WEEK_XP.goal + '</b></li>' +
       '<li class="zero"><span>Gewinn oder Verlust</span><b class="num">0</b></li></ul>' +
       '<p class="hint">Die Regel-Checkliste beruht auf deiner Ehrlichkeit – schummeln bringt nur dir selbst falsche Daten.</p></section></div>';
     /* Abzeichen */

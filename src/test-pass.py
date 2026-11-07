@@ -62,7 +62,7 @@ with sync_playwright() as p:
     check('Journal und Sessions unverändert', before == after, (before, after))
 
     # Aufschlüsselung: ohne gelöschte Daten keine fünfte Zeile
-    check('Vier Kategorien ohne Bestand', pg.locator('#passBody .mk-row').count() == 4, pg.locator('#passBody .mk-row').count())
+    check('Fünf Kategorien ohne Bestand', pg.locator('#passBody .mk-row').count() == 5, pg.locator('#passBody .mk-row').count())
     check('Regeln-Liste aus Konstanten', 'bis +' in pg.inner_text('.prules') and '+40' in pg.inner_text('.prules') and '+30' in pg.inner_text('.prules'))
     check('Nächste Belohnung hervorgehoben', pg.locator('.prw.next').count() >= 1 and pg.evaluate("() => { const n = document.querySelector('.prw.next'); return +n.closest('.pnode').querySelector('.pn-l').textContent === Pass.last.level + 1; }"))
 
@@ -103,6 +103,29 @@ with sync_playwright() as p:
     same = pg.evaluate('''() => { const a = Pass.refresh().total; const J2 = App.journal.map(j => Object.assign({}, j, { pnl: 1e6, r: 50 }));
       const b = PassCore.calc(J2, App.sessions, App.strategies, { dayKey: Pass.dayKey() }).total; return [a, b]; }''')
     check('Profit gibt keine XP', same[0] == same[1], same)
+
+    # Wochenziele: feste Daten (Woche Mo 02.11. – So 08.11.2026), Stichtag Do 05.11.
+    wk = pg.evaluate("""() => {
+      const T = (d, h) => Date.UTC(2026, 10, d, h || 10) / 1000, J = [], S = [];
+      for (const d of [3, 4]) { const id = 'w' + d; S.push({ id, created: T(d), discipline: 4, bad: 'Stop zu früh verschoben, nicht geplant', blind: true, trades: 3 });
+        for (let i = 0; i < 3; i++) J.push({ id: id + '-' + i, session: id, status: 'closed', pnl: 100, rulesTotal: 3, rulesChecked: 3, rulesOk: true }); }
+      const c = PassCore.calc(J, S, [], { today: T(5, 12) });
+      const spam = []; for (let i = 0; i < 200; i++) spam.push({ id: 's' + i, session: 'x', status: 'closed', pnl: 1 });
+      const none = PassCore.calc(spam, [], [], { today: T(5, 12) });
+      const g1 = PassCore.goalsFor(2000).map(g => g.id).join(), g2 = PassCore.goalsFor(2000).map(g => g.id).join(), g3 = PassCore.goalsFor(2001).map(g => g.id).join();
+      return { goals: c.week.goals, done: c.week.done, bonus: c.week.bonus, weekly: c.cat.weekly, left: c.week.daysLeft, noneDone: none.week.done, noneCur: none.week.goals.reduce((a, g) => a + g.cur, 0), stable: g1 === g2, rotates: g1 !== g3, pool: PassCore.WEEK_POOL.map(g => g.key) };
+    }""")
+    exp = {'checkliste': 2, 'rueckblick': 2, 'disziplin': 2, 'stopp': 0, 'blind': 1, 'tage': 2, 'geduld': 1}
+    check('Woche hat 3 verschiedene Ziele', len(wk['goals']) == 3 and len({g['id'] for g in wk['goals']}) == 3, wk['goals'])
+    check('Fortschritt je Ziel stimmt', all(g['cur'] == exp[g['id']] for g in wk['goals']), wk['goals'])
+    check('Bonus-XP passt zu erledigten Zielen', wk['bonus'] == wk['weekly'] and wk['bonus'] == wk['done'] * 40 + (60 if wk['done'] == 3 else 0), (wk['bonus'], wk['weekly'], wk['done']))
+    check('Stichtag Donnerstag: noch 3 Tage', wk['left'] == 3, wk['left'])
+    check('200 Trades ohne Session erfüllen kein Wochenziel', wk['noneDone'] == 0 and wk['noneCur'] == 0, wk)
+    check('Wochenziele stabil und wechseln', wk['stable'] and wk['rotates'])
+    check('Kein Ziel verlangt Trades', not any('trade' in k for k in wk['pool']), wk['pool'])
+    pg.evaluate("() => location.hash = '#pass'"); pg.wait_for_timeout(200)
+    check('Wochenziele-Karte sichtbar', pg.locator('.pgoals .pg').count() == 3)
+    pg.screenshot(path=out + '/pass-wochenziele.png')
 
     # Design wechseln (freigeschaltet) und gesperrtes nicht
     lvl = info['level']
@@ -164,7 +187,7 @@ with sync_playwright() as p:
     hw = pg.evaluate('() => { const t = Pass.refresh().total; Pass.check(); App.journal.length = 0; App.sessions.length = 0; const c = Pass.refresh(); return [t, c.total, Pass.loc().hw]; }')
     check('Höchster Stand bleibt nach Löschen', hw[1] == hw[0] and hw[2] == hw[0], hw)
     pg.evaluate("() => location.hash = '#pass'"); pg.wait_for_timeout(200)
-    check('Fünfte Zeile Bestand (gelöschte Daten)', pg.locator('#passBody .mk-row').count() == 5 and 'Bestand' in pg.inner_text('#passBody .mk-list'))
+    check('Sechste Zeile Bestand (gelöschte Daten)', pg.locator('#passBody .mk-row').count() == 6 and 'Bestand' in pg.inner_text('#passBody .mk-list'))
 
     # Übersicht zeigt die Karte
     pg.evaluate(SEED); pg.evaluate("() => location.hash = '#start'"); pg.wait_for_timeout(300)

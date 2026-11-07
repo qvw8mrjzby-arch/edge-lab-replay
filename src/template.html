@@ -1108,6 +1108,14 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
 .prules small { display: block; color: var(--muted); font-size: var(--fs-xs); }
 .prules b { font-weight: 500; white-space: nowrap; }
 .prules li.zero b { color: var(--accent); }
+.pgoals { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+.pg { display: grid; gap: 5px; align-content: start; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel2); }
+.pg.done { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.pg .pb-h b { font-size: var(--fs-md); font-weight: 600; }
+.pg .pb-h .num { color: var(--muted); font-size: var(--fs-sm); }
+.pg.done .pb-h .num { color: var(--accent); }
+.pg small { color: var(--muted); font-size: var(--fs-xs); }
+.pg .pbar { margin-top: 3px; }
 .pbadges { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
 .pb { display: grid; gap: 4px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel2); opacity: .75; }
 .pb.done { opacity: 1; border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
@@ -1609,7 +1617,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
       </div>
       <div class="tabpanel" role="tabpanel" data-panel="ueber" hidden>
         <fieldset><legend>Edge Lab Replay</legend>
-          <dl class="kv"><dt>Version</dt><dd id="appVer">5.1</dd><dt>Daten</dt><dd>Archiv (Dukascopy), Binance, CSV, Demo</dd><dt>Speicherort</dt><dd>Dieser Browser; mit Anmeldung zusätzlich dein eigenes Supabase-Projekt</dd><dt>Termine</dt><dd>CPI, Arbeitsmarktbericht (BLS), FOMC (Federal Reserve), 2020–10/2026</dd></dl>
+          <dl class="kv"><dt>Version</dt><dd id="appVer">5.2</dd><dt>Daten</dt><dd>Archiv (Dukascopy), Binance, CSV, Demo</dd><dt>Speicherort</dt><dd>Dieser Browser; mit Anmeldung zusätzlich dein eigenes Supabase-Projekt</dd><dt>Termine</dt><dd>CPI, Arbeitsmarktbericht (BLS), FOMC (Federal Reserve), 2020–10/2026</dd></dl>
           <div class="toolbar"><button type="button" class="btn" id="setInstall" hidden>Als App installieren</button><button type="button" class="btn" id="setOnboard">Einführung erneut zeigen</button><button type="button" class="btn" id="setHelp">Hilfe öffnen</button></div>
           <p class="hint" id="setIos" hidden>Auf dem iPhone/iPad: in Safari auf <b>Teilen</b> tippen, dann <b>Zum Home-Bildschirm</b>.</p>
         </fieldset>
