@@ -17,13 +17,14 @@ function closeModal(sel) {
 }
 function getPath(o, p) { return p.split('.').reduce((a, k) => (a == null ? a : a[k]), o); }
 function setPath(o, p, v) { const ks = p.split('.'); let a = o; for (let i = 0; i < ks.length - 1; i++) a = a[ks[i]]; a[ks[ks.length - 1]] = v; }
-const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'analyse', 'strategien', 'handbuch', 'tradingview'];
-const MORE_VIEWS = ['strategien', 'handbuch', 'tradingview'];
+const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'analyse', 'strategien', 'pass', 'handbuch', 'tradingview'];
+const MORE_VIEWS = ['strategien', 'pass', 'handbuch', 'tradingview'];
 
 const UI = {
   async init() {
     const t0 = performance.now();
     Guard.init();
+    Pass.applyTheme();
     readColors();
     this.wasMobile = App.isMobile();
     App.buildCharts();
@@ -44,6 +45,7 @@ const UI = {
     } catch (e) { console.error(e); App.toast('Gespeicherte Daten konnten nicht geladen werden: ' + e.message, 'bad'); }
     if (Store.migrated.length) console.info('Daten in IndexedDB übernommen:', Store.migrated.join(', '));
     App.renderStratSelects();
+    Pass.init(); Pass.refresh();
     /* erst ein Bild zeigen, dann die Demo-Daten erzeugen (blockiert sonst ~0,3 s) */
     if (bt) bt.textContent = 'Bereite Demo-Daten vor …';
     await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
@@ -78,6 +80,7 @@ const UI = {
     if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', () => { TW.clear(); App.requestRender(); if (App.view === 'start') App.renderStart(); });
     if (!store.get('elr.onboarded', 0) && !store.get('elr.seen', false)) setTimeout(() => Onboard.open(), 250);
     else store.set('elr.onboarded', 1);
+    setTimeout(() => Pass.check(), 700);
     App.requestRender();
     Photos.init().then((ok) => { if (!ok) console.warn(Photos.err); if (App.view === 'journal') this.renderJournal(); });
   },
@@ -111,6 +114,7 @@ const UI = {
     if (v === 'strategien') App.renderStrategies();
     if (v === 'tradingview') TV.open();
     if (v === 'analyse') App.renderAnalysis();
+    if (v === 'pass') Pass.render();
     if (v !== 'charts') window.scrollTo(0, 0);
     if (v === 'handbuch') Handbook.open(sub);
   },
@@ -688,7 +692,7 @@ const UI = {
       for (const s of d.sessions) {
         if (!okSess(s)) { bad++; continue; }
         if (hs.has(s.id)) continue;
-        App.sessions.push(Object.assign({ created: Math.floor(Date.now() / 1000), discipline: 0, mistakes: [], result: 'auto' }, s, { running: false, mistakes: Array.isArray(s.mistakes) ? s.mistakes.filter((m) => typeof m === 'string') : [], discipline: Math.max(0, Math.min(5, +s.discipline || 0)) }));
+        App.sessions.push(Object.assign({ created: Math.floor(Date.now() / 1000), createdAuto: s.created == null ? true : undefined, discipline: 0, mistakes: [], result: 'auto' }, s, { running: false, mistakes: Array.isArray(s.mistakes) ? s.mistakes.filter((m) => typeof m === 'string') : [], discipline: Math.max(0, Math.min(5, +s.discipline || 0)) }));
         hs.add(s.id);
       }
       App.saveSessions();
@@ -761,7 +765,7 @@ const UI = {
     $('#setSave').addEventListener('click', () => this.saveSettingsForm());
     $('#setReset').addEventListener('click', async () => {
       if (await App.confirm('Einstellungen zurücksetzen?', 'Alle Einstellungen gehen auf Standard. Journal, Notizen, Fotos und Zeichnungen bleiben.', 'Zurücksetzen')) {
-        App.settings = freshDefaults(); App.saveSettings(); closeModal('#settingsModal');
+        const keepPass = App.settings.pass; App.settings = freshDefaults(); if (keepPass) App.settings.pass = keepPass; App.saveSettings(); Pass.applyTheme(); readColors(); closeModal('#settingsModal');
         this.fillTicket(); this.fillReplayControls(); App.buildCharts(); App.recompute(); App.applyCostProfile(); App.updateHeader(); App.updateReplayBar(); App.updatePanels(); App.requestRender();
         App.toast('Einstellungen zurückgesetzt.', 'good');
       }

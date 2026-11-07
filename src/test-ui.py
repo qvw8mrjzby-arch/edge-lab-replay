@@ -15,6 +15,7 @@ def page(b, w, h, touch=False):
     pg.on('pageerror', lambda e: errs.append('%dpx PAGEERROR: %s' % (w, e)))
     pg.route('https://fonts.**', lambda r: r.abort())
     pg.route('https://s3.tradingview.com/**', lambda r: r.abort())
+    pg.add_locator_handler(pg.locator('#passUnlock:not([hidden]) [data-close]'), lambda l: l.click())  # Freischalt-Karte (Pass) darf Klicks nicht blockieren
     pg.goto(url)
     pg.wait_for_function('() => typeof App !== "undefined" && App.base && App.base.length > 0')
     pg.wait_for_timeout(400)

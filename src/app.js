@@ -31,7 +31,8 @@ const DEFAULTS = {
   jf: { sym: '', strat: '', res: '', sess: '' },
   binance: { market: 'spot', symbol: 'BTCUSDT', interval: '1m', days: 7 },
   newSess: { market: 'ar:NAS100', when: 'random', y0: 2021, y1: 2024, start: 'ny', blind: true, sym: 'BTCUSDT', bnMarket: 'spot' },
-  inst: 'NQ'
+  inst: 'NQ',
+  pass: { theme: 'standard', avatar: 'kerze', frame: 'keiner', title: 'auto' }
 };
 /* Frische Kopie – deepMerge darf nie Referenzen in DEFAULTS verändern */
 const freshDefaults = () => JSON.parse(JSON.stringify(DEFAULTS));
@@ -402,6 +403,7 @@ const App = {
     const endedRid = this.replay.id;
     this.replay.active = false; this.replay.picking = false; this.replay.blind = false; this.engine = null; this.preview = null;
     this.clearResume();
+    if (typeof Pass !== 'undefined') { Pass._ended = true; setTimeout(() => Pass.check(), 700); }
     try { this.runPostChecks(endedRid); } catch (e) { console.warn('Nachlauf-Prüfung fehlgeschlagen', e); }
     if (this.tool === 'long' || this.tool === 'short') this.tool = 'cursor';
     this.cursor = this.base.length - 1;

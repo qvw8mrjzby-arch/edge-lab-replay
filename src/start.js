@@ -140,7 +140,7 @@ Object.assign(App, {
     right += '<section class="card"><div class="card-h"><h3>Häufigste Fehler</h3></div>';
     right += top.length ? '<div class="mk-list">' + top.map(([m, n]) => '<div class="mk-row"><span>' + esc(m) + '</span><span class="meter"><i style="width:' + (n / top[0][1] * 100).toFixed(0) + '%"></i></span><b>' + n + '</b></div>').join('') + '</div>' : '<p class="hint">Noch keine Fehler markiert – gut so, oder noch keine Session ausgewertet.</p>';
     right += '</section>';
-    body.innerHTML = h + '<div class="dash"><div class="dash-col">' + left + '</div><div class="dash-col">' + this.bigIssueCard(J) + right + '</div></div>';
+    body.innerHTML = Pass.chip() + h + '<div class="dash"><div class="dash-col">' + left + '</div><div class="dash-col">' + this.bigIssueCard(J) + right + '</div></div>';
     Tips.decorate(body);
     this.drawMiniEquity($('#stEq'), s.equity);
   },

@@ -289,6 +289,7 @@
           if (SyncCore.applyRows(m.items, 'settings', cur, (x) => x.id, sr)) {
             const s = Object.assign({}, cur[0]); delete s.id; delete s._u;
             App.settings = deepMerge(App.settings, s); store.set('elr.settings', App.settings); n++;
+            if (typeof Pass !== 'undefined') try { Pass.applyTheme(); if (typeof readColors === 'function') readColors(); App.requestRender(); } catch (_) { /* egal */ }
             if (typeof UI !== 'undefined' && UI.fillTicket) try { UI.fillTicket(); } catch (_) { /* egal */ }
           }
         }

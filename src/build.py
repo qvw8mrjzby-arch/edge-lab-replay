@@ -1,7 +1,7 @@
 import os, json
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 tpl = open('template.html').read()
-js = ''.join(open(f).read() + '\n' for f in ['core.js','chart.js','app.js','econ.js','storage.js','photos.js','sync.js','notes.js','data.js','start.js','analysis.js','handbook.js','ui.js'])
+js = ''.join(open(f).read() + '\n' for f in ['core.js','chart.js','app.js','econ.js','storage.js','photos.js','sync.js','notes.js','data.js','start.js','analysis.js','handbook.js','pass.js','ui.js'])
 assert '</script' not in js
 import re
 # Als Modul-Skript: wird zurückgestellt, der Startbildschirm malt sofort. Globale Namen für Konsole/Tests freigeben.

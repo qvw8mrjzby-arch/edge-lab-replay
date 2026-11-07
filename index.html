@@ -1037,6 +1037,103 @@ mark { background: color-mix(in srgb, var(--accent) 34%, transparent); color: va
 /* Seite selbst nicht zoombar – Zoomen nur im Chart (Zwei Finger) */
 html, body { touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
+@media (min-width: 861px) { #mainNav a[data-view="pass"] span { display: none; } #mainNav a[data-view="pass"] { padding: 0 10px; } }
+@media (max-width: 1400px) and (min-width: 1241px) { #mainNav a { padding: 0 9px; gap: 6px; } }
+#passBody { display: grid; gap: 16px; align-content: start; }
+#passBody > .card { align-content: start; }
+#passBody .meter i { background: var(--accent); }
+/* ---------- Pass: XP, Level, Belohnungen, Designs ---------- */
+:root[data-theme="mitternacht"] { --bg: #080d1a; --panel: #0d1424; --panel2: #121b30; --raise: #18233d; --line: #1f2d4a; --grid: #141d33; --accent: #5aa2ff; --accent-ink: #06121f; }
+:root[data-theme="glut"] { --bg: #130d0a; --panel: #1a120e; --panel2: #211712; --raise: #2b1d16; --line: #3a281e; --grid: #20150f; --accent: #f0913a; --accent-ink: #1f1005; }
+:root[data-theme="smaragd"] { --bg: #08130f; --panel: #0d1b16; --panel2: #12241d; --raise: #182f26; --line: #234034; --grid: #10201a; --accent: #3ec9a0; --accent-ink: #04150f; }
+:root[data-theme="violett"] { --bg: #0f0b18; --panel: #151021; --panel2: #1b152b; --raise: #241c38; --line: #342a4f; --grid: #1a1428; --accent: #b48cff; --accent-ink: #120a24; }
+:root[data-theme="graphit"] { --bg: #0c0c0d; --panel: #131314; --panel2: #1a1a1c; --raise: #232326; --line: #313135; --grid: #19191b; --accent: #e8e8ea; --accent-ink: #111113; }
+:root[data-theme="nachtgold"] { --bg: #050505; --panel: #0b0b0a; --panel2: #11100d; --raise: #1a1810; --line: #2e2a1b; --grid: #14130e; --accent: #f4d35e; --accent-ink: #1a1500; }
+.pav { display: inline-grid; place-items: center; flex: none; color: var(--accent); background: var(--panel2); border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line)); border-radius: 50%; }
+.pav svg { width: 58%; height: 58%; }
+.pav-s { width: 34px; height: 34px; } .pav-m { width: 44px; height: 44px; } .pav-l { width: 72px; height: 72px; }
+.pav.fr-doppel { box-shadow: 0 0 0 3px var(--panel), 0 0 0 4px color-mix(in srgb, var(--accent) 55%, transparent); }
+.pav.fr-gestrichelt { border: 2px dashed var(--accent); }
+.pav.fr-kantig { border-radius: 9px; }
+.pbar { display: block; height: 4px; background: var(--raise); border-radius: 2px; overflow: hidden; position: relative; }
+.pbar i { display: block; height: 100%; background: var(--accent); border-radius: inherit; transition: width .6s var(--ease); }
+.pbar.big { height: 9px; border-radius: 4px; }
+.pass-chip { display: flex; align-items: center; gap: var(--s3); padding: 10px 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--text); text-decoration: none; }
+.pass-chip:hover, .pass-chip:focus-visible { border-color: color-mix(in srgb, var(--accent) 60%, var(--line)); }
+.pass-chip .pc-main { display: grid; min-width: 0; flex: 1; }
+.pass-chip .pc-main b { font-weight: 600; font-size: var(--fs-md); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pass-chip .pc-main small { color: var(--muted); font-size: var(--fs-sm); }
+.pass-chip .pc-main .pbar { margin: 6px 0 4px; max-width: 360px; }
+.pass-chip .pc-streak { color: var(--accent); font-size: var(--fs-sm); white-space: nowrap; }
+.pass-hero { grid-template-columns: auto 1fr auto; align-items: center; gap: var(--s4); padding: var(--s4) var(--s5); }
+.ph-main { display: grid; gap: 8px; min-width: 0; }
+.ph-top { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.ph-lvl { font-size: var(--fs-2xl); font-weight: 500; line-height: 1; }
+.ph-title { font-size: var(--fs-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.ph-sub { display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: var(--fs-sm); }
+.ph-sub .num { color: var(--text); }
+.ph-stats { display: grid; grid-auto-flow: column; gap: var(--s4); }
+.ph-stats div { display: grid; gap: 2px; text-align: center; padding-left: var(--s4); border-left: 1px solid var(--line); }
+.ph-stats b { font-size: var(--fs-xl); font-weight: 500; }
+.ph-stats span { color: var(--muted); font-size: var(--fs-xs); }
+.ptrack { display: flex; align-items: flex-start; overflow-x: auto; padding: 2px 0 8px; scrollbar-width: thin; }
+.pnode.wide { flex-basis: calc(var(--n) * 146px - 10px); } .pnode.wide .pn-r { grid-template-columns: repeat(var(--n), 1fr); }
+.pnode { flex: 0 0 136px; display: grid; gap: 8px; align-content: start; padding-right: 10px; }
+.pn-l { font-size: var(--fs-sm); color: var(--faint); padding-top: 8px; border-top: 2px solid var(--line); }
+.pnode.open .pn-l { border-top-color: color-mix(in srgb, var(--accent) 70%, var(--line)); color: var(--muted); }
+.pnode.cur .pn-l { border-top-color: var(--accent); color: var(--accent); font-weight: 600; }
+.pn-r { display: grid; gap: 6px; }
+.prw { display: grid; gap: 3px; justify-items: start; text-align: left; width: 100%; min-height: 92px; padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel2); cursor: pointer; align-content: start; }
+.prw:hover { border-color: var(--faint); }
+.prw small { color: var(--muted); font-size: var(--fs-xs); margin-top: 4px; }
+.prw b { font-size: var(--fs-md); font-weight: 600; }
+.prw.on { border-color: var(--accent); }
+.prw.on small::after { content: " · aktiv"; color: var(--accent); }
+.prw[aria-disabled="true"] { opacity: .6; border-style: dashed; cursor: not-allowed; }
+.prw.next { opacity: 1; border-style: solid; border-color: var(--accent); }
+.prw.next small::after { content: " · Nächste"; color: var(--accent); }
+.prw .sw { display: flex; gap: 3px; width: 46px; height: 26px; padding: 4px; border: 1px solid var(--line); border-radius: 4px; }
+.prw .sw i { flex: 1; border-radius: 2px; }
+.prw .ttl { font: 500 16px var(--f-mono); color: var(--accent); height: 34px; display: grid; align-items: center; }
+.pnode.pulse .pn-l { animation: passPulse 1.1s var(--ease) 2; }
+@keyframes passPulse { 0%, 100% { text-shadow: none; } 50% { text-shadow: 0 0 14px var(--accent); transform: translateY(-2px); } }
+@media (prefers-reduced-motion: reduce) { .pnode.pulse .pn-l { animation: none; } .pbar i { transition: none; } }
+.pu { width: min(380px, 100%); text-align: center; }
+.pu .dlg-b { justify-items: center; padding: 24px 20px 8px; gap: 10px; }
+.pu .dlg-f { justify-content: center; }
+.pu h2 { margin: 0; font-size: var(--fs-xl); font-weight: 500; }
+.pu-vis { position: relative; display: grid; place-items: center; width: 96px; height: 96px; }
+.pu-vis::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--accent); opacity: 0; animation: puRing .6s var(--ease) 1; }
+@keyframes puRing { 0% { transform: scale(.7); opacity: .9; } 100% { transform: scale(1.35); opacity: 0; } }
+.pu-vis .pav { width: 84px; height: 84px; }
+.pu-vis .sw { display: flex; gap: 5px; width: 92px; height: 52px; padding: 7px; border: 1px solid var(--line); border-radius: 8px; }
+.pu-vis .sw i { flex: 1; border-radius: 3px; }
+.pu-vis .ttl { font: 500 34px var(--f-mono); color: var(--accent); }
+.pu-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; justify-items: center; color: var(--muted); font-size: var(--fs-md); }
+.pu-list b { color: var(--text); font-weight: 600; }
+.pu-xp { margin: 4px 0 0; color: var(--muted); font-size: var(--fs-sm); }
+@media (prefers-reduced-motion: reduce) { .pu-vis::after { animation: none; } }
+.prules { list-style: none; margin: 0; padding: 0; display: grid; }
+.prules li { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+.prules li:last-child { border-bottom: 0; }
+.prules small { display: block; color: var(--muted); font-size: var(--fs-xs); }
+.prules b { font-weight: 500; white-space: nowrap; }
+.prules li.zero b { color: var(--accent); }
+.pbadges { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.pb { display: grid; gap: 4px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel2); opacity: .75; }
+.pb.done { opacity: 1; border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.pb-h { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.pb-h b { font-size: var(--fs-md); font-weight: 600; }
+.pb-h .num { color: var(--muted); font-size: var(--fs-sm); }
+.pb.done .pb-h .num { color: var(--accent); }
+.pb small { color: var(--muted); font-size: var(--fs-xs); }
+@media (max-width: 860px) {
+  .pass-hero { grid-template-columns: auto 1fr; }
+  .ph-stats { grid-column: 1 / -1; grid-auto-flow: column; justify-content: stretch; }
+  .ph-stats div:first-child { border-left: 0; padding-left: 0; }
+  .pnode { flex-basis: 108px; padding-right: 8px; }
+  .pnode.wide { flex-basis: calc(var(--n) * 116px - 8px); }
+}
 </style>
 </head>
 <body>
@@ -1056,6 +1153,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
       <a href="#stats" data-view="stats"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 17h14"/><rect x="4.5" y="9" width="2.6" height="6"/><rect x="8.7" y="5" width="2.6" height="10"/><rect x="12.9" y="11" width="2.6" height="4"/></svg><span>Statistik</span></a>
       <a href="#analyse" data-view="analyse"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.6 12.6L17 17"/><path d="M6.3 10.5V9M8.5 10.5V6.5M10.7 10.5V8"/></svg><span>Analyse</span></a>
       <a href="#strategien" data-view="strategien" class="nav-x"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/><circle cx="10" cy="10" r=".6" fill="currentColor"/></svg><span>Strategien</span></a>
+      <a href="#pass" data-view="pass" class="nav-x" title="Pass" aria-label="Pass"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5l6.5 3.75v7.5L10 17.5l-6.5-3.75v-7.5z"/><path d="M10 7l2.2 1.3v2.4L10 12l-2.2-1.3V8.3z"/></svg><span>Pass</span></a>
       <a href="#handbuch" data-view="handbuch" class="nav-x"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 5.5C8.4 4.2 5.9 3.7 3 3.9v11.6c2.9-.2 5.4.3 7 1.6 1.6-1.3 4.1-1.8 7-1.6V3.9c-2.9-.2-5.4.3-7 1.6z"/><path d="M10 5.5v11.6"/></svg><span>Handbuch</span></a>
       <a href="#tradingview" data-view="tradingview" class="nav-x"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.5"/><path d="M7 17h6M10 14v3M5 11l3-3 2.5 2L15 6"/></svg><span class="full">TradingView</span><span class="short">TV-Chart</span></a>
       <button type="button" class="nav-more" id="navMore" aria-haspopup="true" aria-expanded="false" aria-controls="moreMenu"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="4.5" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="10" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10" r="1.4" fill="currentColor" stroke="none"/></svg><span>Mehr</span></button>
@@ -1309,6 +1407,9 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
     </div>
   </section>
 
+  <section class="view page" id="view-pass" hidden aria-label="Pass">
+    <div class="page-in" id="passBody"></div>
+  </section>
   <section class="view page" id="view-handbuch" hidden aria-label="Handbuch">
     <div class="page-in">
       <div class="page-h"><h1>Handbuch</h1><span class="hspace"></span>
@@ -1521,7 +1622,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
       </div>
       <div class="tabpanel" role="tabpanel" data-panel="ueber" hidden>
         <fieldset><legend>Edge Lab Replay</legend>
-          <dl class="kv"><dt>Version</dt><dd id="appVer">5.0</dd><dt>Daten</dt><dd>Archiv (Dukascopy), Binance, CSV, Demo</dd><dt>Speicherort</dt><dd>Dieser Browser; mit Anmeldung zusätzlich dein eigenes Supabase-Projekt</dd><dt>Termine</dt><dd>CPI, Arbeitsmarktbericht (BLS), FOMC (Federal Reserve), 2020–10/2026</dd></dl>
+          <dl class="kv"><dt>Version</dt><dd id="appVer">5.1</dd><dt>Daten</dt><dd>Archiv (Dukascopy), Binance, CSV, Demo</dd><dt>Speicherort</dt><dd>Dieser Browser; mit Anmeldung zusätzlich dein eigenes Supabase-Projekt</dd><dt>Termine</dt><dd>CPI, Arbeitsmarktbericht (BLS), FOMC (Federal Reserve), 2020–10/2026</dd></dl>
           <div class="toolbar"><button type="button" class="btn" id="setInstall" hidden>Als App installieren</button><button type="button" class="btn" id="setOnboard">Einführung erneut zeigen</button><button type="button" class="btn" id="setHelp">Hilfe öffnen</button></div>
           <p class="hint" id="setIos" hidden>Auf dem iPhone/iPad: in Safari auf <b>Teilen</b> tippen, dann <b>Zum Home-Bildschirm</b>.</p>
         </fieldset>
@@ -1626,6 +1727,17 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
   </div>
 </div>
 
+<div class="modal" id="passUnlock" hidden>
+  <div class="dlg pu" role="dialog" aria-modal="true" aria-labelledby="puTitle">
+    <div class="dlg-b">
+      <div class="pu-vis" id="puVis" aria-hidden="true"></div>
+      <h2 id="puTitle"></h2>
+      <ul class="pu-list" id="puList"></ul>
+      <p class="pu-xp" id="puXp" hidden></p>
+    </div>
+    <div class="dlg-f"><button class="btn" data-close>Später</button><button class="btn primary" id="puWear">Tragen</button></div>
+  </div>
+</div>
 <div class="modal" id="confirmModal" hidden>
   <div class="dlg" role="alertdialog" aria-modal="true" aria-labelledby="cfTitle" style="width:min(420px,100%)">
     <div class="dlg-h"><h2 id="cfTitle"></h2></div>
@@ -1637,6 +1749,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
 <div id="tipPop" role="tooltip" hidden></div>
 <nav class="more-menu" id="moreMenu" hidden aria-label="Weitere Bereiche">
   <a href="#strategien"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/></svg><span><b>Strategien</b><small>Regeln und Checklisten</small></span></a>
+  <a href="#pass"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5l6.5 3.75v7.5L10 17.5l-6.5-3.75v-7.5z"/><path d="M10 7l2.2 1.3v2.4L10 12l-2.2-1.3V8.3z"/></svg><span><b>Pass</b><small>Level, Designs und Abzeichen</small></span></a>
   <a href="#handbuch"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 5.5C8.4 4.2 5.9 3.7 3 3.9v11.6c2.9-.2 5.4.3 7 1.6 1.6-1.3 4.1-1.8 7-1.6V3.9c-2.9-.2-5.4.3-7 1.6z"/><path d="M10 5.5v11.6"/></svg><span><b>Handbuch</b><small>VWAP, Profil, Orderflow, Risiko</small></span></a>
   <a href="#tradingview"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.5"/><path d="M7 17h6M10 14v3M5 11l3-3 2.5 2L15 6"/></svg><span><b>TradingView</b><small>Live-Chart ansehen</small></span></a>
 </nav>
@@ -4448,7 +4561,8 @@ const DEFAULTS = {
   jf: { sym: '', strat: '', res: '', sess: '' },
   binance: { market: 'spot', symbol: 'BTCUSDT', interval: '1m', days: 7 },
   newSess: { market: 'ar:NAS100', when: 'random', y0: 2021, y1: 2024, start: 'ny', blind: true, sym: 'BTCUSDT', bnMarket: 'spot' },
-  inst: 'NQ'
+  inst: 'NQ',
+  pass: { theme: 'standard', avatar: 'kerze', frame: 'keiner', title: 'auto' }
 };
 /* Frische Kopie – deepMerge darf nie Referenzen in DEFAULTS verändern */
 const freshDefaults = () => JSON.parse(JSON.stringify(DEFAULTS));
@@ -4819,6 +4933,7 @@ const App = {
     const endedRid = this.replay.id;
     this.replay.active = false; this.replay.picking = false; this.replay.blind = false; this.engine = null; this.preview = null;
     this.clearResume();
+    if (typeof Pass !== 'undefined') { Pass._ended = true; setTimeout(() => Pass.check(), 700); }
     try { this.runPostChecks(endedRid); } catch (e) { console.warn('Nachlauf-Prüfung fehlgeschlagen', e); }
     if (this.tool === 'long' || this.tool === 'short') this.tool = 'cursor';
     this.cursor = this.base.length - 1;
@@ -6079,6 +6194,7 @@ const Lightbox = {
           if (SyncCore.applyRows(m.items, 'settings', cur, (x) => x.id, sr)) {
             const s = Object.assign({}, cur[0]); delete s.id; delete s._u;
             App.settings = deepMerge(App.settings, s); store.set('elr.settings', App.settings); n++;
+            if (typeof Pass !== 'undefined') try { Pass.applyTheme(); if (typeof readColors === 'function') readColors(); App.requestRender(); } catch (_) { /* egal */ }
             if (typeof UI !== 'undefined' && UI.fillTicket) try { UI.fillTicket(); } catch (_) { /* egal */ }
           }
         }
@@ -7115,7 +7231,7 @@ Object.assign(App, {
     right += '<section class="card"><div class="card-h"><h3>Häufigste Fehler</h3></div>';
     right += top.length ? '<div class="mk-list">' + top.map(([m, n]) => '<div class="mk-row"><span>' + esc(m) + '</span><span class="meter"><i style="width:' + (n / top[0][1] * 100).toFixed(0) + '%"></i></span><b>' + n + '</b></div>').join('') + '</div>' : '<p class="hint">Noch keine Fehler markiert – gut so, oder noch keine Session ausgewertet.</p>';
     right += '</section>';
-    body.innerHTML = h + '<div class="dash"><div class="dash-col">' + left + '</div><div class="dash-col">' + this.bigIssueCard(J) + right + '</div></div>';
+    body.innerHTML = Pass.chip() + h + '<div class="dash"><div class="dash-col">' + left + '</div><div class="dash-col">' + this.bigIssueCard(J) + right + '</div></div>';
     Tips.decorate(body);
     this.drawMiniEquity($('#stEq'), s.equity);
   },
@@ -8139,6 +8255,401 @@ const Handbook = {
   }
 };
 
+/* Edge Lab Replay — Pass: XP, Level, Belohnungen.
+   XP gibt es nur für Prozess (Regeln, Notizen, Reflexion, Routine) – nie für Gewinn oder Verlust.
+   Alles wird aus vorhandenen Daten berechnet; Journal, Sessions und Strategien bleiben unverändert.
+   Gespeichert wird nur die Auswahl (Theme, Avatar, Titel) und der höchste erreichte Stand in App.settings.pass. */
+'use strict';
+
+/* ---------- Kern: reine Rechenlogik (ohne Browser, im Node-Test prüfbar) ---------- */
+const PassCore = (() => {
+  const XP = {
+    trade: 4, tradeNote: 3, tradeSetup: 1, tradeStop: 1, tradesPerSession: 12,
+    rulesMinTrades: 3, rulesAll: 40, rulesAllAt: 0.8, rulesHalf: 12, rulesHalfAt: 0.5,
+    session: 30, discBase: 5, discStep: 2, good: 8, bad: 8, mistake: 3, mistakeMax: 2, sessNote: 4, blind: 5,
+    day: 10, strategy: 15, strategyMax: 5, noteChars: 25, noteWords: 3
+  };
+  const STREAK_BONUS = [[3, 30], [7, 80], [14, 150], [30, 300]];
+  const LEVEL_MAX = 50, TRACK_MAX = 30;
+  /* Gesamt-XP, die für Level n nötig sind (Level 30 ≈ 9.200 XP ≈ 42 gründliche Sessions) */
+  const need = (n) => (n <= 1 ? 0 : Math.round(30 * Math.pow(n - 1, 1.7)));
+  /* Text zählt nur, wenn er wirklich etwas sagt: Mindestlänge und mindestens 3 Wörter */
+  const goodText = (s) => typeof s === 'string' && s.trim().length >= XP.noteChars && s.trim().split(/\s+/).length >= XP.noteWords;
+  const levelOf = (xp) => { let n = 1; while (n < LEVEL_MAX && xp >= need(n + 1)) n++; return n; };
+
+  const THEMES = {
+    standard: { name: 'Standard', c: ['#0b1018', '#101722', '#e3ad3b'] },
+    mitternacht: { name: 'Mitternacht', c: ['#080d1a', '#0d1424', '#5aa2ff'] },
+    glut: { name: 'Glut', c: ['#130d0a', '#1a120e', '#f0913a'] },
+    smaragd: { name: 'Smaragd', c: ['#08130f', '#0d1b16', '#3ec9a0'] },
+    violett: { name: 'Violett', c: ['#0f0b18', '#151021', '#b48cff'] },
+    graphit: { name: 'Graphit', c: ['#0c0c0d', '#131314', '#e8e8ea'] },
+    nachtgold: { name: 'Nachtgold', c: ['#050505', '#0b0b0a', '#f4d35e'] }
+  };
+  /* Symbole auf 32×32, nur Linien – passend zum Rest der App */
+  const AVATARS = {
+    kerze: ['Kerze', '<path d="M16 4v6M16 21v7"/><rect x="11.5" y="10" width="9" height="11" rx="1"/>'],
+    pfeil: ['Pfeil', '<path d="M9 23L23 9M12 9h11v11"/>'],
+    welle: ['Welle', '<path d="M3 18c3-9 7-9 10 0s7 9 10 0 4-6 6-3"/>'],
+    ziel: ['Ziel', '<circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="5.5"/><circle cx="16" cy="16" r="1.3" fill="currentColor"/>'],
+    schild: ['Schild', '<path d="M16 4l10 4v8c0 6-5 10-10 12-5-2-10-6-10-12V8z"/>'],
+    kompass: ['Kompass', '<circle cx="16" cy="16" r="11.5"/><path d="M16 8l3 8-3 8-3-8z"/>'],
+    berg: ['Berg', '<path d="M3 26l10-16 5 8 3-4 8 12z"/>'],
+    raute: ['Raute', '<path d="M16 3l13 13-13 13L3 16z"/><path d="M16 9l7 7-7 7-7-7z"/>'],
+    anker: ['Anker', '<circle cx="16" cy="7" r="2.6"/><path d="M16 9.6V27M11 14h10M7 19c0 6 4 8 9 8s9-2 9-8"/>'],
+    diamant: ['Diamant', '<path d="M9 6h14l6 8-13 14L3 14zM3 14h26M12 14l4 14 4-14M9 6l3 8 4-8 4 8 3-8"/>'],
+    saeulen: ['Säulen', '<path d="M6 27V17M13 27V9M20 27V13M27 27V5"/>'],
+    sechseck: ['Sechseck', '<path d="M16 3l11 6.5v13L16 29 5 22.5v-13z"/><path d="M16 10l5 3v6l-5 3-5-3v-6z"/>'],
+    krone: ['Krone', '<path d="M5 24L7 11l6 6 3-9 3 9 6-6 2 13z"/><path d="M5 28h22"/>']
+  };
+  const FRAMES = { keiner: 'Ohne Rahmen', doppel: 'Doppelring', gestrichelt: 'Gestrichelt', kantig: 'Kantig' };
+  const TITLES = {
+    neuling: 'Neuling', beobachter: 'Beobachter', chartleser: 'Chartleser', konsequent: 'Konsequent', systemhaendler: 'Systemhändler',
+    taktiker: 'Taktiker', routinier: 'Routinier', marktleser: 'Marktleser', architekt: 'Architekt', regelmeister: 'Regelmeister'
+  };
+  /* Belohnungs-Spur: Level 1–30, auf jedem Level etwas */
+  const REWARDS = [
+    [1, 'theme', 'standard'], [1, 'avatar', 'kerze'], [1, 'frame', 'keiner'], [1, 'title', 'neuling'],
+    [2, 'avatar', 'pfeil'], [3, 'theme', 'mitternacht'], [4, 'title', 'beobachter'], [5, 'avatar', 'welle'],
+    [6, 'frame', 'doppel'], [7, 'avatar', 'ziel'], [8, 'theme', 'glut'], [9, 'title', 'chartleser'],
+    [10, 'avatar', 'schild'], [11, 'avatar', 'kompass'], [12, 'title', 'konsequent'], [13, 'frame', 'gestrichelt'],
+    [14, 'theme', 'smaragd'], [15, 'avatar', 'berg'], [16, 'title', 'systemhaendler'], [17, 'avatar', 'raute'],
+    [18, 'avatar', 'anker'], [19, 'frame', 'kantig'], [20, 'theme', 'violett'], [21, 'title', 'taktiker'],
+    [22, 'avatar', 'diamant'], [23, 'avatar', 'saeulen'], [24, 'avatar', 'sechseck'], [25, 'title', 'routinier'],
+    [26, 'theme', 'graphit'], [27, 'title', 'marktleser'], [28, 'avatar', 'krone'], [29, 'title', 'architekt'],
+    [30, 'theme', 'nachtgold'], [30, 'title', 'regelmeister']
+  ].map(([lvl, type, id]) => ({ lvl, type, id }));
+  const catalog = (type) => (type === 'theme' ? THEMES : type === 'avatar' ? AVATARS : type === 'frame' ? FRAMES : TITLES);
+  const nameOf = (r) => { const c = catalog(r.type)[r.id]; return Array.isArray(c) ? c[0] : (c && c.name) || c; };
+  const typeLabel = { theme: 'Design', avatar: 'Avatar', frame: 'Rahmen', title: 'Titel' };
+  const levelOfReward = (type, id) => { const r = REWARDS.find((x) => x.type === type && x.id === id); return r ? r.lvl : 99; };
+  const highestTitle = (level) => REWARDS.filter((r) => r.type === 'title' && r.lvl <= level).pop().id;
+
+  const utcDay = (t) => { const d = new Date(t * 1000); return d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate(); };
+  const dayNo = (k) => Math.round(Date.UTC(Math.floor(k / 10000), Math.floor(k / 100) % 100 - 1, k % 100) / 86400000);
+
+  /* journal, sessions, strategies → XP, Level, Serie, Abzeichen. opt: { dayKey(tSec), today(tSec) } */
+  function calc(journal, sessions, strategies, opt) {
+    opt = opt || {};
+    const dayKey = opt.dayKey || utcDay;
+    const cat = { trades: 0, rules: 0, reflexion: 0, routine: 0 };
+    const n = { trades: 0, notes: 0, rulesOk: 0, sessions: 0, blind: 0, bad: 0, strategies: 0, stopKept: 0 };
+
+    const perSess = new Map(), notesSeen = new Map(), rulesBy = new Map(), bySess = new Map();
+    for (const j of journal || []) {
+      if (!j || (j.status && j.status !== 'closed')) continue;
+      n.trades++;
+      /* Trades ohne Session/Replay: Schlüssel aus dem Kalendertag, nicht ein gemeinsamer Topf */
+      const t0 = j.exitT || j.entryT;
+      const key = j.session || j.replay || ('d' + (t0 ? dayKey(t0) : '-'));
+      if (j.session) { if (!bySess.has(j.session)) bySess.set(j.session, []); bySess.get(j.session).push(j); }
+      /* Notiz zählt nur mit Substanz und nur, wenn sie in der Session nicht schon vorkam */
+      let hasNote = false;
+      if (goodText(j.note)) {
+        const norm = j.note.trim().toLowerCase().replace(/\s+/g, ' ');
+        const seen = notesSeen.get(key) || new Set();
+        hasNote = !seen.has(norm); seen.add(norm); notesSeen.set(key, seen);
+      }
+      if (hasNote) n.notes++;
+      if (j.rulesOk) n.rulesOk++;
+      /* Schutz gegen Trade-Spam: je Session zählen höchstens 12 Trades für XP */
+      const c = (perSess.get(key) || 0) + 1; perSess.set(key, c);
+      if (c > XP.tradesPerSession) continue;
+      cat.trades += XP.trade + (hasNote ? XP.tradeNote : 0) + (j.setup ? XP.tradeSetup : 0) + (j.sl != null ? XP.tradeStop : 0);
+      if (j.rulesTotal > 0) { const r = rulesBy.get(key) || { n: 0, ok: 0 }; r.n++; if (j.rulesOk) r.ok++; rulesBy.set(key, r); }
+    }
+    /* Regel-XP je Session: Anteil der Trades mit komplett erfüllter Checkliste */
+    for (const r of rulesBy.values()) {
+      if (r.n < XP.rulesMinTrades) continue;
+      const q = r.ok / r.n;
+      cat.rules += q >= XP.rulesAllAt ? XP.rulesAll : q >= XP.rulesHalfAt ? XP.rulesHalf : 0;
+    }
+
+    const days = new Set();
+    for (const e of sessions || []) {
+      if (!e || e.running) continue;
+      const disc = +e.discipline || 0;
+      const txt = goodText;
+      const worked = disc > 0 || txt(e.good) || txt(e.bad) || txt(e.note) || (e.mistakes && e.mistakes.length) || e.trades > 0 || e.net != null;
+      if (!worked) continue; /* nur gestartet und sofort wieder beendet → kein XP */
+      n.sessions++;
+      cat.reflexion += XP.session;
+      if (disc > 0) cat.reflexion += XP.discBase + disc * XP.discStep;
+      if (txt(e.good)) cat.reflexion += XP.good;
+      if (txt(e.bad)) { cat.reflexion += XP.bad; n.bad++; }
+      cat.reflexion += Math.min(XP.mistakeMax, (e.mistakes || []).length) * XP.mistake;
+      if (txt(e.note)) cat.reflexion += XP.sessNote;
+      if (e.blind) { cat.reflexion += XP.blind; n.blind++; }
+      /* Importierte Sessions ohne eigenes Datum (created wurde beim Import auf „jetzt“ gesetzt) zählen nicht als aktiver Tag */
+      const t = e.createdAuto ? e.updated : (e.created || e.updated); if (t) days.add(dayKey(t));
+      /* Stopp gehalten: kein Stop wurde weiter vom Einstieg weggeschoben (side: 1 = Long, -1 = Short) */
+      const withStop = (bySess.get(e.id) || []).filter((j) => j.sl != null && j.slFinal != null && isFinite(j.sl) && isFinite(j.slFinal) && (j.side === 1 || j.side === -1));
+      if (withStop.length && withStop.every((j) => j.side * (j.sl - j.slFinal) <= (j.tick || 1e-9) / 2)) n.stopKept++;
+    }
+
+    /* Routine: aktive Tage und Serien (echte Kalendertage, nicht die Kurstage des Replays) */
+    const nums = [...days].map(dayNo).sort((a, b) => a - b);
+    let best = 0, run = 0, cur = 0;
+    nums.forEach((d, i) => { run = i && d === nums[i - 1] + 1 ? run + 1 : 1; if (run > best) best = run; });
+    if (nums.length) {
+      const today = dayNo(dayKey(opt.today != null ? opt.today : Date.now() / 1000));
+      const last = nums[nums.length - 1];
+      if (today - last <= 1) { cur = 1; for (let i = nums.length - 1; i > 0 && nums[i] === nums[i - 1] + 1; i--) cur++; }
+    }
+    cat.routine += nums.length * XP.day;
+    for (const [d, b] of STREAK_BONUS) if (best >= d) cat.routine += b;
+
+    for (const s of strategies || []) if (s && (s.rules || '').split('\n').filter((x) => x.trim()).length >= 3) n.strategies++;
+    cat.routine += Math.min(n.strategies, XP.strategyMax) * XP.strategy;
+
+    const total = cat.trades + cat.rules + cat.reflexion + cat.routine;
+    const level = levelOf(total);
+    const badges = [
+      ['erster-trade', 'Erster Trade', 'Einen Trade im Journal haben', n.trades, 1],
+      ['erste-session', 'Erste Session', 'Eine Session auswerten', n.sessions, 1],
+      ['trades-100', '100 Trades', 'Trades im Journal', n.trades, 100],
+      ['trades-500', '500 Trades', 'Trades im Journal', n.trades, 500],
+      ['sessions-10', '10 Sessions', 'Ausgewertete Sessions', n.sessions, 10],
+      ['sessions-50', '50 Sessions', 'Ausgewertete Sessions', n.sessions, 50],
+      ['regelfest', 'Regelfest', 'Trades mit komplett erfüllter Regel-Checkliste', n.rulesOk, 25],
+      ['ehrlich', 'Ehrlicher Rückblick', 'Sessions mit „Was lief schlecht“ ausgefüllt', n.bad, 10],
+      ['blind', 'Blind geflogen', 'Blind-Sessions ausgewertet', n.blind, 10],
+      ['notizen', 'Dokumentiert', 'Trades mit aussagekräftiger Notiz', n.notes, 50],
+      ['stopp', 'Stopp gehalten', 'Sessions, in denen kein Stop weiter weggeschoben wurde', n.stopKept, 10],
+      ['strategie', 'Auf dem Papier', 'Strategien mit mindestens 3 Regeln', n.strategies, 1],
+      ['serie-3', 'Serie 3', 'Tage in Folge gebacktestet', best, 3],
+      ['serie-7', 'Serie 7', 'Tage in Folge gebacktestet', best, 7],
+      ['serie-30', 'Serie 30', 'Tage in Folge gebacktestet', best, 30]
+    ].map(([id, label, desc, c, t]) => ({ id, label, desc, cur: Math.min(c, t), target: t, done: c >= t }));
+
+    return {
+      total, level, cat, n, badges, activeDays: nums.length, streak: { cur, best },
+      from: need(level), to: level >= LEVEL_MAX ? null : need(level + 1)
+    };
+  }
+
+  return { XP, STREAK_BONUS, LEVEL_MAX, TRACK_MAX, need, levelOf, calc, THEMES, AVATARS, FRAMES, TITLES, REWARDS, nameOf, typeLabel, levelOfReward, highestTitle, catalog };
+})();
+if (typeof module !== 'undefined' && module.exports) module.exports = PassCore;
+
+/* ---------- Oberfläche ---------- */
+const Pass = {
+  last: null, _wrapped: false,
+  state() {
+    const s = App.settings.pass || (App.settings.pass = {});
+    if (!PassCore.THEMES[s.theme]) s.theme = 'standard';
+    if (!PassCore.AVATARS[s.avatar]) s.avatar = 'kerze';
+    if (!PassCore.FRAMES[s.frame]) s.frame = 'keiner';
+    if (s.title !== 'auto' && !PassCore.TITLES[s.title]) s.title = 'auto';
+    /* alte Fassungen legten hw/seen in die (synchronisierten) Einstellungen – ins Gerät übernehmen und dort entfernen */
+    if ('hw' in s || 'seen' in s) {
+      const L = this.loc();
+      L.hw = Math.max(L.hw, +s.hw || 0); L.seen = Math.max(L.seen, +s.seen || 0);
+      if (+s.hw || +s.seen) L.fresh = false;
+      delete s.hw; delete s.seen; this.saveLoc(); App.saveSettings();
+    }
+    return s;
+  },
+  /* Geräte-Stand (nicht synchronisiert): höchster Stand, zuletzt gemeldetes Level, XP-Stand vor der Session */
+  loc() {
+    if (!this._loc) {
+      const raw = store.get('elr.pass', null), o = raw && typeof raw === 'object' ? raw : null;
+      this._loc = { hw: +(o && o.hw) || 0, seen: +(o && o.seen) || 0, last: (o && o.last) || null, fresh: !o };
+    }
+    return this._loc;
+  },
+  saveLoc() { const L = this.loc(); store.set('elr.pass', { hw: L.hw, seen: L.seen, last: L.last }); },
+  dayKey() { return (t) => { const p = Core.localParts(t, App.settings.tz); return p.y * 10000 + p.m * 100 + p.d; }; },
+  /* Neu berechnen. Der höchste erreichte Stand bleibt erhalten, auch wenn später Trades gelöscht werden. */
+  refresh() {
+    this.state();
+    const hw = this.loc().hw;
+    const c = PassCore.calc(App.journal, App.sessions, App.strategies, { dayKey: this.dayKey() });
+    c.legacy = Math.max(0, hw - c.total); /* Bestand aus inzwischen gelöschten Daten */
+    if (c.total < hw) { c.total = hw; c.level = PassCore.levelOf(hw); c.from = PassCore.need(c.level); c.to = c.level >= PassCore.LEVEL_MAX ? null : PassCore.need(c.level + 1); }
+    this.last = c;
+    return c;
+  },
+  titleId() { const s = this.state(); return s.title === 'auto' ? PassCore.highestTitle(this.last ? this.last.level : 1) : s.title; },
+  applyTheme() {
+    const id = this.state().theme;
+    if (id === 'standard') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', id);
+  },
+  avatarSvg(id, cls) {
+    const a = PassCore.AVATARS[id] || PassCore.AVATARS.kerze;
+    return '<svg class="' + (cls || '') + '" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + a[1] + '</svg>';
+  },
+  avatarHtml(size) {
+    const s = this.state();
+    return '<span class="pav pav-' + (size || 'm') + ' fr-' + s.frame + '">' + this.avatarSvg(s.avatar) + '</span>';
+  },
+
+  /* Nach jedem Speichern prüfen, ob ein neues Level erreicht wurde */
+  init() {
+    if (this._wrapped || typeof Store === 'undefined') return;
+    this._wrapped = true;
+    const save = Store.save.bind(Store);
+    Store.save = function (k, v) {
+      const p = save(k, v);
+      if (k === 'journal' || k === 'sessions' || k === 'strategies') { clearTimeout(Pass._t); Pass._t = setTimeout(() => Pass.check(), 400); }
+      return p;
+    };
+    $('#passBody').addEventListener('click', (e) => this.onClick(e));
+    $('#puWear').addEventListener('click', () => this.wearUnlocked());
+  },
+  check(opt) {
+    if (!App.journal) return;
+    /* Mitten in einer Session nicht stören – die Meldung kommt danach */
+    if (App.replay && App.replay.active) return;
+    this.state();
+    const ended = !!(this._ended || (opt && opt.ended)); this._ended = false;
+    const L = this.loc(), prev = L.last;
+    const c = this.refresh();
+    const cat = c.cat, sum = (k) => Math.max(0, cat[k] - (prev ? prev[k] || 0 : 0));
+    let dirty = false, card = null, intro = false;
+    if (c.total > L.hw) { L.hw = c.total; dirty = true; }
+    /* Frisches Gerät: Level erst still setzen, wenn Daten da sind (nicht vor dem ersten Sync-Pull) */
+    const empty = !(App.journal.length || (App.sessions || []).length);
+    if (!L.seen) {
+      if (!empty) { intro = L.fresh && c.level > 1; L.seen = c.level; L.fresh = false; dirty = true; }
+    } else if (c.level > L.seen) {
+      card = { from: L.seen, to: c.level }; L.seen = c.level; dirty = true; this.pulse = c.level;
+    }
+    /* Abschluss einer Session: ruhige Zusammenfassung, nie mit Gewinn oder Verlust */
+    let line = '';
+    if (ended && prev) {
+      const parts = [['Trades', sum('trades')], ['Regeln', sum('rules')], ['Rückblick', sum('reflexion')], ['Routine', sum('routine')]].filter((x) => x[1] > 0);
+      const tot = parts.reduce((a, x) => a + x[1], 0);
+      if (tot > 0) line = '+' + tot + ' XP: ' + parts.map((x) => x[0] + ' ' + x[1]).join(', ');
+    }
+    const snap = { trades: cat.trades, rules: cat.rules, reflexion: cat.reflexion, routine: cat.routine };
+    if (!prev || JSON.stringify(prev) !== JSON.stringify(snap)) { L.last = snap; dirty = true; }
+    if (dirty) this.saveLoc();
+    if (intro) App.toast('Dein bisheriger Fortschritt zählt: Level ' + c.level + ' im Pass.', 'good');
+    if (card) this.queueUnlock(card, line);
+    else if (line) App.toast(line, 'info');
+    if (App.view === 'pass') this.render();
+    if (App.view === 'start') App.renderStart();
+  },
+
+  /* Freischalt-Karte: erscheint nie während einer Session oder über einem anderen Dialog */
+  queueUnlock(card, line) {
+    const q = this._q;
+    this._q = q ? { from: Math.min(q.from, card.from), to: Math.max(q.to, card.to), line: line || q.line } : { from: card.from, to: card.to, line: line || '' };
+    this.tryUnlock();
+  },
+  tryUnlock() {
+    clearTimeout(this._qt);
+    const q = this._q; if (!q) return;
+    if ((App.replay && App.replay.active) || document.body.classList.contains('modal-open')) { this._qt = setTimeout(() => this.tryUnlock(), 1500); return; }
+    this._q = null; this.showUnlock(q);
+  },
+  rewardVis(r, big) {
+    if (r.type === 'theme') { const t = PassCore.THEMES[r.id].c; return '<span class="sw" style="background:' + t[0] + '"><i style="background:' + t[1] + '"></i><i style="background:' + t[2] + '"></i></span>'; }
+    if (r.type === 'avatar') return '<span class="pav ' + (big ? 'pav-l' : 'pav-s') + ' fr-keiner">' + this.avatarSvg(r.id) + '</span>';
+    if (r.type === 'frame') return '<span class="pav ' + (big ? 'pav-l' : 'pav-s') + ' fr-' + r.id + '">' + this.avatarSvg('kerze') + '</span>';
+    return '<span class="ttl">Aa</span>';
+  },
+  showUnlock(q) {
+    const got = PassCore.REWARDS.filter((r) => r.lvl > q.from && r.lvl <= q.to);
+    this._got = got[0] || null;
+    $('#puVis').innerHTML = got[0] ? this.rewardVis(got[0], true) : this.avatarHtml('l');
+    $('#puTitle').textContent = 'Level ' + q.to;
+    const multi = q.to - q.from > 1;
+    $('#puList').innerHTML = got.length ? got.map((r) => '<li>' + (multi ? 'Level ' + r.lvl + ': ' : '') + PassCore.typeLabel[r.type] + ' <b>' + esc(PassCore.nameOf(r)) + '</b></li>').join('') : '<li>Weiter so.</li>';
+    const x = $('#puXp'); x.textContent = q.line || ''; x.hidden = !q.line;
+    $('#puWear').hidden = !got[0];
+    openModal('#passUnlock');
+  },
+  wearUnlocked() {
+    const r = this._got; closeModal('#passUnlock'); if (!r) return;
+    this.equip(r.type, r.id); App.saveSettings(); if (App.view === 'pass') this.render();
+  },
+  equip(type, id) {
+    const s = this.state();
+    if (type === 'theme') { s.theme = id; this.applyTheme(); if (typeof readColors === 'function') readColors(); App.requestRender(); }
+    else if (type === 'avatar') s.avatar = id;
+    else if (type === 'frame') s.frame = id;
+    else if (type === 'title') s.title = id;
+  },
+
+  /* Kompakte Karte für die Übersicht */
+  chip() {
+    const c = this.last || this.refresh();
+    const pct = c.to == null ? 100 : Math.max(0, Math.min(100, (c.total - c.from) / (c.to - c.from) * 100));
+    return '<a class="pass-chip" href="#pass" aria-label="Pass öffnen">' + this.avatarHtml('s') +
+      '<span class="pc-main"><b>Level ' + c.level + ' · ' + esc(PassCore.TITLES[this.titleId()]) + '</b>' +
+      '<span class="pbar" aria-hidden="true"><i style="width:' + pct.toFixed(1) + '%"></i></span>' +
+      '<small>' + (c.to == null ? 'Höchstes Level erreicht' : App.fmtN(c.to - c.total, 0) + ' XP bis Level ' + (c.level + 1)) + '</small></span>' +
+      (c.streak.cur >= 2 ? '<span class="pc-streak num">' + c.streak.cur + ' Tage</span>' : '') + '</a>';
+  },
+
+  onClick(e) {
+    const b = e.target.closest('[data-eq]'); if (!b) return;
+    const [type, id] = b.dataset.eq.split(':');
+    const lvl = PassCore.levelOfReward(type, id), c = this.last || this.refresh();
+    if (lvl > c.level) { App.toast('Ab Level ' + lvl + ' freigeschaltet.'); return; }
+    this.equip(type, id);
+    App.saveSettings(); this.render();
+  },
+
+  render() {
+    const el = $('#passBody'); if (!el) return;
+    const c = this.refresh(), s = this.state(), X = PassCore.XP;
+    const pct = c.to == null ? 100 : Math.max(0, Math.min(100, (c.total - c.from) / (c.to - c.from) * 100));
+    const nextR = PassCore.REWARDS.filter((r) => r.lvl === c.level + 1);
+    const fmt = (v) => App.fmtN(v, 0);
+    /* Kopf */
+    let h = '<div class="st-head"><div><h1>Pass</h1><p class="page-sub">XP gibt es für saubere Arbeit – nicht für Gewinn oder Verlust.</p></div></div>';
+    h += '<section class="card pass-hero">' + this.avatarHtml('l') +
+      '<div class="ph-main"><div class="ph-top"><span class="ph-lvl num">Level ' + c.level + '</span><span class="ph-title">' + esc(PassCore.TITLES[this.titleId()]) + '</span></div>' +
+      '<div class="pbar big" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + Math.round(pct) + '" aria-label="Fortschritt zum nächsten Level"><i style="width:' + pct.toFixed(1) + '%"></i></div>' +
+      '<div class="ph-sub"><span class="num">' + fmt(c.total) + (c.to == null ? '' : ' / ' + fmt(c.to)) + ' XP</span>' +
+      (c.to == null ? '<span>Höchstes Level erreicht</span>' : '<span>noch ' + fmt(c.to - c.total) + ' XP bis Level ' + (c.level + 1) + (nextR.length ? ' · ' + esc(nextR.map((r) => PassCore.typeLabel[r.type] + ' ' + PassCore.nameOf(r)).join(', ')) : '') + '</span>') + '</div></div>' +
+      '<div class="ph-stats"><div><b class="num">' + c.streak.cur + '</b><span>Tage in Serie</span></div><div><b class="num">' + c.streak.best + '</b><span>Beste Serie</span></div><div><b class="num">' + c.activeDays + '</b><span>Aktive Tage</span></div></div></section>';
+    /* Spur */
+    h += '<section class="card"><div class="card-h"><h3>Belohnungen</h3><span class="hint">Tippe auf eine freigeschaltete Belohnung, um sie zu tragen.</span></div><div class="ptrack" id="pTrack">';
+    for (let L = 1; L <= PassCore.TRACK_MAX; L++) {
+      const rs = PassCore.REWARDS.filter((r) => r.lvl === L), open = L <= c.level, curr = L === c.level;
+      h += '<div class="pnode' + (rs.length > 1 ? ' wide' : '') + (open ? ' open' : '') + (curr ? ' cur' : '') + (this.pulse === L ? ' pulse' : '') + '" style="--n:' + rs.length + '"' + (curr ? ' id="pCur"' : '') + '><div class="pn-l num">' + L + '</div><div class="pn-r">';
+      for (const r of rs) {
+        const on = (r.type === 'theme' && s.theme === r.id) || (r.type === 'avatar' && s.avatar === r.id) || (r.type === 'frame' && s.frame === r.id) || (r.type === 'title' && this.titleId() === r.id);
+        const vis = this.rewardVis(r, false);
+        h += '<button type="button" class="prw' + (on ? ' on' : '') + (L === c.level + 1 ? ' next' : '') + '" data-eq="' + r.type + ':' + r.id + '"' + (open ? '' : ' aria-disabled="true"') + ' title="' + esc(PassCore.typeLabel[r.type] + ': ' + PassCore.nameOf(r)) + '">' + vis + '<small>' + esc(PassCore.typeLabel[r.type]) + '</small><b>' + esc(PassCore.nameOf(r)) + '</b></button>';
+      }
+      h += '</div></div>';
+    }
+    h += '</div></section>';
+    /* Woher kommt XP */
+    const rows = [['Trades', c.cat.trades, 'Journal, Notizen, Stop gesetzt'], ['Regeln', c.cat.rules, 'Checkliste vor dem Einstieg'], ['Rückblick', c.cat.reflexion, 'Sessions auswerten, ehrlich bleiben'], ['Routine', c.cat.routine, 'Aktive Tage, Serien, Strategien']];
+    if (c.legacy > 0) rows.push(['Bestand (gelöschte Daten)', c.legacy, 'Höchster erreichter Stand, auch wenn Trades oder Sessions gelöscht wurden']);
+    const mx = Math.max(1, ...rows.map((r) => r[1]));
+    h += '<div class="dash"><div class="dash-col"><section class="card"><div class="card-h"><h3>Woher dein XP kommt</h3><span class="hint num">' + fmt(c.total) + ' gesamt</span></div><div class="mk-list">' +
+      rows.map((r) => '<div class="mk-row" title="' + esc(r[2]) + '"><span>' + r[0] + '</span><span class="meter"><i style="width:' + (r[1] / mx * 100).toFixed(0) + '%"></i></span><b>' + fmt(r[1]) + '</b></div>').join('') + '</div></section>' +
+      '<section class="card"><div class="card-h"><h3>So sammelst du XP</h3></div><ul class="prules">' +
+      '<li><span>Trade im Journal<small>höchstens ' + X.tradesPerSession + ' pro Session</small></span><b class="num">+' + X.trade + '</b></li>' +
+      '<li><span>Aussagekräftige Notiz am Trade · Strategie gewählt · Stop gesetzt<small>Notiz: ab ' + X.noteChars + ' Zeichen und ' + X.noteWords + ' Wörtern, nicht doppelt</small></span><b class="num">+' + X.tradeNote + ' · +' + X.tradeSetup + ' · +' + X.tradeStop + '</b></li>' +
+      '<li><span>Regeln eingehalten<small>je Session ab ' + X.rulesMinTrades + ' Trades mit Checkliste: ' + Math.round(X.rulesAllAt * 100) + ' % komplett erfüllt, ab ' + Math.round(X.rulesHalfAt * 100) + ' % +' + X.rulesHalf + '</small></span><b class="num">+' + X.rulesAll + '</b></li>' +
+      '<li><span>Session ausgewertet</span><b class="num">+' + X.session + '</b></li>' +
+      '<li><span>Disziplin bewertet</span><b class="num">bis +' + (X.discBase + 5 * X.discStep) + '</b></li>' +
+      '<li><span>„Was lief gut“ · „Was lief schlecht“ ausgefüllt<small>ab ' + X.noteChars + ' Zeichen und ' + X.noteWords + ' Wörtern</small></span><b class="num">+' + X.good + ' · +' + X.bad + '</b></li>' +
+      '<li><span>Fehler markiert<small>bis zu ' + X.mistakeMax + ' pro Session</small></span><b class="num">+' + X.mistake + ' je</b></li>' +
+      '<li><span>Blind-Session</span><b class="num">+' + X.blind + '</b></li>' +
+      '<li><span>Aktiver Tag</span><b class="num">+' + X.day + '</b></li>' +
+      '<li><span>Serie von ' + PassCore.STREAK_BONUS.map((x) => x[0]).join(' / ') + ' Tagen</span><b class="num">+' + PassCore.STREAK_BONUS.map((x) => x[1]).join(' / ') + '</b></li>' +
+      '<li><span>Strategie mit mindestens 3 Regeln<small>bis zu ' + X.strategyMax + '</small></span><b class="num">+' + X.strategy + '</b></li>' +
+      '<li class="zero"><span>Gewinn oder Verlust</span><b class="num">0</b></li></ul>' +
+      '<p class="hint">Die Regel-Checkliste beruht auf deiner Ehrlichkeit – schummeln bringt nur dir selbst falsche Daten.</p></section></div>';
+    /* Abzeichen */
+    h += '<div class="dash-col"><section class="card"><div class="card-h"><h3>Abzeichen</h3><span class="hint num">' + c.badges.filter((b) => b.done).length + ' / ' + c.badges.length + '</span></div><div class="pbadges">' +
+      c.badges.map((b) => '<div class="pb' + (b.done ? ' done' : '') + '" title="' + esc(b.desc) + '"><div class="pb-h"><b>' + esc(b.label) + '</b><span class="num">' + (b.done ? '✓' : b.cur + '/' + b.target) + '</span></div><small>' + esc(b.desc) + '</small><span class="pbar" aria-hidden="true"><i style="width:' + (b.cur / b.target * 100).toFixed(0) + '%"></i></span></div>').join('') + '</div></section></div></div>';
+    el.innerHTML = h;
+    this.pulse = 0;
+    const cur = $('#pCur'), tr = $('#pTrack');
+    if (cur && tr) tr.scrollLeft = Math.max(0, cur.offsetLeft - tr.clientWidth / 2 + cur.offsetWidth / 2);
+  }
+};
+
 /* Edge Lab Replay — Bedienung, Bereiche, Routing */
 'use strict';
 let lastFocus = null;
@@ -8158,13 +8669,14 @@ function closeModal(sel) {
 }
 function getPath(o, p) { return p.split('.').reduce((a, k) => (a == null ? a : a[k]), o); }
 function setPath(o, p, v) { const ks = p.split('.'); let a = o; for (let i = 0; i < ks.length - 1; i++) a = a[ks[i]]; a[ks[ks.length - 1]] = v; }
-const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'analyse', 'strategien', 'handbuch', 'tradingview'];
-const MORE_VIEWS = ['strategien', 'handbuch', 'tradingview'];
+const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'analyse', 'strategien', 'pass', 'handbuch', 'tradingview'];
+const MORE_VIEWS = ['strategien', 'pass', 'handbuch', 'tradingview'];
 
 const UI = {
   async init() {
     const t0 = performance.now();
     Guard.init();
+    Pass.applyTheme();
     readColors();
     this.wasMobile = App.isMobile();
     App.buildCharts();
@@ -8185,6 +8697,7 @@ const UI = {
     } catch (e) { console.error(e); App.toast('Gespeicherte Daten konnten nicht geladen werden: ' + e.message, 'bad'); }
     if (Store.migrated.length) console.info('Daten in IndexedDB übernommen:', Store.migrated.join(', '));
     App.renderStratSelects();
+    Pass.init(); Pass.refresh();
     /* erst ein Bild zeigen, dann die Demo-Daten erzeugen (blockiert sonst ~0,3 s) */
     if (bt) bt.textContent = 'Bereite Demo-Daten vor …';
     await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
@@ -8219,6 +8732,7 @@ const UI = {
     if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', () => { TW.clear(); App.requestRender(); if (App.view === 'start') App.renderStart(); });
     if (!store.get('elr.onboarded', 0) && !store.get('elr.seen', false)) setTimeout(() => Onboard.open(), 250);
     else store.set('elr.onboarded', 1);
+    setTimeout(() => Pass.check(), 700);
     App.requestRender();
     Photos.init().then((ok) => { if (!ok) console.warn(Photos.err); if (App.view === 'journal') this.renderJournal(); });
   },
@@ -8252,6 +8766,7 @@ const UI = {
     if (v === 'strategien') App.renderStrategies();
     if (v === 'tradingview') TV.open();
     if (v === 'analyse') App.renderAnalysis();
+    if (v === 'pass') Pass.render();
     if (v !== 'charts') window.scrollTo(0, 0);
     if (v === 'handbuch') Handbook.open(sub);
   },
@@ -8829,7 +9344,7 @@ const UI = {
       for (const s of d.sessions) {
         if (!okSess(s)) { bad++; continue; }
         if (hs.has(s.id)) continue;
-        App.sessions.push(Object.assign({ created: Math.floor(Date.now() / 1000), discipline: 0, mistakes: [], result: 'auto' }, s, { running: false, mistakes: Array.isArray(s.mistakes) ? s.mistakes.filter((m) => typeof m === 'string') : [], discipline: Math.max(0, Math.min(5, +s.discipline || 0)) }));
+        App.sessions.push(Object.assign({ created: Math.floor(Date.now() / 1000), createdAuto: s.created == null ? true : undefined, discipline: 0, mistakes: [], result: 'auto' }, s, { running: false, mistakes: Array.isArray(s.mistakes) ? s.mistakes.filter((m) => typeof m === 'string') : [], discipline: Math.max(0, Math.min(5, +s.discipline || 0)) }));
         hs.add(s.id);
       }
       App.saveSessions();
@@ -8902,7 +9417,7 @@ const UI = {
     $('#setSave').addEventListener('click', () => this.saveSettingsForm());
     $('#setReset').addEventListener('click', async () => {
       if (await App.confirm('Einstellungen zurücksetzen?', 'Alle Einstellungen gehen auf Standard. Journal, Notizen, Fotos und Zeichnungen bleiben.', 'Zurücksetzen')) {
-        App.settings = freshDefaults(); App.saveSettings(); closeModal('#settingsModal');
+        const keepPass = App.settings.pass; App.settings = freshDefaults(); if (keepPass) App.settings.pass = keepPass; App.saveSettings(); Pass.applyTheme(); readColors(); closeModal('#settingsModal');
         this.fillTicket(); this.fillReplayControls(); App.buildCharts(); App.recompute(); App.applyCostProfile(); App.updateHeader(); App.updateReplayBar(); App.updatePanels(); App.requestRender();
         App.toast('Einstellungen zurückgesetzt.', 'good');
       }
@@ -9046,7 +9561,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 })();
 
 
-Object.assign(window, {$, $$, APP_VERSION, Analysis, App, Archive, Binance, COL, CRYPTO_START, Chart, DEFAULTS, EMPTY_ART, FONT_MONO, FONT_UI, GLOSSARY, Gallery, Guard, HB, HBFig, HB_GLOSSAR, HB_SHOW, Handbook, IDB, Install, Lightbox, Loader, MIN_BAR_W, MISTAKES, MORE_VIEWS, NewSess, Onboard, Photos, RIGHT_PAD_BARS, SESS_FLAGS, SEV_LBL, Sheet, Start, Store, TV, TW, Tips, UI, Update, VIEWS, WD, alpha, bindTabs, closeModal, deepMerge, emptyState, esc, fmtVol, freshDefaults, getPath, hbBox, hbBtns, hbL, hbSetup, lastFocus, localMinute, openModal, raf2, readColors, selectTab, sessionFlagBits, setBusy, setPath, skeleton, store, syncModalState, textW});
+Object.assign(window, {$, $$, APP_VERSION, Analysis, App, Archive, Binance, COL, CRYPTO_START, Chart, DEFAULTS, EMPTY_ART, FONT_MONO, FONT_UI, GLOSSARY, Gallery, Guard, HB, HBFig, HB_GLOSSAR, HB_SHOW, Handbook, IDB, Install, Lightbox, Loader, MIN_BAR_W, MISTAKES, MORE_VIEWS, NewSess, Onboard, Pass, PassCore, Photos, RIGHT_PAD_BARS, SESS_FLAGS, SEV_LBL, Sheet, Start, Store, TV, TW, Tips, UI, Update, VIEWS, WD, alpha, bindTabs, closeModal, deepMerge, emptyState, esc, fmtVol, freshDefaults, getPath, hbBox, hbBtns, hbL, hbSetup, lastFocus, localMinute, openModal, raf2, readColors, selectTab, sessionFlagBits, setBusy, setPath, skeleton, store, syncModalState, textW});
 </script>
 <script>
 if ('serviceWorker' in navigator && location.protocol === 'https:') addEventListener('load', () => {
