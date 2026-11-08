@@ -1,6 +1,6 @@
 # Edge Lab Replay – Projektnotiz (Übergabe für neue Chats)
 
-Stand: 07.11.2026, Version 5.2. Besitzer: Eliano. Live: https://qvw8mrjzby-arch.github.io/edge-lab-replay/
+Stand: 08.11.2026, Version 5.3. Besitzer: Eliano. Live: https://qvw8mrjzby-arch.github.io/edge-lab-replay/
 
 ## Was die App ist
 Kostenloses Backtesting-Terminal im Browser (PWA, als App installierbar). Vanilla JS + Canvas, keine Bibliotheken.
@@ -13,6 +13,7 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Orders: Market/Limit/Stop, SL/TP ziehbar, Positions-Werkzeug (Shift+B/S), Größe nach Risiko, Teilausstieg/Break-even/Trailing, Slippage/Gebühren, Prop-Regeln.
 - Journal mit Fotos (Auto-Screenshots bei Ein-/Ausstieg + Uploads), Backtest-Notizen, Strategien mit Regel-Checkliste, Statistik inkl. Monte-Carlo, Fehler-Analyse (13+ Regeln), Trading-Handbuch (10 Kapitel).
 - Pass (neu in 5.1, `src/pass.js`): XP nur für Prozess (Trades mit Notiz/Stop, Regel-Checkliste je Session, Auswertung, Disziplin, Routine/Serien), nie für Gewinn. 30 Level mit Designs, Avataren, Rahmen, Titeln, 15 Abzeichen. XP wird immer aus Journal/Sessions neu berechnet; lokal gespeichert nur Höchststand und Meldungsstand (`elr.pass`), Auswahl (Theme/Avatar/Rahmen/Titel) in `settings.pass` (Sync). Wochenziele (5.2): 3 Ziele pro Woche (Mo–So) aus einem Pool von 7, nie „mehr Trades“, je +40 XP, alle drei +60, rückwirkend aus den Daten berechnet. Test: `python3 test-pass.py`.
+- Shop (neu in 5.3, `src/shop.js`): Payout wie bei einem Funded-Account. Jede beendete Backtest-Session ist ein Prop-Konto; ist das Ziel erreicht, kein Regelverstoß (Max-DD, Tagesverlust), mindestens 3 Trades, jeder mit Stop-Loss und der größte Trade höchstens 50 % des Gewinns (Konsistenzregel), kann man das Payout einmal anfordern. Auszahlung 80 % des Gewinns (höchstens bis 2x Ziel), 1 Coin je 1 % des Ziels (80 bis 160 Coins). Challenge-Grenzen gegen Schummeln: Ziel mindestens 3 %, Max-DD höchstens 8 % des Startkapitals, Tageslimit gesetzt. Coins nur für den Shop (24 Dinge: 6 Designs, 6 Avatare, 3 Rahmen, 4 Titel, 5 Kerzenfarben inkl. Standard); der Pass bleibt davon getrennt. Gespeichert in `settings.shop` (claims, owned, candles, wird synchronisiert); Guthaben = Auszahlungen minus Preise, immer neu berechnet. Nicht gekaufte Shop-Dinge setzt `Pass.state()` zurück. Tests: `node test-shop.js`, `python3 test-shop.py`.
 - Speicher: IndexedDB lokal; Sync über Supabase (Konto & Sync in den Einstellungen).
 - Session fortsetzen nach Neuladen, Update-Hinweis, Rückgängig beim Löschen.
 
@@ -28,8 +29,8 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 
 ## Code
 - Quellen in `src/`: core.js (Rechenlogik, Engine, Indikatoren, Analyse-Kern), chart.js (Canvas), app.js, notes.js, start.js, data.js, photos.js, storage.js, sync.js, econ.js, analysis.js, handbook.js, ui.js, template.html.
-- Bauen: `cd src && python3 build.py` → `src/site/index.html`. Deploy: `src/site/index.html` und `src/site/sw.js` ins Repo-Wurzelverzeichnis kopieren; bei jeder Veröffentlichung die Cache-Version in sw.js erhöhen (aktuell edge-lab-replay-v9).
-- Tests (Playwright/Chromium headless, Netz gemockt): `node test-core.js`, `node test-analysis.js`, `node test-sync.js`, `node test-econ.js`, `python3 test-ui.py`, `python3 test-live.py`, `python3 test-v3.py`, `python3 test-v4.py`, `python3 test-econ.py`, `python3 test-sync.py`, `python3 test-perf.py`. Bauplan-Historie: `src/SPEC-v2.md` … `SPEC-v5.md`.
+- Bauen: `cd src && python3 build.py` → `src/site/index.html`. Deploy: `src/site/index.html` und `src/site/sw.js` ins Repo-Wurzelverzeichnis kopieren; bei jeder Veröffentlichung die Cache-Version in sw.js erhöhen (aktuell edge-lab-replay-v10).
+- Tests (Playwright/Chromium headless, Netz gemockt): `node test-shop.js`, `python3 test-shop.py`, `node test-core.js`, `node test-analysis.js`, `node test-sync.js`, `node test-econ.js`, `python3 test-ui.py`, `python3 test-live.py`, `python3 test-v3.py`, `python3 test-v4.py`, `python3 test-econ.py`, `python3 test-sync.py`, `python3 test-perf.py`. Bauplan-Historie: `src/SPEC-v2.md` … `SPEC-v5.md`.
 - Wichtigste Regel: kein Lookahead im Replay.
 
 ## Offene Ideen (später, wenn Limit es erlaubt)

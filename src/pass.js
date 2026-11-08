@@ -225,6 +225,7 @@ const Pass = {
     if (!PassCore.AVATARS[s.avatar]) s.avatar = 'kerze';
     if (!PassCore.FRAMES[s.frame]) s.frame = 'keiner';
     if (s.title !== 'auto' && !PassCore.TITLES[s.title]) s.title = 'auto';
+    if (typeof Shop !== 'undefined') Shop.guard(s); /* Dinge aus dem Shop nur, wenn gekauft */
     /* alte Fassungen legten hw/seen in die (synchronisierten) Einstellungen – ins Gerät übernehmen und dort entfernen */
     if ('hw' in s || 'seen' in s) {
       const L = this.loc();
@@ -258,6 +259,7 @@ const Pass = {
   applyTheme() {
     const id = this.state().theme;
     if (id === 'standard') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', id);
+    if (typeof Shop !== 'undefined') Shop.applyCandles();
   },
   avatarSvg(id, cls) {
     const a = PassCore.AVATARS[id] || PassCore.AVATARS.kerze;
@@ -312,6 +314,7 @@ const Pass = {
     if (intro) App.toast('Dein bisheriger Fortschritt zählt: Level ' + c.level + ' im Pass.', 'good');
     if (card) this.queueUnlock(card, line);
     else if (line) App.toast(line, 'info');
+    if (typeof Shop !== 'undefined') Shop.notify();
     if (App.view === 'pass') this.render();
     if (App.view === 'start') App.renderStart();
   },
@@ -365,7 +368,7 @@ const Pass = {
       '<span class="pc-main"><b>Level ' + c.level + ' · ' + esc(PassCore.TITLES[this.titleId()]) + '</b>' +
       '<span class="pbar" aria-hidden="true"><i style="width:' + pct.toFixed(1) + '%"></i></span>' +
       '<small>' + (c.to == null ? 'Höchstes Level erreicht' : App.fmtN(c.to - c.total, 0) + ' XP bis Level ' + (c.level + 1)) + ' · Wochenziele ' + c.week.done + '/' + c.week.goals.length + '</small></span>' +
-      (c.streak.cur >= 2 ? '<span class="pc-streak num">' + c.streak.cur + ' Tage</span>' : '') + '</a>';
+      (c.streak.cur >= 2 ? '<span class="pc-streak num">' + c.streak.cur + ' Tage</span>' : '') + '</a>' + (typeof Shop !== 'undefined' ? Shop.chip() : '');
   },
 
   onClick(e) {

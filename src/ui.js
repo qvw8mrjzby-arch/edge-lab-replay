@@ -17,8 +17,8 @@ function closeModal(sel) {
 }
 function getPath(o, p) { return p.split('.').reduce((a, k) => (a == null ? a : a[k]), o); }
 function setPath(o, p, v) { const ks = p.split('.'); let a = o; for (let i = 0; i < ks.length - 1; i++) a = a[ks[i]]; a[ks[ks.length - 1]] = v; }
-const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'analyse', 'strategien', 'pass', 'handbuch', 'tradingview'];
-const MORE_VIEWS = ['strategien', 'pass', 'handbuch', 'tradingview'];
+const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'analyse', 'strategien', 'pass', 'shop', 'handbuch', 'tradingview'];
+const MORE_VIEWS = ['strategien', 'pass', 'shop', 'handbuch', 'tradingview'];
 
 const UI = {
   async init() {
@@ -115,6 +115,7 @@ const UI = {
     if (v === 'tradingview') TV.open();
     if (v === 'analyse') App.renderAnalysis();
     if (v === 'pass') Pass.render();
+    if (v === 'shop') Shop.render();
     if (v !== 'charts') window.scrollTo(0, 0);
     if (v === 'handbuch') Handbook.open(sub);
   },
@@ -444,7 +445,7 @@ const UI = {
     if (App.settings.prop.on) {
       const ps = Core.propBySession(list, App.propCfg(), App.sess).reverse().slice(0, 30);
       html += '<div class="card"><h3>Prop-Regeln je Session</h3><p class="hint">Jede Session als eigenes Konto geprüft.</p><div class="tbl-wrap"><table class="tbl"><tr><th>Session</th><th>Trades</th><th>Netto</th><th>Status</th></tr>' +
-        ps.map((p) => '<tr><td>' + esc(this.sessLabel(p.replay)) + '</td><td>' + p.n + '</td><td class="' + (p.net >= 0 ? 'up' : 'dn') + '">' + App.fmtMoney(p.net, true) + '</td><td class="' + (p.breaches.length ? 'dn' : p.passed ? 'up' : '') + '">' + (p.breaches.length ? esc(p.breaches[0].type) : p.passed ? 'Ziel erreicht' : 'offen') + '</td></tr>').join('') + '</table></div></div>';
+        ps.map((p) => '<tr><td>' + esc(this.sessLabel(p.replay)) + '</td><td>' + p.n + '</td><td class="' + (p.net >= 0 ? 'up' : 'dn') + '">' + App.fmtMoney(p.net, true) + '</td><td class="' + (p.breaches.length ? 'dn' : p.passed ? 'up' : '') + '">' + (p.breaches.length ? esc(p.breaches[0].type) : p.passed ? 'Ziel erreicht · <a href="#shop">Payout</a>' : 'offen') + '</td></tr>').join('') + '</table></div></div>';
     }
     html += '</div>';
     el.innerHTML = html;
@@ -765,7 +766,7 @@ const UI = {
     $('#setSave').addEventListener('click', () => this.saveSettingsForm());
     $('#setReset').addEventListener('click', async () => {
       if (await App.confirm('Einstellungen zurücksetzen?', 'Alle Einstellungen gehen auf Standard. Journal, Notizen, Fotos und Zeichnungen bleiben.', 'Zurücksetzen')) {
-        const keepPass = App.settings.pass; App.settings = freshDefaults(); if (keepPass) App.settings.pass = keepPass; App.saveSettings(); Pass.applyTheme(); readColors(); closeModal('#settingsModal');
+        const keepPass = App.settings.pass, keepShop = App.settings.shop; App.settings = freshDefaults(); if (keepPass) App.settings.pass = keepPass; if (keepShop) App.settings.shop = keepShop; App.saveSettings(); Pass.applyTheme(); readColors(); closeModal('#settingsModal');
         this.fillTicket(); this.fillReplayControls(); App.buildCharts(); App.recompute(); App.applyCostProfile(); App.updateHeader(); App.updateReplayBar(); App.updatePanels(); App.requestRender();
         App.toast('Einstellungen zurückgesetzt.', 'good');
       }

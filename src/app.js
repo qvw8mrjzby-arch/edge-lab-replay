@@ -32,7 +32,8 @@ const DEFAULTS = {
   binance: { market: 'spot', symbol: 'BTCUSDT', interval: '1m', days: 7 },
   newSess: { market: 'ar:NAS100', when: 'random', y0: 2021, y1: 2024, start: 'ny', blind: true, sym: 'BTCUSDT', bnMarket: 'spot' },
   inst: 'NQ',
-  pass: { theme: 'standard', avatar: 'kerze', frame: 'keiner', title: 'auto' }
+  pass: { theme: 'standard', avatar: 'kerze', frame: 'keiner', title: 'auto' },
+  shop: { claims: {}, owned: {}, candles: 'standard' }
 };
 /* Frische Kopie – deepMerge darf nie Referenzen in DEFAULTS verändern */
 const freshDefaults = () => JSON.parse(JSON.stringify(DEFAULTS));
