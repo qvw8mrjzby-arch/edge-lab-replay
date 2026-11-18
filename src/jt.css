@@ -1,0 +1,153 @@
+/* ---------- Jarvis-Terminal (neue Bereiche) – nutzt die Farben deines Themes ---------- */
+.jt{--ink:var(--text);--mut:var(--muted);--dim:var(--faint);--up:var(--bull);--dn:var(--bear);--acc:var(--accent);--acc2:color-mix(in srgb,var(--accent) 70%,#8b6cff);--hover:var(--raise);--side:var(--bg);--line2:color-mix(in srgb,var(--line) 65%,var(--muted));--gold:#f2c14e;--gold2:#ffdf8a;--warn:#f3b74f;--teal:#35d3b6;--rr:14px;--ft:var(--f-ui);font:14.5px/1.5 var(--f-ui);color:var(--text);max-width:1480px;margin:0 auto;display:block}
+.jt *{box-sizing:border-box;min-width:0}
+.jt svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.jt .page-hd{display:flex;align-items:flex-end;gap:12px;margin:0 0 16px}
+.jt .page-hd h1{margin:0;font:700 clamp(22px,2.4vw,30px)/1.1 var(--f-ui);letter-spacing:-.01em}
+.jt .page-hd p{margin:4px 0 0}
+.jt input,.jt select,.jt textarea{font-family:var(--f-ui)}
+.jt .cv{position:relative;flex:1;min-height:420px}
+.jt .chartbox .cv{min-height:clamp(340px,52vh,560px)}
+#jtmodal .bg{position:fixed;inset:0;background:#02050cc0;backdrop-filter:blur(4px);z-index:90;display:grid;place-items:center;padding:16px}
+#jtmodal .box{background:var(--panel);border:1px solid var(--line);border-radius:18px;width:min(760px,100%);max-height:92dvh;overflow:auto;padding:20px;box-shadow:0 30px 80px -20px #000}
+#jtmodal .box h2{margin:0 0 14px;font:700 21px var(--f-ui)}
+.jt .grid{display:grid;gap:16px}
+.jt .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.jt .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.jt .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.jt .split{display:grid;gap:16px;grid-template-columns:minmax(0,2.1fr) minmax(0,1fr)}
+.jt .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--rr);padding:16px;position:relative}
+.jt .card.glass{background:linear-gradient(160deg,#111b33,#0c1325)}
+.jt .card h3{margin:0 0 12px;font:600 16px var(--ft);display:flex;align-items:center;gap:10px}
+.jt .card h3 .sp{flex:1}
+.jt .card h3 small{font:400 12px var(--fb);color:var(--dim)}
+.jt .mut{color:var(--mut)}
+.jt .dim{color:var(--dim)}
+.jt .up{color:var(--up)}
+.jt .dn{color:var(--dn)}
+.jt .gold{color:var(--gold)}
+.jt .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.jt .row.nw{flex-wrap:nowrap}
+.jt .sp{flex:1}
+.jt .big{font:700 clamp(26px,3.2vw,40px)/1.05 var(--ft);letter-spacing:-.01em}
+.jt .mid{font:600 20px/1.2 var(--ft)}
+.jt .note{font-size:13px;color:var(--dim)}
+.jt .hr{height:1px;background:var(--line);margin:14px 0}
+.jt .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 16px;border-radius:11px;border:1px solid var(--line2);background:var(--panel2);cursor:pointer;font-weight:600;white-space:nowrap;text-decoration:none;color:var(--ink);transition:transform .08s,background .15s}
+.jt .btn:hover{background:var(--hover)}
+.jt .btn:active{transform:scale(.98)}
+.jt .btn.pri{background:linear-gradient(135deg,var(--acc),var(--acc2));border-color:transparent;color:#fff}
+.jt .btn.gold{background:linear-gradient(135deg,#d9a531,#f5d27a);color:#251a03;border-color:transparent}
+.jt .btn.long{background:#123a30;border-color:#1e6b55;color:#7ff0cc}
+.jt .btn.short{background:#3d1622;border-color:#7a2a3d;color:#ff9db0}
+.jt .btn.sm{min-height:34px;padding:0 11px;font-size:13px;border-radius:9px}
+.jt .btn.ghost{background:none;border-color:transparent;color:var(--mut)}
+.jt .btn:disabled{opacity:.45;cursor:not-allowed}
+.jt :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.jt .seg{display:inline-flex;background:var(--side);border:1px solid var(--line);border-radius:11px;padding:3px;gap:2px;flex-wrap:wrap}
+.jt .seg button{border:0;background:none;color:var(--mut);padding:7px 11px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;min-height:34px}
+.jt .seg button.on{background:var(--hover);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line2)}
+.jt .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:600;background:var(--panel2);border:1px solid var(--line2);color:var(--mut);white-space:nowrap}
+.jt .chip.up{color:var(--up);border-color:#1e5a4a;background:#0f2a24}
+.jt .chip.dn{color:var(--dn);border-color:#5b2333;background:#2a1119}
+.jt .chip.warn{color:var(--warn);border-color:#5f4a1d;background:#2a2110}
+.jt .chip.acc{color:var(--acc);border-color:#2c3b70}
+.jt label.f,.jt div.f{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--mut)}
+.jt input,.jt select,.jt textarea{background:var(--side);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;font-size:16px;min-height:44px;width:100%;color:var(--ink)}
+.jt textarea{min-height:90px;resize:vertical;line-height:1.5}
+.jt input[type=checkbox]{width:20px;height:20px;min-height:0;accent-color:var(--acc)}
+.jt input[type=range]{padding:0;min-height:30px;accent-color:var(--acc)}
+.jt .form{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+.jt .form .w2{grid-column:span 2}
+.jt .form .full{grid-column:1/-1}
+.jt .kpis{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+.jt .kpi{background:var(--side);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.jt .kpi>span{display:block;font-size:12px;color:var(--dim)}
+.jt .kpi b{display:block;font:600 21px/1.25 var(--ft);margin-top:3px;white-space:nowrap}
+.jt .kpi small{font-size:12px;color:var(--mut)}
+.jt .scroll{overflow-x:auto}
+.jt table{width:100%;border-collapse:collapse;font-size:14px}
+.jt th{font-weight:500;color:var(--dim);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;font-size:12.5px}
+.jt td{padding:9px 10px;border-bottom:1px solid #141d33;white-space:nowrap}
+.jt td.r,.jt th.r{text-align:right}
+.jt tr.click{cursor:pointer}
+.jt tr.click:hover td{background:var(--hover)}
+.jt .bar{height:8px;border-radius:9px;background:var(--line);overflow:hidden}
+.jt .bar>i{display:block;height:100%;border-radius:9px;background:var(--acc)}
+.jt .fig{position:relative;min-height:340px}
+.jt .fig>canvas,.jt .fig>svg{position:absolute;inset:0;width:100%;height:100%}
+.jt .empty{display:grid;place-items:center;text-align:center;padding:40px 16px;color:var(--mut);gap:8px}
+.jt .empty b{color:var(--ink);font:600 17px var(--ft)}
+.jt .md h4{margin:14px 0 6px;font:600 16px var(--ft)}
+.jt .md p{margin:6px 0}
+.jt .md ul,.jt .md ol{margin:6px 0;padding-left:20px}
+.jt .md li{margin:3px 0}
+.jt .md code{background:var(--side);padding:1px 5px;border-radius:5px;font-size:.92em}
+.jt .skel{background:linear-gradient(90deg,var(--panel2),var(--hover),var(--panel2));background-size:200% 100%;animation:sk 1.2s infinite;border-radius:8px;color:transparent!important}
+@keyframes sk{to{background-position:-200% 0}}
+.jt .spin{width:16px;height:16px;border:2px solid #fff5;border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite;display:inline-block}
+@keyframes rot{to{transform:rotate(360deg)}}
+.jt .tile{background:var(--panel);border:1px solid var(--line);border-radius:var(--rr);padding:14px;cursor:pointer;display:grid;gap:4px;transition:border-color .15s,transform .15s}
+.jt .tile:hover{border-color:var(--line2);transform:translateY(-1px)}
+.jt .tile .nm{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mut)}
+.jt .tile .pr{font:600 21px/1.2 var(--ft);white-space:nowrap}
+.jt .tile svg{width:100%;height:38px;margin-top:4px}
+.jt .chartbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--rr);display:flex;flex-direction:column;overflow:hidden}
+.jt .chartbar{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.jt .symsel{display:flex;align-items:center;gap:8px;background:var(--side);border:1px solid var(--line2);border-radius:10px;padding:0 10px;height:40px}
+.jt .symsel select{border:0;background:none;padding:0 4px;min-height:0;height:38px;font:700 17px var(--ft);width:auto;max-width:160px}
+.jt .ohlc{display:flex;gap:14px;padding:8px 14px 0;font-size:13px;color:var(--dim);flex-wrap:wrap}
+.jt .ohlc b{color:var(--ink);font-weight:500;margin-left:3px}
+.jt .cv{position:relative;flex:1;min-height:420px}
+.jt .cv canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.jt .cv.split{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+.jt .cv.split>div{position:relative;background:var(--panel)}
+.jt .heat td.hc{text-align:center;font-size:12.5px;font-weight:600;border:2px solid var(--panel);border-radius:6px;cursor:pointer;color:#fff}
+.jt .lamp{width:74px;height:74px;border-radius:50%;flex:none;display:grid;place-items:center;font:700 13px var(--ft);color:#0a0f1c}
+.jt .lamp.ok{background:radial-gradient(circle at 35% 30%,#8ff5d5,var(--up));box-shadow:0 0 40px -6px var(--up)}
+.jt .lamp.warn{background:radial-gradient(circle at 35% 30%,#ffe2a3,var(--warn));box-shadow:0 0 40px -6px var(--warn)}
+.jt .lamp.stop{background:radial-gradient(circle at 35% 30%,#ffb3c1,var(--dn));box-shadow:0 0 40px -6px var(--dn);color:#fff}
+.jt .news{display:grid;gap:10px}
+.jt .news article{background:var(--side);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.jt .news article a{color:var(--ink);text-decoration:none;font-weight:600;line-height:1.35}
+.jt .news article a:hover{color:var(--acc)}
+.jt .news p{margin:6px 0 0;font-size:13.5px;color:var(--mut)}
+.jt .chat{display:flex;flex-direction:column;gap:12px}
+.jt .msg{max-width:min(720px,92%);padding:11px 14px;border-radius:14px;line-height:1.55}
+.jt .msg.u{align-self:flex-end;background:linear-gradient(135deg,#25356a,#1d2a52);border:1px solid #31447f}
+.jt .msg.a{align-self:flex-start;background:var(--side);border:1px solid #3a3016}
+.jt .msg.a .who{font:600 12px var(--ft);color:var(--gold);margin-bottom:4px;display:flex;gap:6px;align-items:center}
+.jt .tool{font-size:12px;color:var(--dim);display:flex;gap:6px;align-items:center;margin:2px 0}
+.jt .orb-big{width:min(280px,70vw);aspect-ratio:1;margin:0 auto}
+.jt .orb-big canvas{width:100%;height:100%}
+.jt .replay-ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 12px;border-top:1px solid var(--line)}
+.jt .pos{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:10px 12px;border-radius:12px;background:var(--side);border:1px solid var(--line2)}
+.jt .shop{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.jt .shop button{border:1px solid var(--line2);border-radius:12px;background:var(--side);padding:12px;cursor:pointer;text-align:left;display:grid;gap:6px}
+.jt .shop i{display:block;height:34px;border-radius:8px}
+.jt .thumb{width:44px;height:30px;object-fit:cover;border-radius:5px;border:1px solid var(--line2);vertical-align:middle}
+@media (max-width:1100px){.jt .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+.jt .split{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:900px){.jt .g3,.jt .g2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:600px){.jt .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+.jt .cv{min-height:340px}
+.jt .form .w2{grid-column:1/-1}
+.jt table{font-size:13px}}/* Abgrenzung zu gleichnamigen Klassen der Backtest-App */
+.jt .note{background:none;border:0;padding:0;border-radius:0;font-size:13px;color:var(--faint);margin:0}
+.jt p.note{margin:6px 0}
+.jt .note b{color:inherit}
+.jt .card{display:block;border-radius:var(--rr);padding:16px}
+.jt .card h3{font-size:16px;margin:0 0 12px;font-weight:600}
+.jt .kpis{background:none;border:0;border-radius:0}
+.jt .kpi b span,.jt .kpi small span{display:inline;font-size:inherit;color:inherit}
+.jt .seg{overflow:visible;border-radius:11px}
+.jt .seg button+button{border-left:0}
+.jt .btn svg{width:18px;height:18px}
+.jt .btn.sm svg{width:16px;height:16px}
+.jt .empty{font-size:14.5px;margin:0}
+.jt .empty b{font-size:17px}
+.jt .chip span{padding:0;border:0;border-radius:0;display:inline;font-size:inherit;background:none}
+.jt input[type=range]{width:100%}
+.jt input[type=checkbox]{width:20px;height:20px;min-height:0;padding:0}
+.jt h3 small{font-weight:400}
+.jt .seg{flex:0 1 auto;flex-wrap:wrap}

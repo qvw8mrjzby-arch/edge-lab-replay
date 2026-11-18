@@ -26,6 +26,8 @@ jobs:
         env:
           BUDGET_MIN: '150'
         run: node tools/fetch-data.mjs
+      - name: Zeitreihen für Jarvis-Terminal bauen
+        run: node tools/build-agg.mjs
       - name: Speichern
         run: |
           git config user.name "kursdaten-bot"

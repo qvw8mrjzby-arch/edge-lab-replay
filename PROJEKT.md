@@ -17,6 +17,14 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Speicher: IndexedDB lokal; Sync über Supabase (Konto & Sync in den Einstellungen).
 - Session fortsetzen nach Neuladen, Update-Hinweis, Rückgängig beim Löschen.
 
+## Jarvis-Terminal (neu, 18.11.2026 – zuerst als Test unter /beta/)
+- Seitenleiste wie im Jarvis-Terminal (Tablet/PC), Handy behält die untere Leiste + „Mehr“-Menü. Standard-Design jetzt „Terminal“ (Navy, Inter, Akzent #6f8dff); Shop-Designs unverändert.
+- Neue Bereiche (src/jt-*.js, Styles src/jt.css, alles unter .jt gekapselt): Marktüberblick, Morning Briefing, Markt-Explorer, News Intelligence, Makroökonomie, Handels-Desk, Funded-Tracker, Risk Command, Quant Lab, Marktregime, Research Desk, Intelligence Copilot. Alle alten Bereiche bleiben.
+- Desk-Trades gehen ins Journal (src 'desk'); Funded-Konten, Risiko-Regeln, Notizen, Watchlist in App.settings.jt (synchronisiert). Briefings/Chat lokal. KI-Key (Gemini/OpenRouter) nur lokal in localStorage 'jt.ai'.
+- Daten: data/agg/<ID>-{1d,1h,15m,5m}.json aus dem Archiv (tools/build-agg.mjs, läuft in daten.yml); Yahoo-Tageskerzen, News (RSS) und Kalender (Forex Factory) über tools/fetch-markets.mjs + .github/workflows/markt.yml (stündlich) → data/markets/, data/news.json, data/calendar.json.
+- Jarvis denkt mit Claude (wenn in claude.ai geöffnet) oder mit Elianos kostenlosem Gemini-Key; Stimme: Claude-TTS oder Gerätestimme (speechSynthesis), Mikrofon per SpeechRecognition.
+- Deploy: `beta/index.html` = Testversion. Nach OK: src/site/index.html ins Wurzelverzeichnis kopieren, sw.js-Cache-Version erhöhen.
+
 ## Daten
 - Archiv: `data/<ID>/<JJJJ-MM>.csv.gz` (t,o,h,l,c,v; t = Unix-Sek. UTC), Index `data/index.json`. IDs: NAS100, US500, US30, XAUUSD, GER40 (Dukascopy-Bid-Kurse, Index-CFDs, Delta geschätzt). Wird von der GitHub Action `.github/workflows/daten.yml` (Skript `tools/fetch-data.mjs`) alle 3 Stunden aktualisiert.
 - Krypto live von Binance (echtes Taker-Volumen, Footprint per „Trades laden“).

@@ -34,7 +34,7 @@ const PassCore = (() => {
   const levelOf = (xp) => { let n = 1; while (n < LEVEL_MAX && xp >= need(n + 1)) n++; return n; };
 
   const THEMES = {
-    standard: { name: 'Standard', c: ['#0b1018', '#101722', '#e3ad3b'] },
+    standard: { name: 'Terminal', c: ['#080d19', '#0c1324', '#6f8dff'] },
     mitternacht: { name: 'Mitternacht', c: ['#080d1a', '#0d1424', '#5aa2ff'] },
     glut: { name: 'Glut', c: ['#130d0a', '#1a120e', '#f0913a'] },
     smaragd: { name: 'Smaragd', c: ['#08130f', '#0d1b16', '#3ec9a0'] },

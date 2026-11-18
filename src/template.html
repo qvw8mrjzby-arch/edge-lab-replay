@@ -1,23 +1,23 @@
 <title>Edge Lab Replay</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="theme-color" content="#0b1018">
+<meta name="theme-color" content="#080d19">
 <meta name="description" content="Kostenloses Backtesting-Terminal: Replay, Footprint, VWAP, Volume Profile, Journal, Backtest-Sessions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
 <style>
 /* Trading-Desk: Kopfzeile mit Bereichs-Navigation, darunter je Bereich eine ganze Seite.
    Charts: Werkzeugleiste oben, Zeichenwerkzeuge links, Chart-Raster, Handels-Seitenleiste rechts, Replay-Leiste unten. */
 :root {
   color-scheme: dark;
-  --bg: #0b1018; --panel: #101722; --panel2: #151e2c; --raise: #1b2638; --line: #223046; --grid: #18222f;
-  --text: #dbe3ef; --muted: #8f9bb0; --faint: #6f7d94;
-  --bull: #2bb38a; --bear: #e5534b; --buy: #1b7d60; --sell: #c4403a;
-  --vwap: #e3ad3b; --band: #c9973a; --accent: #e3ad3b; --accent-ink: #1a1306;
+  --bg: #080d19; --panel: #0c1324; --panel2: #111a2f; --raise: #17213a; --line: #1d2843; --grid: #141d33;
+  --text: #e6ebf5; --muted: #94a0bb; --faint: #66728e;
+  --bull: #2fcf9f; --bear: #ef5d78; --buy: #1b8a6a; --sell: #c9405a;
+  --vwap: #e3ad3b; --band: #c9973a; --accent: #6f8dff; --accent-ink: #050a1c;
   --info: #5aa2ff; --warn: #f0913a; --ema1: #b48cff; --ema2: #4fc3d9; --ema3: #f2709c; --ema4: #d9dee6;
   --poc: #f4d35e; --va: #9fb3c8; --sessA: #b48cff; --sessL: #5aa2ff; --sessN: #2bb38a; --draw: #9ec5ff; --sel: #f4d35e; --rth: #c7a6ff;
-  --f-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --f-ui: 'Inter', 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --f-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --r: 4px; --navH: 58px; --mactH: 58px; --sheetPeek: 52px; --railW: 60px;
   /* Design-System: Abstände 4/8/12/16/24/32, Typo, Radien, Schatten (nur schwebend), Bewegung */
@@ -1175,35 +1175,100 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
   .pnode { flex-basis: 108px; padding-right: 8px; }
   .pnode.wide { flex-basis: calc(var(--n) * 116px - 8px); }
 }
+
+/* ---------- Terminal-Seitenleiste wie im Jarvis-Terminal (Tablet & PC); Handy behält die untere Leiste ---------- */
+.jt-logo, .brand-t, .nav-h, #btnCollapse { display: none; }
+.side-foot { display: contents; }
+@media (max-width: 860px) {
+  #mainNav a[data-view="start"] { order: 1; } #mainNav a[data-view="charts"] { order: 2; } #mainNav a[data-view="journal"] { order: 3; }
+  #mainNav a[data-view="backtests"] { order: 4; } #mainNav a[data-view="stats"] { order: 5; } #mainNav a[data-view="analyse"] { order: 6; } #mainNav .nav-more { order: 7; }
+}
+.more-menu { max-height: calc(100dvh - var(--navH) - 40px - env(safe-area-inset-bottom, 0px)); overflow-y: auto; }
+.more-menu a.mm-jt svg { stroke: var(--accent); }
+@media (min-width: 861px) and (min-height: 501px) {
+  #app { grid-template-columns: var(--sideW, 252px) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+  body.side-mini #app { --sideW: 70px; }
+  header.top { flex-direction: column; align-items: stretch; height: 100%; gap: 0; padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); border-bottom: 0; border-right: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 55%, var(--panel)); overflow: hidden; min-height: 0; }
+  header.top > .hspace { display: none; }
+  .brand { padding: 18px 16px 10px; gap: 12px; }
+  .brand > svg, .brand-old { display: none; }
+  .jt-logo { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; flex: none; font: 700 18px var(--f-ui); color: #fff; background: linear-gradient(135deg, var(--accent), #3fb7e6 60%, #35d3b6); box-shadow: 0 6px 22px -8px var(--accent); }
+  .brand-t { display: grid; line-height: 1.15; min-width: 0; }
+  .brand-t b { font: 700 19px var(--f-ui); color: var(--text); }
+  .brand-t small { font-size: 11.5px; color: var(--faint); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  header.top #mainNav { flex-direction: column; flex: 1 1 auto; align-self: stretch; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; padding: 2px 10px 10px; gap: 1px; min-height: 0; }
+  header.top #mainNav::-webkit-scrollbar { display: none; }
+  .nav-h { display: block; margin: 14px 12px 5px; font-size: 12px; color: var(--faint); font-weight: 500; white-space: nowrap; }
+  header.top #mainNav a { flex: none; min-height: 38px; padding: 0 12px; gap: 12px; border: 0; margin: 0; border-radius: 10px; font-size: 13.5px; font-weight: 500; color: var(--muted); }
+  header.top #mainNav a:hover { background: var(--raise); color: var(--text); }
+  header.top #mainNav a[aria-current="page"] { background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 20%, var(--panel2)), var(--panel2)); color: var(--text); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 28%, var(--line)); }
+  header.top #mainNav a[aria-current="page"] svg { color: var(--accent); }
+  header.top #mainNav svg { width: 19px; height: 19px; }
+  header.top #mainNav a span { display: inline; }
+  header.top #mainNav a span.short { display: none; }
+  header.top #mainNav .nav-more { display: none; }
+  .side-foot { display: flex; align-items: center; gap: 6px; padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); flex-wrap: wrap; }
+  #btnCollapse { display: grid; margin-left: auto; }
+  #btnCollapse svg { transition: transform var(--t-med) var(--ease); }
+  body.side-mini .brand { justify-content: center; padding-inline: 0; }
+  body.side-mini .brand-t, body.side-mini .nav-h { display: none; }
+  body.side-mini header.top #mainNav { padding-inline: 8px; }
+  body.side-mini header.top #mainNav a { justify-content: center; padding: 0; }
+  body.side-mini header.top #mainNav a span { display: none; }
+  body.side-mini .side-foot { flex-direction: column; padding-inline: 0; }
+  body.side-mini #btnCollapse { margin: 0; }
+  body.side-mini #btnCollapse svg { transform: rotate(180deg); }
+  .page { padding-top: 24px; }
+}
 </style>
 
 <div id="boot" role="status" aria-label="App wird gestartet"><div class="boot-in"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="3" fill="#151e2c" stroke="#223046"/><path d="M7 5v14M12 8v10M17 4v12" stroke="#55637a" stroke-width="1.2"/><rect x="5.5" y="8" width="3" height="7" fill="#2bb38a"/><rect x="10.5" y="10" width="3" height="5" fill="#e5534b"/><rect x="15.5" y="6" width="3" height="6" fill="#2bb38a"/><path d="M3 14c4-1 6-6 9-5s5 1 9-4" fill="none" stroke="#e3ad3b" stroke-width="1.4"/></svg><b>Edge Lab <i>Replay</i></b><span id="bootTxt">Bereite Daten vor …</span><div class="dl-prog indet"><i></i></div></div></div>
 <div id="app">
   <header class="top">
     <div class="brand">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="3" fill="#151e2c" stroke="#223046"/><path d="M7 5v14M12 8v10M17 4v12" stroke="#55637a" stroke-width="1.2"/><rect x="5.5" y="8" width="3" height="7" fill="#2bb38a"/><rect x="10.5" y="10" width="3" height="5" fill="#e5534b"/><rect x="15.5" y="6" width="3" height="6" fill="#2bb38a"/><path d="M3 14c4-1 6-6 9-5s5 1 9-4" fill="none" stroke="#e3ad3b" stroke-width="1.4"/></svg>
-      <span>Edge Lab <i>Replay</i></span>
+      <span class="jt-logo" aria-hidden="true">J</span>
+      <span class="brand-t"><b>Terminal</b><small>Edge Lab Replay · Jarvis</small></span>
+      <span class="brand-old">Edge Lab <i>Replay</i></span>
     </div>
     <nav id="mainNav" aria-label="Bereiche">
-      <a href="#start" data-view="start"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="9" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="14" width="6" height="3" rx="1"/></svg><span class="full">Übersicht</span><span class="short">Start</span></a>
-      <a href="#charts" data-view="charts"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3v14M10 5v11M15 2v12"/><rect x="3.5" y="6" width="3" height="7"/><rect x="8.5" y="8" width="3" height="5"/><rect x="13.5" y="4" width="3" height="6"/></svg><span>Charts</span></a>
-      <a href="#journal" data-view="journal"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3.5" y="2.5" width="13" height="15" rx="1.5"/><path d="M7 7h6M7 10.5h6M7 14h4"/></svg><span>Journal</span></a>
-      <a href="#backtests" data-view="backtests"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10a6 6 0 1 0 2-4.5"/><path d="M3.5 3v3.5H7"/><path d="M10 6.5V10l2.5 2"/></svg><span>Backtests</span></a>
-      <a href="#stats" data-view="stats"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 17h14"/><rect x="4.5" y="9" width="2.6" height="6"/><rect x="8.7" y="5" width="2.6" height="10"/><rect x="12.9" y="11" width="2.6" height="4"/></svg><span>Statistik</span></a>
-      <a href="#analyse" data-view="analyse"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.6 12.6L17 17"/><path d="M6.3 10.5V9M8.5 10.5V6.5M10.7 10.5V8"/></svg><span>Analyse</span></a>
-      <a href="#strategien" data-view="strategien" class="nav-x"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/><circle cx="10" cy="10" r=".6" fill="currentColor"/></svg><span>Strategien</span></a>
-      <a href="#pass" data-view="pass" class="nav-x" title="Pass" aria-label="Pass"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5l6.5 3.75v7.5L10 17.5l-6.5-3.75v-7.5z"/><path d="M10 7l2.2 1.3v2.4L10 12l-2.2-1.3V8.3z"/></svg><span>Pass</span></a>
-      <a href="#shop" data-view="shop" class="nav-x" title="Shop" aria-label="Shop"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 7h12l-1 10H5z"/><path d="M7 7V5.5a3 3 0 016 0V7"/></svg><span>Shop</span></a>
-      <a href="#handbuch" data-view="handbuch" class="nav-x"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 5.5C8.4 4.2 5.9 3.7 3 3.9v11.6c2.9-.2 5.4.3 7 1.6 1.6-1.3 4.1-1.8 7-1.6V3.9c-2.9-.2-5.4.3-7 1.6z"/><path d="M10 5.5v11.6"/></svg><span>Handbuch</span></a>
-      <a href="#tradingview" data-view="tradingview" class="nav-x"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.5"/><path d="M7 17h6M10 14v3M5 11l3-3 2.5 2L15 6"/></svg><span class="full">TradingView</span><span class="short">TV-Chart</span></a>
+      <a href="#start" data-view="start" title="Übersicht"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="9" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="14" width="6" height="3" rx="1"/></svg><span class="full">Übersicht</span><span class="short">Start</span></a>
+      <span class="nav-h">Markt</span>
+      <a href="#markt" data-view="markt" class="nav-x" title="Marktüberblick"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="6" height="6" rx="1.2"/><rect x="11.5" y="3.5" width="6" height="3.5" rx="1.2"/><rect x="11.5" y="9.5" width="6" height="7" rx="1.2"/><rect x="2.5" y="12" width="6" height="4.5" rx="1.2"/></svg><span>Marktüberblick</span></a>
+      <a href="#briefing" data-view="briefing" class="nav-x" title="Morning Briefing"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 2.5h6l4 4v11h-10z"/><path d="M11.5 2.5v4h4"/></svg><span>Morning Briefing</span></a>
+      <a href="#explorer" data-view="explorer" class="nav-x" title="Markt-Explorer"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 15l5-5 3.5 3.5 6.5-6.5"/><path d="M2.5 17.5h15"/></svg><span>Markt-Explorer</span></a>
+      <a href="#charts" data-view="charts" title="Charts & Replay"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3v14M10 5v11M15 2v12"/><rect x="3.5" y="6" width="3" height="7"/><rect x="8.5" y="8" width="3" height="5"/><rect x="13.5" y="4" width="3" height="6"/></svg><span class="full">Charts &amp; Replay</span><span class="short">Charts</span></a>
+      <a href="#news" data-view="news" class="nav-x" title="News Intelligence"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="11" height="14" rx="1.6"/><path d="M14 6.5h2.5v8.5a2 2 0 0 1-2 2M6 7h5M6 10.5h5M6 14h3"/></svg><span>News Intelligence</span></a>
+      <a href="#makro" data-view="makro" class="nav-x" title="Makroökonomie"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 16.5l4-7.5 3.5 4 3.5-6.5 4 10"/><path d="M2.5 17.5h15"/></svg><span>Makroökonomie</span></a>
+      <span class="nav-h">Handel</span>
+      <a href="#desk" data-view="desk" class="nav-x" title="Handels-Desk"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 14l4-4 2.5 2.5 5-6"/><path d="M11.5 6.5h2.5V9"/><path d="M2.5 17.5h15"/></svg><span>Handels-Desk</span></a>
+      <a href="#funded" data-view="funded" class="nav-x" title="Funded-Tracker"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="4"/><circle cx="10" cy="10" r="1.2"/></svg><span>Funded-Tracker</span></a>
+      <a href="#journal" data-view="journal" title="Journal"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3.5" y="2.5" width="13" height="15" rx="1.5"/><path d="M7 7h6M7 10.5h6M7 14h4"/></svg><span>Journal</span></a>
+      <a href="#stats" data-view="stats" title="Statistik"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 17h14"/><rect x="4.5" y="9" width="2.6" height="6"/><rect x="8.7" y="5" width="2.6" height="10"/><rect x="12.9" y="11" width="2.6" height="4"/></svg><span>Statistik</span></a>
+      <a href="#risk" data-view="risk" class="nav-x" title="Risk Command"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5l8 14.5H2z"/><path d="M10 8.5v3.5M10 14.5v.4"/></svg><span>Risk Command</span></a>
+      <span class="nav-h">Research</span>
+      <a href="#backtests" data-view="backtests" title="Backtests"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10a6 6 0 1 0 2-4.5"/><path d="M3.5 3v3.5H7"/><path d="M10 6.5V10l2.5 2"/></svg><span>Backtests</span></a>
+      <a href="#analyse" data-view="analyse" title="Analyse"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.6 12.6L17 17"/><path d="M6.3 10.5V9M8.5 10.5V6.5M10.7 10.5V8"/></svg><span>Analyse</span></a>
+      <a href="#strategien" data-view="strategien" class="nav-x" title="Strategien"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/><circle cx="10" cy="10" r=".6" fill="currentColor"/></svg><span>Strategien</span></a>
+      <a href="#quant" data-view="quant" class="nav-x" title="Quant Lab"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 2.5h5M8.5 2.5v5L4 15.5a1.3 1.3 0 0 0 1.1 2h9.8a1.3 1.3 0 0 0 1.1-2L11.5 7.5v-5"/><path d="M6 12.5h8"/></svg><span>Quant Lab</span></a>
+      <a href="#regime" data-view="regime" class="nav-x" title="Marktregime"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 14h3.5V7.5h4V13h3.5V5h4"/></svg><span>Marktregime</span></a>
+      <a href="#research" data-view="research" class="nav-x" title="Research Desk"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2.5h6.5l4 4v11H5z"/><path d="M7.5 10h6M7.5 13.5h6M7.5 6.5h2.5"/></svg><span>Research Desk</span></a>
+      <a href="#copilot" data-view="copilot" class="nav-x" title="Intelligence Copilot"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="4" width="15" height="10" rx="2.5"/><path d="M7 17.5l2.5-3.5M7 9h.01M10 9h.01M13 9h.01"/></svg><span>Intelligence Copilot</span></a>
+      <span class="nav-h">Wissen & Fortschritt</span>
+      <a href="#handbuch" data-view="handbuch" class="nav-x" title="Handbuch"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 5.5C8.4 4.2 5.9 3.7 3 3.9v11.6c2.9-.2 5.4.3 7 1.6 1.6-1.3 4.1-1.8 7-1.6V3.9c-2.9-.2-5.4.3-7 1.6z"/><path d="M10 5.5v11.6"/></svg><span>Handbuch</span></a>
+      <a href="#tradingview" data-view="tradingview" class="nav-x" title="TradingView"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.5"/><path d="M7 17h6M10 14v3M5 11l3-3 2.5 2L15 6"/></svg><span class="full">TradingView</span><span class="short">TV-Chart</span></a>
+      <a href="#pass" data-view="pass" class="nav-x" title="Pass"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5l6.5 3.75v7.5L10 17.5l-6.5-3.75v-7.5z"/><path d="M10 7l2.2 1.3v2.4L10 12l-2.2-1.3V8.3z"/></svg><span>Pass</span></a>
+      <a href="#shop" data-view="shop" class="nav-x" title="Shop"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 7h12l-1 10H5z"/><path d="M7 7V5.5a3 3 0 016 0V7"/></svg><span>Shop</span></a>
       <button type="button" class="nav-more" id="navMore" aria-haspopup="true" aria-expanded="false" aria-controls="moreMenu"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="4.5" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="10" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10" r="1.4" fill="currentColor" stroke="none"/></svg><span>Mehr</span></button>
     </nav>
     <span class="hspace"></span>
+    <div class="side-foot">
     <span id="blindBadge" hidden title="Datum und Wochentag sind ausgeblendet, bis die Session endet">Blind-Modus</span>
     <button class="ibtn" id="btnSync" data-state="none" title="Sync: nicht angemeldet" aria-label="Sync-Status"><svg viewBox="0 0 16 16"><path d="M4.5 12.5h7a3 3 0 0 0 .4-6 4 4 0 0 0-7.7.9A2.6 2.6 0 0 0 4.5 12.5z"/></svg><i></i></button>
     <button class="ibtn" id="btnHelp" title="Hilfe, Tastenkürzel und Begriffe (?)" aria-label="Hilfe"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M6.2 6.2a1.9 1.9 0 1 1 2.6 1.8c-.5.2-.8.6-.8 1.1v.5"/><circle cx="8" cy="11.6" r=".4" fill="currentColor"/></svg></button>
     <button class="ibtn" id="btnSettings" title="Einstellungen" aria-label="Einstellungen"><svg viewBox="0 0 16 16"><path d="M2 4h7M12 4h2M2 8h2M7 8h7M2 12h9M14 12h0"/><circle cx="10.5" cy="4" r="1.5"/><circle cx="5.5" cy="8" r="1.5"/><circle cx="12.5" cy="12" r="1.5"/></svg></button>
-  </header>
+        <button class="ibtn" id="btnCollapse" title="Seitenleiste einklappen" aria-label="Seitenleiste einklappen"><svg viewBox="0 0 16 16"><path d="M10 3.5L5.5 8l4.5 4.5"/></svg></button>
+    </div>
+</header>
 
   <div id="views">
   <section class="view page" id="view-start" hidden aria-label="Übersicht">
@@ -1469,6 +1534,18 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
     </div>
   </section>
 
+  <section class="view page" id="view-markt" hidden aria-label="Marktüberblick"><div class="jt" id="jt-markt"></div></section>
+  <section class="view page" id="view-briefing" hidden aria-label="Morning Briefing"><div class="jt" id="jt-briefing"></div></section>
+  <section class="view page" id="view-explorer" hidden aria-label="Markt-Explorer"><div class="jt" id="jt-explorer"></div></section>
+  <section class="view page" id="view-news" hidden aria-label="News Intelligence"><div class="jt" id="jt-news"></div></section>
+  <section class="view page" id="view-makro" hidden aria-label="Makroökonomie"><div class="jt" id="jt-makro"></div></section>
+  <section class="view page" id="view-desk" hidden aria-label="Handels-Desk"><div class="jt" id="jt-desk"></div></section>
+  <section class="view page" id="view-funded" hidden aria-label="Funded-Tracker"><div class="jt" id="jt-funded"></div></section>
+  <section class="view page" id="view-risk" hidden aria-label="Risk Command"><div class="jt" id="jt-risk"></div></section>
+  <section class="view page" id="view-quant" hidden aria-label="Quant Lab"><div class="jt" id="jt-quant"></div></section>
+  <section class="view page" id="view-regime" hidden aria-label="Marktregime"><div class="jt" id="jt-regime"></div></section>
+  <section class="view page" id="view-research" hidden aria-label="Research Desk"><div class="jt" id="jt-research"></div></section>
+  <section class="view page" id="view-copilot" hidden aria-label="Intelligence Copilot"><div class="jt" id="jt-copilot"></div></section>
   <section class="view page" id="view-tradingview" hidden aria-label="TradingView">
     <div class="page-in">
       <div class="page-h"><h1>TradingView</h1>
@@ -1796,6 +1873,18 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
   <a href="#shop"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 7h12l-1 10H5z"/><path d="M7 7V5.5a3 3 0 016 0V7"/></svg><span><b>Shop</b><small>Payouts, Coins und Designs</small></span></a>
   <a href="#handbuch"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 5.5C8.4 4.2 5.9 3.7 3 3.9v11.6c2.9-.2 5.4.3 7 1.6 1.6-1.3 4.1-1.8 7-1.6V3.9c-2.9-.2-5.4.3-7 1.6z"/><path d="M10 5.5v11.6"/></svg><span><b>Handbuch</b><small>VWAP, Profil, Orderflow, Risiko</small></span></a>
   <a href="#tradingview"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.5"/><path d="M7 17h6M10 14v3M5 11l3-3 2.5 2L15 6"/></svg><span><b>TradingView</b><small>Live-Chart ansehen</small></span></a>
+  <a href="#copilot" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="4" width="15" height="10" rx="2.5"/><path d="M7 17.5l2.5-3.5M7 9h.01M10 9h.01M13 9h.01"/></svg><span><b>Intelligence Copilot</b><small>Jarvis fragen, Stimme, Websuche</small></span></a>
+  <a href="#markt" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="6" height="6" rx="1.2"/><rect x="11.5" y="3.5" width="6" height="3.5" rx="1.2"/><rect x="11.5" y="9.5" width="6" height="7" rx="1.2"/><rect x="2.5" y="12" width="6" height="4.5" rx="1.2"/></svg><span><b>Marktüberblick</b><small>Watchlist, Chart, Marktbreite</small></span></a>
+  <a href="#briefing" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 2.5h6l4 4v11h-10z"/><path d="M11.5 2.5v4h4"/></svg><span><b>Morning Briefing</b><small>Tagesplan von Jarvis</small></span></a>
+  <a href="#explorer" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 15l5-5 3.5 3.5 6.5-6.5"/><path d="M2.5 17.5h15"/></svg><span><b>Markt-Explorer</b><small>Sektoren & relative Stärke</small></span></a>
+  <a href="#news" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="11" height="14" rx="1.6"/><path d="M14 6.5h2.5v8.5a2 2 0 0 1-2 2M6 7h5M6 10.5h5M6 14h3"/></svg><span><b>News Intelligence</b><small>Schlagzeilen & Stimmung</small></span></a>
+  <a href="#makro" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 16.5l4-7.5 3.5 4 3.5-6.5 4 10"/><path d="M2.5 17.5h15"/></svg><span><b>Makroökonomie</b><small>Zinsen, Dollar, Termine</small></span></a>
+  <a href="#desk" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 14l4-4 2.5 2.5 5-6"/><path d="M11.5 6.5h2.5V9"/><path d="M2.5 17.5h15"/></svg><span><b>Handels-Desk</b><small>Positionsrechner & Paper-Trading</small></span></a>
+  <a href="#funded" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="4"/><circle cx="10" cy="10" r="1.2"/></svg><span><b>Funded-Tracker</b><small>Prop-Konten & Payouts</small></span></a>
+  <a href="#risk" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5l8 14.5H2z"/><path d="M10 8.5v3.5M10 14.5v.4"/></svg><span><b>Risk Command</b><small>Ampel, Limits, Ruin-Simulator</small></span></a>
+  <a href="#quant" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 2.5h5M8.5 2.5v5L4 15.5a1.3 1.3 0 0 0 1.1 2h9.8a1.3 1.3 0 0 0 1.1-2L11.5 7.5v-5"/><path d="M6 12.5h8"/></svg><span><b>Quant Lab</b><small>Strategien automatisch testen</small></span></a>
+  <a href="#regime" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 14h3.5V7.5h4V13h3.5V5h4"/></svg><span><b>Marktregime</b><small>Trend oder Seitwärts?</small></span></a>
+  <a href="#research" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2.5h6.5l4 4v11H5z"/><path d="M7.5 10h6M7.5 13.5h6M7.5 6.5h2.5"/></svg><span><b>Research Desk</b><small>Recherchen & Notizen</small></span></a>
 </nav>
 <div id="toasts" aria-live="polite"></div>
 <textarea id="copyFallback" hidden aria-label="Text zum Kopieren"></textarea>

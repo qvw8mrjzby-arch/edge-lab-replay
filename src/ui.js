@@ -17,8 +17,9 @@ function closeModal(sel) {
 }
 function getPath(o, p) { return p.split('.').reduce((a, k) => (a == null ? a : a[k]), o); }
 function setPath(o, p, v) { const ks = p.split('.'); let a = o; for (let i = 0; i < ks.length - 1; i++) a = a[ks[i]]; a[ks[ks.length - 1]] = v; }
-const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'analyse', 'strategien', 'pass', 'shop', 'handbuch', 'tradingview'];
-const MORE_VIEWS = ['strategien', 'pass', 'shop', 'handbuch', 'tradingview'];
+const JT_VIEWS = ['markt', 'briefing', 'explorer', 'news', 'makro', 'desk', 'funded', 'risk', 'quant', 'regime', 'research', 'copilot'];
+const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'analyse', 'strategien', 'pass', 'shop', 'handbuch', 'tradingview'].concat(JT_VIEWS);
+const MORE_VIEWS = ['strategien', 'pass', 'shop', 'handbuch', 'tradingview'].concat(JT_VIEWS);
 
 const UI = {
   async init() {
@@ -118,9 +119,13 @@ const UI = {
     if (v === 'shop') Shop.render();
     if (v !== 'charts') window.scrollTo(0, 0);
     if (v === 'handbuch') Handbook.open(sub);
+    /* Jarvis-Terminal-Bereiche */
+    if (typeof J !== 'undefined') { if (JT_VIEWS.includes(v)) J.show(v); else J.hide(); }
   },
 
   bindHeader() {
+    const bc = $('#btnCollapse');
+    if (bc) { if (store.get('elr.sideMini', 0)) document.body.classList.add('side-mini'); bc.addEventListener('click', () => { const on = !document.body.classList.contains('side-mini'); document.body.classList.toggle('side-mini', on); store.set('elr.sideMini', on ? 1 : 0); App.buildCharts(); App.requestRender(); window.dispatchEvent(new Event('resize')); }); }
     $('#btnData').addEventListener('click', () => { this.fillDataModal(); openModal('#dataModal'); });
     $('#layoutSeg').addEventListener('click', (e) => {
       const b = e.target.closest('button'); if (!b) return;
