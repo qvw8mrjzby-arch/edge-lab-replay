@@ -53,3 +53,10 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 
 ## Arbeitsweise mit Eliano
 - Immer auf Deutsch. Agenten nur nach Rückfrage bzw. wenn er es sagt. Bei langen Chats Zusammenfassung anbieten und neuen Chat empfehlen.
+
+## Second Brain – alle Lebensbereiche (Nov 2026)
+- `J.S.brain.areas` (synchronisiert über App.settings.jt → Supabase), nie im öffentlichen Repo.
+- Einspielen per privatem Link `…/#brainimport=<base64url-JSON>` (der Teil nach # geht nie an den Server); danach wird der Hash auf `#brain` gesetzt.
+- Jeder Bereich: `{id, name, sub, summary, facts[], next[], links[{t,url}], notes[{t,d}], go?}` → eigener Cluster im schwarzen Loch, Glas-Panel mit Stand / nächsten Schritten / Notizen, „Jarvis dazu fragen“.
+- Home-Panel „Dein Leben“, Pages „Dein Leben“, Suche über alle Bereiche; Jarvis bekommt die Bereiche als Kontext (Gemini) bzw. Werkzeug `second_brain` (Claude).
+- Live auf index.html; sw.js Cache v11.

@@ -172,12 +172,14 @@ JV.tools = () => [
   { name: 'web_suche', description: 'Sucht aktuelle Nachrichten im Web.', inputSchema: { type: 'object', properties: { ziel: { type: 'string' }, suchbegriffe: { type: 'array', items: { type: 'string' } } }, required: ['ziel', 'suchbegriffe'] }, execute: async ({ ziel, suchbegriffe }) => (await JV.webSearch(ziel, suchbegriffe)).slice(0, 6).map(r => ({ ...r, text: r.text.slice(0, 700) })) },
   { name: 'journal_statistik', description: 'Statistik aus Elianos Journal (Replay-Backtests und Desk-Trades) und die letzten Trades.', inputSchema: { type: 'object', properties: {} }, execute: async () => JV.journalCtx() },
   { name: 'backtest', description: 'Führt einen Backtest mit echten Kursdaten aus. Strategien: ema, rsi, donch, vwap, bb, orb.', inputSchema: { type: 'object', properties: { strategie: { type: 'string', enum: Object.keys(TA.STRATS) }, symbol: { type: 'string' }, zeitrahmen: { type: 'string', enum: ['5m', '15m', '1h', '4h', '1T', '1W'] }, parameter: { type: 'object' } }, required: ['strategie', 'symbol'] }, execute: JV.backtest },
+  { name: 'second_brain', description: 'Elianos Lebensbereiche aus seinem Second Brain (Brand, Content, Agency, Roblox, Jarvis, Nebeneinkommen, Training, Schule …) mit Stand, nächsten Schritten und Notizen.', inputSchema: { type: 'object', properties: {} }, execute: async () => ((J.S.brain && J.S.brain.areas) || []) },
   { name: 'risiko_status', description: 'Heutiger Risiko-Status aus Risk Command.', inputSchema: { type: 'object', properties: {} }, execute: async () => JV.riskToday() }
 ];
 /* Für Gemini/OpenRouter: passende echte Daten vorab einsammeln */
   const ALIAS = [[/nasdaq|nq\b|ndx|nas100/i, 'ar:NAS100'], [/s&p|spx|\bes\b|us500/i, 'ar:US500'], [/\bdow\b|ym\b|us30/i, 'ar:US30'], [/\bdax\b|ger40/i, 'ar:GER40'], [/gold|xau/i, 'ar:XAUUSD'], [/bitcoin|\bbtc/i, 'BTCUSDT'], [/ethereum|\beth\b/i, 'ETHUSDT'], [/\bvix\b/i, '^VIX'], [/rendite|yield|zins|tnx/i, '^TNX'], [/dollar|dxy/i, 'DX-Y.NYB'], [/\böl\b|oil|wti/i, 'CL=F'], [/eur\/?usd|euro/i, 'EURUSD=X'], [/nvidia|nvda/i, 'NVDA'], [/tesla|tsla/i, 'TSLA']];
 JV.context = async (q) => {
-  const ctx = {}; const syms = [...new Set(ALIAS.filter(([re]) => re.test(q)).map(a => a[1]))].slice(0, 3);
+  const ctx = {};
+  const ar = (J.S.brain && J.S.brain.areas) || []; if (ar.length) ctx.zweitesGehirn = ar.map(a => ({ bereich: a.name, kurz: a.summary, stand: (a.facts || []).slice(0, 8), naechsteSchritte: a.next || [], notizen: (a.notes || []).slice(0, 5).map(n => n.t || n) })); const syms = [...new Set(ALIAS.filter(([re]) => re.test(q)).map(a => a[1]))].slice(0, 3);
   for (const s of syms) { try { ctx['kurse_' + s] = await JV.snapshot(s, /stunde|intraday|heute|gerade|jetzt/i.test(q) && J.kind(s) !== 'market' ? '1h' : '1T'); } catch (e) { ctx['kurse_' + s] = { fehler: J.errText(e) }; } }
   if (/journal|trades|statistik|performance|fehler|auswert|coach/i.test(q)) ctx.journal = JV.journalCtx();
   if (/risiko|traden|limit|darf ich|stop/i.test(q)) ctx.risiko = JV.riskToday();

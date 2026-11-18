@@ -352,6 +352,7 @@ V.copilot = el => {
     catch (e) { msg.content = Jarvis.err(e); render(); }
     J.S.chat = chat.slice(-40); J.store.save('chat'); busy = false; if ($('#jsend')) $('#jsend').disabled = false; status();
   };
+  try { const pf = sessionStorage.getItem('jt.prefill'); if (pf) { sessionStorage.removeItem('jt.prefill'); setTimeout(() => send(pf), 400); } } catch { }
   $('#jf').onsubmit = e => { e.preventDefault(); const v = $('#jin').value; $('#jin').value = ''; send(v); };
   $('#jin').onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#jf').requestSubmit(); } };
   const mic = $('#jmic'); if (mic) mic.onclick = async () => { try { const t = await Jarvis.listen(); $('#jin').value = t; if (t) send(t), $('#jin').value = ''; } catch (e) { J.toast(e.message); } };

@@ -1514,6 +1514,19 @@ body.jv-full #view-copilot .jt{max-width:1240px}
   .jvt-brand canvas{width:28px;height:28px}
 }
 @media (max-width:1100px){.jt .split{grid-template-columns:minmax(0,1fr)!important}}
+.bs-sum{margin:0 0 12px;color:rgba(255,255,255,.75);font-size:14px;line-height:1.55}
+.bs-fact{padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:13.5px;line-height:1.45;color:rgba(255,255,255,.88)}
+.bs-fact small{display:block;color:rgba(255,255,255,.4);font-size:11px}
+.bs-fact.next::before{content:"→ ";color:#f5d27a}
+.bs-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.bs-links a{padding:7px 12px;border-radius:99px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#fff;text-decoration:none;font-size:13px}
+.bs-box textarea{width:100%;min-height:70px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;padding:10px;font:14px var(--f-ui)}
+.bs-btn{height:36px;padding:0 12px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#fff;font:600 13px var(--f-ui);cursor:pointer}
+.bs-btn.gold{background:linear-gradient(135deg,#d9a531,#f5d27a);color:#251a03;border-color:transparent}
+.bs-areas{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.bs-areas button{display:grid;gap:2px;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#fff;font:13px var(--f-ui);cursor:pointer}
+.bs-areas button:hover{background:rgba(255,255,255,.09)}
+.bs-areas small{color:rgba(255,255,255,.45);font-size:11.5px}.bs-areas em{font-style:normal;color:#f5d27a;font-size:12px;margin-top:3px}
 </style>
 </head>
 <body>
@@ -9503,7 +9516,7 @@ J.addXP = () => { /* Fortschritt läuft über deinen Pass (XP aus Journal & Sess
 /* ---------- Zustand: kleine Daten in App.settings.jt (Sync über dein Supabase-Konto), große lokal ---------- */
   const DEF = {
   settings: { name: 'Eliano', cur: '$', sym: 'ar:NAS100', tf: '1T', speak: false, voice: '', rate: 1, ind: null, lines: {} },
-  funded: [], notes: [], positions: [],
+  funded: [], notes: [], positions: [], brain: { areas: [] },
   risk: { maxDayLoss: 0, maxTrades: 0, maxRiskPct: 1, maxLossStreak: 3, rules: '' },
   watch: ['ar:NAS100', 'ar:US500', 'ar:US30', 'ar:GER40', 'ar:XAUUSD', 'BTCUSDT', 'ETHUSDT', '^VIX', '^TNX', 'DX-Y.NYB', 'CL=F', 'EURUSD=X']
 };
@@ -10245,12 +10258,14 @@ JV.tools = () => [
   { name: 'web_suche', description: 'Sucht aktuelle Nachrichten im Web.', inputSchema: { type: 'object', properties: { ziel: { type: 'string' }, suchbegriffe: { type: 'array', items: { type: 'string' } } }, required: ['ziel', 'suchbegriffe'] }, execute: async ({ ziel, suchbegriffe }) => (await JV.webSearch(ziel, suchbegriffe)).slice(0, 6).map(r => ({ ...r, text: r.text.slice(0, 700) })) },
   { name: 'journal_statistik', description: 'Statistik aus Elianos Journal (Replay-Backtests und Desk-Trades) und die letzten Trades.', inputSchema: { type: 'object', properties: {} }, execute: async () => JV.journalCtx() },
   { name: 'backtest', description: 'Führt einen Backtest mit echten Kursdaten aus. Strategien: ema, rsi, donch, vwap, bb, orb.', inputSchema: { type: 'object', properties: { strategie: { type: 'string', enum: Object.keys(TA.STRATS) }, symbol: { type: 'string' }, zeitrahmen: { type: 'string', enum: ['5m', '15m', '1h', '4h', '1T', '1W'] }, parameter: { type: 'object' } }, required: ['strategie', 'symbol'] }, execute: JV.backtest },
+  { name: 'second_brain', description: 'Elianos Lebensbereiche aus seinem Second Brain (Brand, Content, Agency, Roblox, Jarvis, Nebeneinkommen, Training, Schule …) mit Stand, nächsten Schritten und Notizen.', inputSchema: { type: 'object', properties: {} }, execute: async () => ((J.S.brain && J.S.brain.areas) || []) },
   { name: 'risiko_status', description: 'Heutiger Risiko-Status aus Risk Command.', inputSchema: { type: 'object', properties: {} }, execute: async () => JV.riskToday() }
 ];
 /* Für Gemini/OpenRouter: passende echte Daten vorab einsammeln */
   const ALIAS = [[/nasdaq|nq\b|ndx|nas100/i, 'ar:NAS100'], [/s&p|spx|\bes\b|us500/i, 'ar:US500'], [/\bdow\b|ym\b|us30/i, 'ar:US30'], [/\bdax\b|ger40/i, 'ar:GER40'], [/gold|xau/i, 'ar:XAUUSD'], [/bitcoin|\bbtc/i, 'BTCUSDT'], [/ethereum|\beth\b/i, 'ETHUSDT'], [/\bvix\b/i, '^VIX'], [/rendite|yield|zins|tnx/i, '^TNX'], [/dollar|dxy/i, 'DX-Y.NYB'], [/\böl\b|oil|wti/i, 'CL=F'], [/eur\/?usd|euro/i, 'EURUSD=X'], [/nvidia|nvda/i, 'NVDA'], [/tesla|tsla/i, 'TSLA']];
 JV.context = async (q) => {
-  const ctx = {}; const syms = [...new Set(ALIAS.filter(([re]) => re.test(q)).map(a => a[1]))].slice(0, 3);
+  const ctx = {};
+  const ar = (J.S.brain && J.S.brain.areas) || []; if (ar.length) ctx.zweitesGehirn = ar.map(a => ({ bereich: a.name, kurz: a.summary, stand: (a.facts || []).slice(0, 8), naechsteSchritte: a.next || [], notizen: (a.notes || []).slice(0, 5).map(n => n.t || n) })); const syms = [...new Set(ALIAS.filter(([re]) => re.test(q)).map(a => a[1]))].slice(0, 3);
   for (const s of syms) { try { ctx['kurse_' + s] = await JV.snapshot(s, /stunde|intraday|heute|gerade|jetzt/i.test(q) && J.kind(s) !== 'market' ? '1h' : '1T'); } catch (e) { ctx['kurse_' + s] = { fehler: J.errText(e) }; } }
   if (/journal|trades|statistik|performance|fehler|auswert|coach/i.test(q)) ctx.journal = JV.journalCtx();
   if (/risiko|traden|limit|darf ich|stop/i.test(q)) ctx.risiko = JV.riskToday();
@@ -10881,6 +10896,7 @@ V.copilot = el => {
     catch (e) { msg.content = Jarvis.err(e); render(); }
     J.S.chat = chat.slice(-40); J.store.save('chat'); busy = false; if ($('#jsend')) $('#jsend').disabled = false; status();
   };
+  try { const pf = sessionStorage.getItem('jt.prefill'); if (pf) { sessionStorage.removeItem('jt.prefill'); setTimeout(() => send(pf), 400); } } catch { }
   $('#jf').onsubmit = e => { e.preventDefault(); const v = $('#jin').value; $('#jin').value = ''; send(v); };
   $('#jin').onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#jf').requestSubmit(); } };
   const mic = $('#jmic'); if (mic) mic.onclick = async () => { try { const t = await Jarvis.listen(); $('#jin').value = t; if (t) send(t), $('#jin').value = ''; } catch (e) { J.toast(e.message); } };
@@ -11026,6 +11042,12 @@ V.copilot = el => {
   J.decorate = v => { try { D[v] && D[v](); } catch (e) { console.warn('Jarvis-Einbau', e); } };
   J.initHooks = () => {
     /* Glas-Design (Standard an) und Second Brain beim Öffnen ohne Unterseite */
+    /* Privater Import deines Second Brains per Link (#brainimport=…): der Teil nach # verlässt nie dein Gerät */
+    if (location.hash.startsWith('#brainimport=')) {
+      try { const b64 = location.hash.slice(13).replace(/-/g, '+').replace(/_/g, '/'); const txt = new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0))); const data = JSON.parse(txt); if (!Array.isArray(data.areas)) throw 0; J.loadState(); J.S.brain = { areas: data.areas, imported: Date.now() }; J.store.save('brain'); setTimeout(() => J.toast(`Second Brain geladen: ${data.areas.length} Lebensbereiche`, 'good'), 900); }
+      catch (e) { setTimeout(() => J.toast('Import-Link ungültig', 'bad'), 900); }
+      history.replaceState(null, '', '#brain');
+    }
     if (typeof Space !== 'undefined') { if (Space.glassOn()) Space.setGlass(true); if (!location.hash || location.hash === '#') history.replaceState(null, '', '#brain'); }
     document.querySelector('header.top .brand')?.addEventListener('click', () => { location.hash = '#brain'; });
     const f = document.querySelector('#tradeModal .dlg-f');
@@ -11078,6 +11100,7 @@ V.copilot = el => {
       { id: 'brief', name: 'Briefings', sub: `${br.length} Briefings`, go: 'briefing', items: br.map(b => ({ label: 'Briefing ' + J.dt(b.t), w: 1.1 })) },
       { id: 'hb', name: 'Handbuch', sub: '10 Kapitel', go: 'handbuch', items: ['Risiko & Größe', 'Prop-Regeln', 'VWAP', 'Volume Profile', 'Orderflow', 'Sessions', 'Setups', 'Sauber backtesten', 'Psychologie', 'Glossar'].map(x => ({ label: x, w: 1 })) },
       { id: 'jarvis', name: 'Jarvis', sub: 'dein Copilot', go: 'copilot', items: (J.S.chat || []).filter(m => m.role === 'user').slice(-60).map(m => ({ label: String(m.content).slice(0, 60), w: 1.3 })) },
+      ...((J.S.brain && J.S.brain.areas) || []).map(a => ({ id: 'p-' + a.id, name: a.name, sub: a.sub || `${(a.facts || []).length} Infos`, area: a, items: [...(a.facts || []), ...(a.next || []), ...(a.notes || []).map(n => n.t || n)].map(f => ({ label: String(f).slice(0, 70), w: 1.1 })) })),
       { id: 'pass', name: 'Pass', sub: lvl ? `Level ${lvl}` : 'Fortschritt', go: 'pass', items: Array.from({ length: Math.min(30, lvl || 0) }, (_, i) => ({ label: `Level ${i + 1} erreicht`, w: .9 })) }
     ];
   };
@@ -11192,7 +11215,7 @@ V.copilot = el => {
       const al = Math.max(.35, Math.min(1, .55 + p.f * .45)) * (entering ? .4 : 1);
       x.textAlign = 'center'; x.font = `600 ${Math.round(12.5 * Math.min(1.25, p.f))}px Inter, system-ui, sans-serif`; x.fillStyle = `rgba(255,255,255,${al})`; x.fillText(h.c.name, p.x, p.y);
       x.font = `500 ${Math.round(10.5 * Math.min(1.2, p.f))}px Inter, system-ui, sans-serif`; x.fillStyle = `rgba(255,255,255,${al * .5})`; x.fillText(h.c.sub, p.x, p.y + 14);
-      S.hits.push({ x: p.x, y: p.y + 4, w: Math.max(80, h.c.name.length * 7.5), h: 34, go: h.c.go });
+      S.hits.push({ x: p.x, y: p.y + 4, w: Math.max(80, h.c.name.length * 7.5), h: 34, go: h.c.go, area: h.c.area });
     }
     // Home-Schild unter dem Loch
     if (!entering) { x.font = '600 11.5px Inter, system-ui, sans-serif'; const tw = x.measureText('Eintreten').width + 22; x.fillStyle = 'rgba(30,32,40,.75)'; roundRect(x, cx - tw / 2, cy + R * 1.55, tw, 22, 11); x.fill(); x.fillStyle = 'rgba(255,255,255,.85)'; x.textAlign = 'center'; x.fillText('Eintreten', cx, cy + R * 1.55 + 15); }
@@ -11260,8 +11283,8 @@ V.copilot = el => {
   const click = e => {
     if (entering) return;
     if (overHole(e)) return S.enter();
-    const h = hitLabel(e); if (h) return S.enter(h.go);
-    if (hover != null) { const n = nodes[hover]; return S.enter(n.c.go); }
+    const h = hitLabel(e); if (h) return h.area ? panel('area', h.area) : S.enter(h.go);
+    if (hover != null) { const n = nodes[hover]; return n.c.area ? panel('area', n.c.area) : S.enter(n.c.go); }
   };
   S.enter = (target) => { if (entering) return; panel(null); entering = { t: performance.now(), target: target || S.target || 'markt' }; el()?.classList.add('entering'); };
   const finishEnter = () => {
@@ -11288,6 +11311,7 @@ V.copilot = el => {
     else parts.push('Dein Journal ist noch leer – starte eine Backtest-Session oder einen Trade im Handels-Desk.');
     if (sess[0]) parts.push(`Letzte Backtest-Session: ${sess[0].sym || 'Markt'} am ${J.date(sess[0].created * 1000)}.`);
     if (typeof Pass !== 'undefined' && Pass.last) parts.push(`Pass: Level ${Pass.last.level}.`);
+    const ar = (J.S.brain && J.S.brain.areas) || []; if (ar.length) parts.push(`${ar.length} Lebensbereiche im Gehirn.`);
     if ((J.S.funded || []).length) parts.push(`${J.S.funded.length} Funded-Konto${J.S.funded.length > 1 ? 'en' : ''} im Tracker.`);
     const box = J.$('#bsText', el()); box.textContent = parts.join(' ');
     try { const d = await J.load('ar:NAS100', '1T'); const q = J.quote(d); parts.push(`Nasdaq 100 steht bei ${J.price(q.last)} (${J.pct(q.chp)} zum Vortag).`); } catch { }
@@ -11300,12 +11324,21 @@ V.copilot = el => {
   const weeks = (times, n = 8) => { const now = Date.now() / 1000, out = new Array(n).fill(0); for (const t of times) { if (!t) continue; const k = Math.floor((now - t) / 604800); if (k >= 0 && k < n) out[n - 1 - k]++; } return out; };
   const AREAS = () => J.NAV_ALL;
   J.NAV_ALL = [['Markt', [['markt', 'Marktüberblick'], ['briefing', 'Morning Briefing'], ['explorer', 'Markt-Explorer'], ['charts', 'Charts & Replay'], ['news', 'News Intelligence'], ['makro', 'Makroökonomie']]], ['Handel', [['desk', 'Handels-Desk'], ['funded', 'Funded-Tracker'], ['journal', 'Journal'], ['stats', 'Statistik'], ['risk', 'Risk Command']]], ['Research', [['backtests', 'Backtests'], ['analyse', 'Analyse'], ['strategien', 'Strategien'], ['quant', 'Quant Lab'], ['regime', 'Marktregime'], ['research', 'Research Desk'], ['copilot', 'Intelligence Copilot']]], ['Wissen & Fortschritt', [['start', 'Übersicht'], ['handbuch', 'Handbuch'], ['tradingview', 'TradingView'], ['pass', 'Pass'], ['shop', 'Shop']]]];
-  const panel = (which) => {
+  const panel = (which, area) => {
     const p = el()?.querySelector('#bsPanel'); if (!p) return;
-    if (!which || p.dataset.k === which && !p.hidden) { p.hidden = true; p.dataset.k = ''; return; }
+    if (!which || (p.dataset.k === which && which !== 'area' && !p.hidden)) { p.hidden = true; p.dataset.k = ''; return; }
     p.dataset.k = which; p.hidden = false;
-    if (which === 'pages') {
-      p.innerHTML = `<div class="bs-ph"><b>Pages</b><span class="sp"></span><button class="bs-x" aria-label="Schließen">✕</button></div><div class="bs-pages">${AREAS().map(([g2, items]) => `<div><h6>${g2}</h6>${items.map(([v, l]) => `<button data-go="${v}">${l}</button>`).join('')}</div>`).join('')}</div>`;
+    if (which === 'area' && area) {
+      const sec = (t, arr, cls) => arr && arr.length ? `<div class="bs-box"><h5>${t}</h5>${arr.map(x => `<div class="bs-fact ${cls || ''}">${esc(typeof x === 'string' ? x : x.t)}${x.d ? `<small>${esc(J.dt(x.d))}</small>` : ''}</div>`).join('')}</div>` : '';
+      p.innerHTML = `<div class="bs-ph"><b>${esc(area.name)}</b><span class="bs-tag">${esc(area.sub || '')}</span><span class="sp"></span><button class="bs-x" aria-label="Schließen">✕</button></div>
+        ${area.summary ? `<p class="bs-sum">${esc(area.summary)}</p>` : ''}
+        <div class="bs-grid2">${sec('Stand', area.facts)}${sec('Nächste Schritte', area.next, 'next')}</div>
+        ${area.links && area.links.length ? `<div class="bs-links">${area.links.map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.t)} ↗</a>`).join('')}</div>` : ''}
+        <div class="bs-grid2" style="margin-top:12px">${sec('Deine Notizen', area.notes)}<div class="bs-box"><h5>Notiz hinzufügen</h5><textarea id="bsNote" placeholder="Idee, Stand, To-do …"></textarea><div class="row" style="display:flex;gap:8px;margin-top:8px"><button class="bs-btn" id="bsNoteSave">Speichern</button><button class="bs-btn gold" id="bsAsk">Jarvis dazu fragen</button>${area.go ? `<button class="bs-btn" data-go="${esc(area.go)}">Im Terminal öffnen</button>` : ''}</div></div></div>`;
+      p.querySelector('#bsNoteSave').onclick = () => { const v = p.querySelector('#bsNote').value.trim(); if (!v) return; (area.notes = area.notes || []).unshift({ t: v, d: Date.now() }); J.store.save('brain'); build(); panel('area', area); J.toast('Notiz gespeichert', 'good'); };
+      p.querySelector('#bsAsk').onclick = () => { try { sessionStorage.setItem('jt.prefill', `Zu meinem Bereich „${area.name}“: Was sind die nächsten sinnvollen Schritte? Nutze, was du darüber weißt.`); } catch { } S.enter('copilot'); };
+    } else if (which === 'pages') {
+      p.innerHTML = `<div class="bs-ph"><b>Pages</b><span class="sp"></span><button class="bs-x" aria-label="Schließen">✕</button></div><div class="bs-pages">${((J.S.brain && J.S.brain.areas) || []).length ? `<div><h6>Dein Leben</h6>${J.S.brain.areas.map((a, i) => `<button data-area="${i}">${esc(a.name)}</button>`).join('')}</div>` : ''}${AREAS().map(([g2, items]) => `<div><h6>${g2}</h6>${items.map(([v, l]) => `<button data-go="${v}">${l}</button>`).join('')}</div>`).join('')}</div>`;
     } else {
       const T = J.journal(), rec = recorded(), sess = App.sessions || [], strat = App.strategies || [], notes = J.S.notes || [], br = J.S.briefings || [];
       const tTimes = T.map(rec), wk = Date.now() / 1000 - 604800;
@@ -11319,6 +11352,7 @@ V.copilot = el => {
       const card = (cls, val, lbl, sub, tag, bars) => `<div class="bs-stat ${cls}"><div class="row nw"><b>${val}</b><span class="sp"></span>${tag ? `<span class="bs-tag">${tag}</span>` : ''}</div><span>${lbl}</span><small>${sub}</small>${bars}</div>`;
       p.innerHTML = `<div class="bs-ph"><b>Home</b><span class="sp"></span><button class="bs-x" aria-label="Schließen">✕</button></div>
         <div class="bs-search"><input id="bsQ" placeholder="Alles durchsuchen – Bereiche, Strategien, Notizen, Märkte …" autocomplete="off"><div id="bsRes"></div></div>
+        ${((J.S.brain && J.S.brain.areas) || []).length ? `<div class="bs-box" style="margin:12px 0"><h5>Dein Leben</h5><div class="bs-areas">${J.S.brain.areas.map((a, i) => `<button data-area="${i}"><b>${esc(a.name)}</b><small>${esc(a.sub || '')}</small>${a.next && a.next[0] ? `<em>${esc(a.next[0])}</em>` : ''}</button>`).join('')}</div></div>` : ''}
         <div class="bs-stats">${card('o', T.length, 'Trades', 'im Journal', `+${tTimes.filter(t => t && t > wk).length} neu`, spark(weeks(tTimes), '#f08a3c'))}${card('g', sess.length, 'Sessions', 'Backtests gesamt', `+${sess.filter(s => s.created > wk).length} Woche`, spark(weeks(sess.map(s => s.created)), '#2fcf9f'))}${card('b', strat.length, 'Strategien', `${strat.filter(s => (s.rules || '').trim()).length} mit Regeln`, '', spark(sc.map(x => x[1]), '#4f8cff'))}${card('p', notes.length + br.length, 'Notizen & Briefings', 'Research Desk', `${notes.filter(n => n.t / 1000 > wk).length + br.filter(b => b.t / 1000 > wk).length} Woche`, spark(weeks([...notes.map(n => n.t / 1000), ...br.map(b => b.t / 1000)]), '#a26bff'))}</div>
         <div class="bs-grid3"><div class="bs-box"><h4><i style="background:#a26bff"></i>Aktivität</h4><small>Sessions & Desk-Trades pro Tag, letzte 30 Tage</small><div class="bs-col">${days.map(v => `<i style="height:${v ? Math.max(4, v / dmax * 100) : 0}%"></i>`).join('')}</div></div>
         <div class="bs-box"><h4><i style="background:#2fcf9f"></i>Trades nach Strategie</h4><small>Antippen öffnet das Journal</small>${sc.length ? sc.map(([k, v]) => `<button class="bs-row" data-go="journal"><span>${esc(k)}</span><b>${v}</b><em style="width:${v / sc[0][1] * 100}%;background:#2fcf9f"></em></button>`).join('') : '<p class="bs-empty">Noch keine Trades.</p>'}</div>
@@ -11326,11 +11360,11 @@ V.copilot = el => {
         <div class="bs-grid2"><div class="bs-box"><h5>Letzte Aktivität</h5>${recent.length ? recent.map(r => `<button class="bs-li" data-go="${r.go}"><b>${esc(r.txt)}</b><small>${J.dt(r.t * 1000)} · ${esc(r.sub)}</small></button>`).join('') : '<p class="bs-empty">Noch nichts passiert.</p>'}</div>
         <div class="bs-box"><h5>Neueste Notizen & Briefings</h5>${fresh.length ? fresh.map(r => `<button class="bs-li" data-go="${r.go}"><b>${esc(r.txt)}</b><small>${esc(r.sub)}</small></button>`).join('') : '<p class="bs-empty">Lass Jarvis im Research Desk recherchieren oder ein Briefing schreiben.</p>'}</div></div>`;
       const q = p.querySelector('#bsQ'), res = p.querySelector('#bsRes');
-      const idx = [...AREAS().flatMap(([g2, it]) => it.map(([v, l]) => ({ l, s: 'Bereich · ' + g2, go: v }))), ...strat.map(s => ({ l: s.name, s: 'Strategie', go: 'strategien' })), ...notes.map(n => ({ l: n.title || 'Notiz', s: 'Notiz', go: 'research' })), ...J.SYM.map(s => ({ l: s[1], s: 'Markt · ' + s[2], go: 'markt', sym: s[0] }))];
-      q.oninput = () => { const v = q.value.trim().toLowerCase(); res.innerHTML = v ? idx.filter(x => (x.l + ' ' + x.s).toLowerCase().includes(v)).slice(0, 8).map(x => `<button class="bs-li" data-go="${x.go}" ${x.sym ? `data-sym="${esc(x.sym)}"` : ''}><b>${esc(x.l)}</b><small>${esc(x.s)}</small></button>`).join('') || '<p class="bs-empty">Nichts gefunden.</p>' : ''; bindGo(); };
+      const idx = [...AREAS().flatMap(([g2, it]) => it.map(([v, l]) => ({ l, s: 'Bereich · ' + g2, go: v }))), ...strat.map(s => ({ l: s.name, s: 'Strategie', go: 'strategien' })), ...notes.map(n => ({ l: n.title || 'Notiz', s: 'Notiz', go: 'research' })), ...J.SYM.map(s => ({ l: s[1], s: 'Markt · ' + s[2], go: 'markt', sym: s[0] })), ...((J.S.brain && J.S.brain.areas) || []).flatMap((a, i) => [{ l: a.name, s: 'Lebensbereich', area: i }, ...[...(a.facts || []), ...(a.next || [])].map(f => ({ l: f, s: a.name, area: i }))])];
+      q.oninput = () => { const v = q.value.trim().toLowerCase(); res.innerHTML = v ? idx.filter(x => (x.l + ' ' + x.s).toLowerCase().includes(v)).slice(0, 8).map(x => (x.area != null ? `<button class="bs-li" data-area="${x.area}"><b>${esc(String(x.l).slice(0, 90))}</b><small>${esc(x.s)}</small></button>` : `<button class="bs-li" data-go="${x.go}" ${x.sym ? `data-sym="${esc(x.sym)}"` : ''}><b>${esc(x.l)}</b><small>${esc(x.s)}</small></button>`)).join('') || '<p class="bs-empty">Nichts gefunden.</p>' : ''; bindGo(); };
     }
     p.querySelector('.bs-x').onclick = () => panel(null);
-    const bindGo = () => p.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { if (b.dataset.sym) { J.S.settings.sym = b.dataset.sym; J.store.save('settings'); } S.enter(b.dataset.go); });
+    const bindGo = () => { p.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { if (b.dataset.sym) { J.S.settings.sym = b.dataset.sym; J.store.save('settings'); } S.enter(b.dataset.go); }); p.querySelectorAll('[data-area]').forEach(b => b.onclick = () => panel('area', J.S.brain.areas[+b.dataset.area])); };
     bindGo();
   };
 }

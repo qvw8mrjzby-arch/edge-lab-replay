@@ -51,7 +51,7 @@ J.addXP = () => { /* Fortschritt läuft über deinen Pass (XP aus Journal & Sess
 /* ---------- Zustand: kleine Daten in App.settings.jt (Sync über dein Supabase-Konto), große lokal ---------- */
   const DEF = {
   settings: { name: 'Eliano', cur: '$', sym: 'ar:NAS100', tf: '1T', speak: false, voice: '', rate: 1, ind: null, lines: {} },
-  funded: [], notes: [], positions: [],
+  funded: [], notes: [], positions: [], brain: { areas: [] },
   risk: { maxDayLoss: 0, maxTrades: 0, maxRiskPct: 1, maxLossStreak: 3, rules: '' },
   watch: ['ar:NAS100', 'ar:US500', 'ar:US30', 'ar:GER40', 'ar:XAUUSD', 'BTCUSDT', 'ETHUSDT', '^VIX', '^TNX', 'DX-Y.NYB', 'CL=F', 'EURUSD=X']
 };

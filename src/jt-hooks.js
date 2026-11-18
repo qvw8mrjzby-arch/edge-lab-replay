@@ -122,6 +122,12 @@
   J.decorate = v => { try { D[v] && D[v](); } catch (e) { console.warn('Jarvis-Einbau', e); } };
   J.initHooks = () => {
     /* Glas-Design (Standard an) und Second Brain beim Öffnen ohne Unterseite */
+    /* Privater Import deines Second Brains per Link (#brainimport=…): der Teil nach # verlässt nie dein Gerät */
+    if (location.hash.startsWith('#brainimport=')) {
+      try { const b64 = location.hash.slice(13).replace(/-/g, '+').replace(/_/g, '/'); const txt = new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0))); const data = JSON.parse(txt); if (!Array.isArray(data.areas)) throw 0; J.loadState(); J.S.brain = { areas: data.areas, imported: Date.now() }; J.store.save('brain'); setTimeout(() => J.toast(`Second Brain geladen: ${data.areas.length} Lebensbereiche`, 'good'), 900); }
+      catch (e) { setTimeout(() => J.toast('Import-Link ungültig', 'bad'), 900); }
+      history.replaceState(null, '', '#brain');
+    }
     if (typeof Space !== 'undefined') { if (Space.glassOn()) Space.setGlass(true); if (!location.hash || location.hash === '#') history.replaceState(null, '', '#brain'); }
     document.querySelector('header.top .brand')?.addEventListener('click', () => { location.hash = '#brain'; });
     const f = document.querySelector('#tradeModal .dlg-f');
