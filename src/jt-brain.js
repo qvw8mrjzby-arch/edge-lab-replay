@@ -95,6 +95,7 @@ JV.err = e => {
   async function gemini(msgs, o) {
   const a = JV.ai();
   const body = { contents: msgs.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })), generationConfig: { temperature: .5 } };
+    if (o.images?.length) body.contents[body.contents.length - 1].parts.push(...o.images.map(im => ({ inline_data: { mime_type: im.mime, data: im.b64 } })));
   if (o.json) body.generationConfig.responseMimeType = 'application/json';
   else if (o.search && a.search) body.tools = [{ google_search: {} }];
   const call = async (b) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(a.gmodel || 'gemini-2.5-flash')}:generateContent?key=${encodeURIComponent(a.gemini)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b), signal: o.signal });

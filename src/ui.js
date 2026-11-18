@@ -70,6 +70,7 @@ const UI = {
     let fixed = 0;
     for (const s of App.sessions) if (s.running && (!pend || pend.replay.id !== s.replayId)) { s.running = false; s.to = s.to || s.from; fixed++; }
     if (fixed) App.saveSessions();
+    if (typeof J !== 'undefined' && J.initHooks) J.initHooks();
     this.route();
     /* Sync nur, wenn die lokalen Daten sicher geladen sind (sonst würden fehlende Einträge als gelöscht gelten) */
     if (App.dataOk && typeof Sync !== 'undefined') Sync.init().catch((e) => console.warn('[Sync]', e));
@@ -120,7 +121,7 @@ const UI = {
     if (v !== 'charts') window.scrollTo(0, 0);
     if (v === 'handbuch') Handbook.open(sub);
     /* Jarvis-Terminal-Bereiche */
-    if (typeof J !== 'undefined') { if (JT_VIEWS.includes(v)) J.show(v); else J.hide(); }
+    if (typeof J !== 'undefined') { if (JT_VIEWS.includes(v)) J.show(v); else { J.hide(); if (J.decorate) J.decorate(v); } }
   },
 
   bindHeader() {

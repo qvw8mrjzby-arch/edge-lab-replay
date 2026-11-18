@@ -151,3 +151,11 @@
 .jt input[type=checkbox]{width:20px;height:20px;min-height:0;padding:0}
 .jt h3 small{font-weight:400}
 .jt .seg{flex:0 1 auto;flex-wrap:wrap}
+/* Jarvis in deinen bisherigen Bereichen */
+.jt.jt-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:none;margin:0;padding:12px 14px;border:1px solid color-mix(in srgb,#f2c14e 35%,var(--line));border-radius:12px;background:linear-gradient(100deg,color-mix(in srgb,#f2c14e 10%,var(--panel)),var(--panel) 60%);font-size:13.5px;color:var(--muted)}
+.jt.jt-bar b{color:#f5d27a}
+.jt-orb{display:inline-block;width:18px;height:18px;flex:none;border-radius:50%;background:radial-gradient(circle at 50% 45%,#fff6d8 0,#ffd36b 28%,rgba(242,180,60,.55) 52%,rgba(242,180,60,0) 72%);box-shadow:0 0 0 1.5px rgba(242,193,78,.55),0 0 14px rgba(242,193,78,.45)}
+#btnJarvis{display:inline-flex;align-items:center;gap:7px;flex:none;height:30px;padding:0 11px;border-radius:var(--r);border:1px solid color-mix(in srgb,#f2c14e 45%,var(--line));background:color-mix(in srgb,#f2c14e 12%,var(--panel2));color:#f5d27a;font:600 12.5px var(--f-ui);cursor:pointer}
+#btnJarvis:hover{background:color-mix(in srgb,#f2c14e 20%,var(--panel2))}
+@media (max-width:860px){#btnJarvis .jl{display:none}#btnJarvis{padding:0 9px}}
+.btn.jt-gold{background:linear-gradient(135deg,#d9a531,#f5d27a);border-color:transparent;color:#251a03;font-weight:600}

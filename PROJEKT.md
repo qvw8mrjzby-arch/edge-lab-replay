@@ -23,6 +23,7 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Desk-Trades gehen ins Journal (src 'desk'); Funded-Konten, Risiko-Regeln, Notizen, Watchlist in App.settings.jt (synchronisiert). Briefings/Chat lokal. KI-Key (Gemini/OpenRouter) nur lokal in localStorage 'jt.ai'.
 - Daten: data/agg/<ID>-{1d,1h,15m,5m}.json aus dem Archiv (tools/build-agg.mjs, läuft in daten.yml); Yahoo-Tageskerzen, News (RSS) und Kalender (Forex Factory) über tools/fetch-markets.mjs + .github/workflows/markt.yml (stündlich) → data/markets/, data/news.json, data/calendar.json.
 - Jarvis denkt mit Claude (wenn in claude.ai geöffnet) oder mit Elianos kostenlosem Gemini-Key; Stimme: Claude-TTS oder Gerätestimme (speechSynthesis), Mikrofon per SpeechRecognition.
+- Jarvis in den alten Bereichen (src/jt-hooks.js): Knopf „Jarvis“ in der Chart-Leiste (liest nur Kerzen bis zur Replay-Kerze, Blind-Modus ohne Datum), „Jarvis bewerten“ im Trade-Fenster (mit Chart-Fotos bei Gemini), „Letzte 20 Trades bewerten“ im Journal, Coaching in Statistik, „Fehler erklären“ in Analyse.
 - Deploy: `beta/index.html` = Testversion. Nach OK: src/site/index.html ins Wurzelverzeichnis kopieren, sw.js-Cache-Version erhöhen.
 
 ## Daten
