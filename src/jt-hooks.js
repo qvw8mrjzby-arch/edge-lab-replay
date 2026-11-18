@@ -119,5 +119,11 @@
     const f = document.querySelector('#tradeModal .dlg-f');
     if (f && !document.getElementById('tdJarvis')) { const b = document.createElement('button'); b.className = 'btn jt-gold'; b.id = 'tdJarvis'; b.type = 'button'; b.textContent = 'Jarvis bewerten'; b.onclick = () => reviewTrade(UI._trade); const show = document.getElementById('tdShow'); show ? f.insertBefore(b, show) : f.append(b); }
     D.charts();
+    /* Jarvis-Orb auf jeder Seite */
+    if (!document.getElementById('jvFab')) {
+      const a = document.createElement('a'); a.id = 'jvFab'; a.href = '#copilot'; a.className = 'jt-fab'; a.title = 'Jarvis'; a.setAttribute('aria-label', 'Jarvis öffnen');
+      a.innerHTML = '<canvas></canvas><span>Jarvis</span>'; document.body.append(a);
+      try { Jarvis.orb(a.querySelector('canvas'), false); } catch { }
+    }
   };
 }

@@ -26,6 +26,7 @@
       { id: 'funded', name: 'Funded-Konten', sub: `${fund.length} Konten`, go: 'funded', items: fund.map(a => ({ label: `${a.name} · ${a.phase}`, w: 1.8 })) },
       { id: 'brief', name: 'Briefings', sub: `${br.length} Briefings`, go: 'briefing', items: br.map(b => ({ label: 'Briefing ' + J.dt(b.t), w: 1.1 })) },
       { id: 'hb', name: 'Handbuch', sub: '10 Kapitel', go: 'handbuch', items: ['Risiko & Größe', 'Prop-Regeln', 'VWAP', 'Volume Profile', 'Orderflow', 'Sessions', 'Setups', 'Sauber backtesten', 'Psychologie', 'Glossar'].map(x => ({ label: x, w: 1 })) },
+      { id: 'jarvis', name: 'Jarvis', sub: 'dein Copilot', go: 'copilot', items: (J.S.chat || []).filter(m => m.role === 'user').slice(-60).map(m => ({ label: String(m.content).slice(0, 60), w: 1.3 })) },
       { id: 'pass', name: 'Pass', sub: lvl ? `Level ${lvl}` : 'Fortschritt', go: 'pass', items: Array.from({ length: Math.min(30, lvl || 0) }, (_, i) => ({ label: `Level ${i + 1} erreicht`, w: .9 })) }
     ];
   };
@@ -176,7 +177,7 @@
     d.innerHTML = `<canvas id="bsCv"></canvas>
       <div class="bs-head"><b>Second Brain</b><small>${esc(J.S.settings.name || 'Eliano')} · Jarvis Terminal</small></div>
       <div class="bs-greet"><h1 id="bsHello"></h1><p id="bsText"></p></div>
-      <button class="bs-pill bs-home" id="bsHome">Home</button><button class="bs-pill bs-pagesbtn" id="bsPages">Pages</button>
+      <button class="bs-pill bs-home" id="bsHome">Home</button><button class="bs-pill bs-jarvis" id="bsJarvis"><canvas></canvas>Jarvis</button><button class="bs-pill bs-pagesbtn" id="bsPages">Pages</button>
       <div class="bs-dock"><button id="bsOut" aria-label="Verkleinern">−</button><button id="bsIn" aria-label="Vergrößern">+</button><button id="bsReset" aria-label="Ansicht zurücksetzen">⟲</button><button id="bsPause" aria-label="Drehung pausieren">❚❚</button><button id="bsGlass" aria-label="Glas-Design umschalten" title="Glas-Design">◩</button><button id="bsEnter" class="bs-go">Terminal öffnen</button></div>
       <div class="bs-panel" id="bsPanel" hidden></div>`;
     document.body.append(d);
@@ -196,6 +197,8 @@
     d.querySelector('#bsGlass').onclick = () => { const on = !S.glassOn(); S.setGlass(on); J.toast(on ? 'Glas-Design an' : 'Glas-Design aus'); };
     d.querySelector('#bsEnter').onclick = () => S.enter();
     d.querySelector('#bsHome').onclick = () => panel('home');
+    d.querySelector('#bsJarvis').onclick = () => S.enter('copilot');
+    try { Jarvis.orb(d.querySelector('#bsJarvis canvas'), false); } catch { }
     d.querySelector('#bsPages').onclick = () => panel('pages');
     addEventListener('resize', () => { if (S.open) resize(); });
     document.addEventListener('keydown', e => { if (!S.open) return; if (e.key === 'Escape') { if (!d.querySelector('#bsPanel').hidden) panel(null); else S.enter(); } if (e.key === 'Enter' && document.activeElement === document.body) S.enter(); });

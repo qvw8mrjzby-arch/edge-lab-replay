@@ -163,7 +163,7 @@
 .jt-space{position:fixed;inset:0;z-index:95;background:#020306;color:#fff;font-family:var(--f-ui);overflow:hidden;transition:opacity .5s ease}
 .jt-space[hidden]{display:none}
 .jt-space.out{opacity:0}
-.jt-space canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+.jt-space>canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
 .jt-space .bs-head{position:absolute;left:max(22px,env(safe-area-inset-left));top:max(18px,env(safe-area-inset-top));display:grid;line-height:1.25;pointer-events:none}
 .jt-space .bs-head b{font-size:13px;font-weight:600}
 .jt-space .bs-head small{font-size:11px;color:rgba(255,255,255,.45)}
@@ -228,3 +228,14 @@ body.brain-open{overflow:hidden}
 header.top .brand{cursor:pointer}
 :root[data-glass] .jt .chartbox{background:rgba(10,13,24,.84)}
 .bs-dock button{white-space:nowrap}
+/* Jarvis-Orb auf jeder Seite */
+.jt-fab{position:fixed;z-index:44;right:max(18px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));display:flex;align-items:center;gap:8px;height:56px;padding:0 16px 0 6px;border-radius:99px;border:1px solid rgba(242,193,78,.45);background:rgba(20,16,8,.72);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:#f5d27a;font:600 14px var(--f-ui);text-decoration:none;box-shadow:0 12px 34px -10px rgba(242,180,60,.45)}
+.jt-fab canvas{width:44px;height:44px}
+.jt-fab:hover{border-color:rgba(242,193,78,.8)}
+body.brain-open .jt-fab,body.modal-open .jt-fab,body.view-charts .jt-fab{display:none}
+body.jt-on-copilot .jt-fab{display:none}
+@media (max-width:860px){.jt-fab{bottom:calc(var(--navH) + 12px + env(safe-area-inset-bottom));height:52px;padding:0 4px}.jt-fab span{display:none}.jt-fab canvas{width:44px;height:44px}}
+.bs-jarvis{left:calc(50% + 46px);display:flex;align-items:center;gap:4px;padding:0 14px 0 4px;color:#f5d27a;border-color:rgba(242,193,78,.4)}
+.bs-jarvis canvas{width:28px;height:28px;position:static;flex:none}
+.bs-home{transform:translateX(calc(-50% - 46px))}
+@media (max-width:860px){.bs-jarvis{left:auto;right:max(22px,env(safe-area-inset-right));top:calc(max(18px,env(safe-area-inset-top)) + 44px)}.bs-home{transform:none}}

@@ -108,6 +108,7 @@ const UI = {
     for (const n of VIEWS) $('#view-' + n).hidden = n !== v;
     $$('#mainNav a').forEach((a) => { if (a.dataset.view === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     document.body.classList.toggle('view-charts', v === 'charts');
+    document.body.classList.toggle('jt-on-copilot', v === 'copilot');
     $('#indMenu').hidden = true;
     if (Tips.hide) Tips.hide();
     if (v !== 'charts') Sheet.set(false);
