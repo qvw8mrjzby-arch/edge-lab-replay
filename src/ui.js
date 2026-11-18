@@ -94,7 +94,7 @@ const UI = {
     /* Deep-Link ins Handbuch: #handbuch-<kapitel oder abschnitt> (nur Buchstaben, Ziffern, Bindestrich) */
     const m = v.match(/^handbuch-([A-Za-z0-9-]{1,60})$/);
     if (m) { v = 'handbuch'; sub = m[1].toLowerCase(); }
-    if (v === 'brain' && typeof Space !== 'undefined') { if (!this._routed) this.showView('markt'); this._routed = true; Space.show(App.view || 'markt'); return; }
+    if (v === 'brain' && typeof Space !== 'undefined') { if (!this._routed) this.showView('markt'); this._routed = true; Space.show(App.view || 'markt'); if (J.updateTabs) J.updateTabs('brain'); return; }
     this._routed = true;
     if (typeof Space !== 'undefined' && Space.open && !Space.leaving) Space.close();
     if (!VIEWS.includes(v)) v = 'start';
@@ -109,6 +109,7 @@ const UI = {
     $$('#mainNav a').forEach((a) => { if (a.dataset.view === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     document.body.classList.toggle('view-charts', v === 'charts');
     document.body.classList.toggle('jt-on-copilot', v === 'copilot');
+    if (typeof J !== 'undefined' && J.updateTabs) J.updateTabs(v);
     $('#indMenu').hidden = true;
     if (Tips.hide) Tips.hide();
     if (v !== 'charts') Sheet.set(false);

@@ -26,6 +26,7 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Jarvis in den alten Bereichen (src/jt-hooks.js): Knopf „Jarvis“ in der Chart-Leiste (liest nur Kerzen bis zur Replay-Kerze, Blind-Modus ohne Datum), „Jarvis bewerten“ im Trade-Fenster (mit Chart-Fotos bei Gemini), „Letzte 20 Trades bewerten“ im Journal, Coaching in Statistik, „Fehler erklären“ in Analyse.
 - Second Brain (src/jt-space.js): Startszene beim Öffnen ohne #-Unterseite (#brain) – schwarzes Loch im Gargantua-Stil, Wissens-Netz aus echten Daten (Journal, Sessions, Strategien, Notizen, Märkte, Funded, Briefings, Handbuch, Pass), Home-Glas-Dashboard, Pages, Suche; Klick aufs Loch/„Terminal öffnen“ = Eintauchen ins Terminal.
 - Glas-Design (`data-glass` am html, Standard an, `elr.glass` = '0' schaltet aus): halbtransparente Flächen + backdrop-filter über einem weichgezeichneten Bild des schwarzen Lochs (wird im Browser erzeugt).
+- Jarvis-Hülle: Glas-Tableiste oben (#jvTabs, body.jv-tabs) mit „Second Brain“ (#brain), „Jarvis“ (#copilot, Vollbild ohne Seitenleiste: body.jv-full) und „Trading Terminal“ (letzte Terminal-Seite). Goldener Jarvis-Orb unten rechts (#jvFab).
 - Deploy: `beta/index.html` = Testversion. Nach OK: src/site/index.html ins Wurzelverzeichnis kopieren, sw.js-Cache-Version erhöhen.
 
 ## Daten

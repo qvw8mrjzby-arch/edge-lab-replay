@@ -239,3 +239,45 @@ body.jt-on-copilot .jt-fab{display:none}
 .bs-jarvis canvas{width:28px;height:28px;position:static;flex:none}
 .bs-home{transform:translateX(calc(-50% - 46px))}
 @media (max-width:860px){.bs-jarvis{left:auto;right:max(22px,env(safe-area-inset-right));top:calc(max(18px,env(safe-area-inset-top)) + 44px)}.bs-home{transform:none}}
+/* ---------- Jarvis-Hülle: Tabs oben im Glas-Look ---------- */
+:root{--tabH:calc(54px + env(safe-area-inset-top,0px))}
+#jvTabs{display:none}
+body.jv-tabs #jvTabs{display:flex;align-items:center;gap:14px;position:relative;z-index:100;height:var(--tabH);padding:env(safe-area-inset-top,0px) max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left));background:rgba(8,10,18,.55);-webkit-backdrop-filter:blur(26px) saturate(170%);backdrop-filter:blur(26px) saturate(170%);border-bottom:1px solid rgba(255,255,255,.09);box-shadow:inset 0 -1px 0 rgba(255,255,255,.03)}
+.jvt-brand{display:flex;align-items:center;gap:8px;flex:none;color:#f5d27a}
+.jvt-brand canvas{width:34px;height:34px}
+.jvt-brand b{font:700 14px var(--f-ui);letter-spacing:.18em}
+.jvt-tabs{flex:1;display:flex;justify-content:center;gap:4px;min-width:0}
+.jvt-tabs a{display:inline-flex;align-items:center;height:38px;padding:0 18px;border-radius:99px;color:rgba(255,255,255,.62);font:600 13.5px var(--f-ui);text-decoration:none;white-space:nowrap;border:1px solid transparent;transition:background .2s,color .2s}
+.jvt-tabs a:hover{color:#fff;background:rgba(255,255,255,.06)}
+.jvt-tabs a.on{color:#fff;background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06));border-color:rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 6px 20px -8px rgba(0,0,0,.6)}
+.jvt-tabs a[data-tab="jarvis"].on{color:#ffe3a1;border-color:rgba(242,193,78,.4);background:linear-gradient(180deg,rgba(242,193,78,.22),rgba(242,193,78,.06))}
+.jvt-right{flex:none;font:500 12.5px var(--f-ui);color:rgba(255,255,255,.55);min-width:120px;text-align:right}
+/* Platz für die Tabs */
+body.jv-tabs #app{height:calc(100% - var(--tabH))}
+body.jv-tabs header.top{padding-top:0}
+body.jv-tabs::before{display:none}
+body.jv-tabs .jt-space{top:var(--tabH)}
+body.fs #jvTabs{display:none!important}
+body.fs.jv-tabs #app{height:100%}
+/* Jarvis-Tab: Vollbild ohne Seitenleiste */
+body.jv-full #app{grid-template-columns:minmax(0,1fr)!important}
+body.jv-full header.top,body.jv-full .jt-fab{display:none!important}
+body.jv-full #view-copilot .jt{max-width:1240px}
+@media (max-width:860px){
+  body.jv-tabs #jvTabs{position:sticky;top:0;gap:8px;--tabH:calc(50px + env(safe-area-inset-top,0px));height:calc(50px + env(safe-area-inset-top,0px))}
+  body.jv-tabs header.top{top:calc(50px + env(safe-area-inset-top,0px));height:48px}
+  body.jv-tabs #app{height:auto;min-height:calc(100% - 50px - env(safe-area-inset-top,0px))}
+  body.jv-tabs.view-charts:not(.fs) #app{height:calc(100dvh - 50px - env(safe-area-inset-top,0px));min-height:0}
+  .jvt-brand b,.jvt-right{display:none}
+  .jvt-tabs{justify-content:flex-start;overflow-x:auto;scrollbar-width:none}
+  .jvt-tabs a{padding:0 13px;height:34px;font-size:13px}
+  body.jv-full #mainNav{display:none!important}
+  body.jv-full{padding-bottom:0!important}
+}
+@media (orientation:landscape) and (max-height:500px){
+  body.jv-tabs #jvTabs{position:fixed;left:0;right:0;top:0;height:42px;padding-top:0}
+  body.jv-tabs #app{height:calc(100dvh - 42px)!important;margin-top:42px}
+  body.jv-tabs header.top{top:42px}
+  .jvt-brand canvas{width:28px;height:28px}
+}
+@media (max-width:1100px){.jt .split{grid-template-columns:minmax(0,1fr)!important}}

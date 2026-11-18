@@ -111,6 +111,14 @@
       if (el) { const h = host.querySelector('.page-h'); const sub = document.getElementById('aSub'); const after = sub || h; if (after && el.previousElementSibling !== after) after.after(el); el.querySelector('[data-j="explain"]').onclick = explainAnalysis; }
     }
   };
+  let lastTerm = 'markt';
+  J.updateTabs = v => {
+    const tab = v === 'brain' ? 'brain' : v === 'copilot' ? 'jarvis' : 'term';
+    if (tab === 'term' && v) lastTerm = v;
+    document.querySelectorAll('#jvTabs [data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
+    const tt = document.getElementById('jvtTerm'); if (tt) tt.setAttribute('href', '#' + lastTerm);
+    document.body.classList.toggle('jv-full', tab === 'jarvis');
+  };
   J.decorate = v => { try { D[v] && D[v](); } catch (e) { console.warn('Jarvis-Einbau', e); } };
   J.initHooks = () => {
     /* Glas-Design (Standard an) und Second Brain beim Öffnen ohne Unterseite */
@@ -119,6 +127,15 @@
     const f = document.querySelector('#tradeModal .dlg-f');
     if (f && !document.getElementById('tdJarvis')) { const b = document.createElement('button'); b.className = 'btn jt-gold'; b.id = 'tdJarvis'; b.type = 'button'; b.textContent = 'Jarvis bewerten'; b.onclick = () => reviewTrade(UI._trade); const show = document.getElementById('tdShow'); show ? f.insertBefore(b, show) : f.append(b); }
     D.charts();
+    /* Jarvis als Hülle: Tabs oben (Second Brain · Jarvis · Trading Terminal) */
+    if (!document.getElementById('jvTabs')) {
+      const t = document.createElement('div'); t.id = 'jvTabs'; t.setAttribute('role', 'tablist'); t.setAttribute('aria-label', 'Jarvis');
+      t.innerHTML = `<div class="jvt-brand"><canvas></canvas><b>JARVIS</b></div><div class="jvt-tabs"><a href="#brain" data-tab="brain" role="tab">Second Brain</a><a href="#copilot" data-tab="jarvis" role="tab">Jarvis</a><a href="#markt" data-tab="term" role="tab" id="jvtTerm">Trading Terminal</a></div><div class="jvt-right"><span id="jvtClock"></span></div>`;
+      document.body.insertBefore(t, document.body.firstChild); document.body.classList.add('jv-tabs');
+      try { Jarvis.orb(t.querySelector('canvas'), false); } catch { }
+      const clock = () => { const el2 = document.getElementById('jvtClock'); if (el2) el2.textContent = new Date().toLocaleString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' }); };
+      clock(); setInterval(clock, 20000);
+    }
     /* Jarvis-Orb auf jeder Seite */
     if (!document.getElementById('jvFab')) {
       const a = document.createElement('a'); a.id = 'jvFab'; a.href = '#copilot'; a.className = 'jt-fab'; a.title = 'Jarvis'; a.setAttribute('aria-label', 'Jarvis öffnen');
