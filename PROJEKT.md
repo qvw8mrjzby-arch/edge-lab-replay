@@ -24,6 +24,8 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Daten: data/agg/<ID>-{1d,1h,15m,5m}.json aus dem Archiv (tools/build-agg.mjs, läuft in daten.yml); Yahoo-Tageskerzen, News (RSS) und Kalender (Forex Factory) über tools/fetch-markets.mjs + .github/workflows/markt.yml (stündlich) → data/markets/, data/news.json, data/calendar.json.
 - Jarvis denkt mit Claude (wenn in claude.ai geöffnet) oder mit Elianos kostenlosem Gemini-Key; Stimme: Claude-TTS oder Gerätestimme (speechSynthesis), Mikrofon per SpeechRecognition.
 - Jarvis in den alten Bereichen (src/jt-hooks.js): Knopf „Jarvis“ in der Chart-Leiste (liest nur Kerzen bis zur Replay-Kerze, Blind-Modus ohne Datum), „Jarvis bewerten“ im Trade-Fenster (mit Chart-Fotos bei Gemini), „Letzte 20 Trades bewerten“ im Journal, Coaching in Statistik, „Fehler erklären“ in Analyse.
+- Second Brain (src/jt-space.js): Startszene beim Öffnen ohne #-Unterseite (#brain) – schwarzes Loch im Gargantua-Stil, Wissens-Netz aus echten Daten (Journal, Sessions, Strategien, Notizen, Märkte, Funded, Briefings, Handbuch, Pass), Home-Glas-Dashboard, Pages, Suche; Klick aufs Loch/„Terminal öffnen“ = Eintauchen ins Terminal.
+- Glas-Design (`data-glass` am html, Standard an, `elr.glass` = '0' schaltet aus): halbtransparente Flächen + backdrop-filter über einem weichgezeichneten Bild des schwarzen Lochs (wird im Browser erzeugt).
 - Deploy: `beta/index.html` = Testversion. Nach OK: src/site/index.html ins Wurzelverzeichnis kopieren, sw.js-Cache-Version erhöhen.
 
 ## Daten

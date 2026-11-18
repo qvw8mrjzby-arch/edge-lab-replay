@@ -94,6 +94,9 @@ const UI = {
     /* Deep-Link ins Handbuch: #handbuch-<kapitel oder abschnitt> (nur Buchstaben, Ziffern, Bindestrich) */
     const m = v.match(/^handbuch-([A-Za-z0-9-]{1,60})$/);
     if (m) { v = 'handbuch'; sub = m[1].toLowerCase(); }
+    if (v === 'brain' && typeof Space !== 'undefined') { if (!this._routed) this.showView('markt'); this._routed = true; Space.show(App.view || 'markt'); return; }
+    this._routed = true;
+    if (typeof Space !== 'undefined' && Space.open && !Space.leaving) Space.close();
     if (!VIEWS.includes(v)) v = 'start';
     this.showView(v, sub);
   },

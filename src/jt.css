@@ -159,3 +159,72 @@
 #btnJarvis:hover{background:color-mix(in srgb,#f2c14e 20%,var(--panel2))}
 @media (max-width:860px){#btnJarvis .jl{display:none}#btnJarvis{padding:0 9px}}
 .btn.jt-gold{background:linear-gradient(135deg,#d9a531,#f5d27a);border-color:transparent;color:#251a03;font-weight:600}
+/* ---------- Second Brain (Startszene) ---------- */
+.jt-space{position:fixed;inset:0;z-index:95;background:#020306;color:#fff;font-family:var(--f-ui);overflow:hidden;transition:opacity .5s ease}
+.jt-space[hidden]{display:none}
+.jt-space.out{opacity:0}
+.jt-space canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+.jt-space .bs-head{position:absolute;left:max(22px,env(safe-area-inset-left));top:max(18px,env(safe-area-inset-top));display:grid;line-height:1.25;pointer-events:none}
+.jt-space .bs-head b{font-size:13px;font-weight:600}
+.jt-space .bs-head small{font-size:11px;color:rgba(255,255,255,.45)}
+.jt-space .bs-greet{position:absolute;left:max(22px,env(safe-area-inset-left));top:calc(max(18px,env(safe-area-inset-top)) + 46px);width:min(360px,40vw);pointer-events:none;transition:opacity .4s}
+.jt-space .bs-greet h1{margin:0 0 10px;font:600 clamp(19px,2vw,24px)/1.2 var(--f-ui);letter-spacing:-.01em}
+.jt-space .bs-greet p{margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.72);-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+.jt-space.entering .bs-greet,.jt-space.entering .bs-dock,.jt-space.entering .bs-pill{opacity:0;transition:opacity .3s}
+.bs-pill{position:absolute;top:max(18px,env(safe-area-inset-top));height:34px;padding:0 16px;border-radius:99px;border:1px solid rgba(255,255,255,.12);background:rgba(28,30,38,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff;font:500 13px var(--f-ui);cursor:pointer}
+.bs-pill:hover{background:rgba(48,50,60,.7)}
+.bs-home{left:50%;transform:translateX(-50%)}
+.bs-pagesbtn{right:max(22px,env(safe-area-inset-right))}
+.bs-dock{position:absolute;left:50%;transform:translateX(-50%);bottom:max(18px,env(safe-area-inset-bottom));display:flex;gap:4px;padding:5px;border-radius:99px;border:1px solid rgba(255,255,255,.1);background:rgba(24,26,34,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.bs-dock button{min-width:38px;height:36px;border:0;border-radius:99px;background:none;color:rgba(255,255,255,.75);font:500 15px var(--f-ui);cursor:pointer}
+.bs-dock button:hover{background:rgba(255,255,255,.08);color:#fff}
+.bs-dock .bs-go{padding:0 16px;font-size:13px;font-weight:600;color:#1d1405;background:linear-gradient(135deg,#e9b949,#ffe3a1)}
+.bs-dock .bs-go:hover{background:linear-gradient(135deg,#f2c45a,#fff0c4);color:#1d1405}
+.bs-panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(980px,calc(100vw - 32px));max-height:calc(100dvh - 150px);overflow:auto;padding:18px;border-radius:22px;border:1px solid rgba(255,255,255,.12);background:rgba(16,17,22,.62);backdrop-filter:blur(28px) saturate(150%);-webkit-backdrop-filter:blur(28px) saturate(150%);box-shadow:0 40px 120px -30px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.08);animation:bsIn .35s ease}
+@keyframes bsIn{from{opacity:0;transform:translate(-50%,-47%) scale(.98)}}
+.bs-panel[hidden]{display:none}
+.bs-ph{display:flex;align-items:center;gap:10px;margin-bottom:12px}.bs-ph b{font-size:16px}.bs-ph .sp{flex:1}
+.bs-x{width:34px;height:34px;border-radius:99px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;cursor:pointer}
+.bs-search input{width:100%;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;padding:0 14px;font:15px var(--f-ui)}
+.bs-search #bsRes{display:grid;gap:2px;margin-top:6px}
+.bs-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+.bs-stat{position:relative;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.035);display:grid;gap:2px;overflow:hidden}
+.bs-stat b{font:600 26px/1.1 var(--f-ui)}.bs-stat span{font-size:13px;color:rgba(255,255,255,.85)}.bs-stat small{font-size:11.5px;color:rgba(255,255,255,.45)}
+.bs-stat.o{border-color:rgba(240,138,60,.55)}.bs-stat.g{border-color:rgba(47,207,159,.5)}.bs-stat.b{border-color:rgba(79,140,255,.55)}.bs-stat.p{border-color:rgba(162,107,255,.55)}
+.bs-tag{font-size:11px;padding:2px 7px;border-radius:6px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.8)}
+.bs-stat.o .bs-tag{color:#f6a76b;background:rgba(240,138,60,.15)}.bs-stat.g .bs-tag{color:#6ee0bd;background:rgba(47,207,159,.14)}.bs-stat.p .bs-tag{color:#c4a2ff;background:rgba(162,107,255,.16)}
+.bs-bars{display:flex;align-items:flex-end;gap:3px;height:28px;margin-top:8px}.bs-bars i{flex:1;border-radius:3px 3px 0 0;opacity:.9}
+.bs-grid3{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:12px}.bs-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.bs-box{padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);display:grid;gap:6px;align-content:start;min-width:0}
+.bs-box h4{margin:0;font:600 14px var(--f-ui);display:flex;align-items:center;gap:8px}.bs-box h4 i{width:8px;height:8px;border-radius:50%}
+.bs-box h5{margin:0 0 4px;font:600 11px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.bs-box>small{color:rgba(255,255,255,.45);font-size:11.5px}
+.bs-col{display:flex;align-items:flex-end;gap:3px;height:120px;margin-top:6px;border-bottom:1px solid rgba(255,255,255,.08)}.bs-col i{flex:1;border-radius:2px 2px 0 0;background:linear-gradient(#b48cff,#7c4dff)}
+.bs-row{position:relative;display:flex;justify-content:space-between;gap:8px;padding:6px 0 10px;border:0;background:none;color:#fff;font:13px var(--f-ui);cursor:pointer;text-align:left}
+.bs-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bs-row em{position:absolute;left:0;bottom:3px;height:3px;border-radius:3px}
+.bs-li{display:grid;gap:1px;text-align:left;padding:8px 6px;border:0;border-radius:8px;background:none;color:#fff;font:13px var(--f-ui);cursor:pointer}
+.bs-li:hover,.bs-row:hover{background:rgba(255,255,255,.05)}.bs-li small{color:rgba(255,255,255,.45);font-size:11.5px}
+.bs-empty{margin:4px 0;color:rgba(255,255,255,.45);font-size:12.5px}
+.bs-pages{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.bs-pages h6{margin:0 0 6px;font:600 11px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.bs-pages button{display:block;width:100%;text-align:left;padding:9px 10px;margin-bottom:4px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#fff;font:13.5px var(--f-ui);cursor:pointer}
+.bs-pages button:hover{background:rgba(255,255,255,.1)}
+.jt-space .up{color:#2fcf9f}.jt-space .dn{color:#ef5d78}
+@media (max-width:860px){.bs-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.bs-grid3,.bs-grid2{grid-template-columns:minmax(0,1fr)}.bs-pages{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .jt-space .bs-greet{width:auto;right:22px;top:auto;bottom:calc(max(18px,env(safe-area-inset-bottom)) + 58px)}.jt-space .bs-greet p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .bs-home{left:auto;right:calc(max(22px,env(safe-area-inset-right)) + 82px);transform:none}.bs-dock .bs-go{padding:0 12px}}
+body.brain-open{overflow:hidden}
+
+/* ---------- Glas-Design für das ganze Terminal ---------- */
+:root[data-glass]{--bg:rgba(6,9,18,.70);--panel:rgba(20,24,40,.46);--panel2:rgba(36,42,66,.42);--raise:rgba(255,255,255,.10);--line:rgba(255,255,255,.11);--grid:rgba(255,255,255,.06)}
+:root[data-glass] body{background:#04050a var(--glass-img,radial-gradient(ellipse at 50% 46%,rgba(255,190,110,.22),transparent 40%)) center/cover no-repeat fixed}
+:root[data-glass] body::before{background:transparent}
+:root[data-glass] :is(.card,.kpis,.resume-card,.an-hero,.strat-card,.dlg,.more-menu,.pop,#indMenu,#chartBar,#replayBar,nav#tools,aside.side,#mAct,.jt .card,.jt .chartbox,.jt .tile,.jt.jt-bar,#jtmodal .box,.pass-hero,.shop-grid>*){-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 18px 50px -26px rgba(0,0,0,.75)}
+:root[data-glass] .jt .card,:root[data-glass] .jt .chartbox,:root[data-glass] .jt .tile{border-color:rgba(255,255,255,.12)}
+:root[data-glass] .jt .kpi,:root[data-glass] .jt .news article,:root[data-glass] .jt .pos,:root[data-glass] .jt input,:root[data-glass] .jt select,:root[data-glass] .jt textarea{background:rgba(255,255,255,.045)}
+:root[data-glass] #jtmodal .box{background:rgba(16,18,28,.72)}
+:root[data-glass] .modal{background:rgba(2,4,10,.45)}
+@media (min-width:861px) and (min-height:501px){:root[data-glass] header.top{background:rgba(10,12,22,.42);-webkit-backdrop-filter:blur(26px) saturate(160%);backdrop-filter:blur(26px) saturate(160%);border-right-color:rgba(255,255,255,.09)}}
+@media (max-width:860px){:root[data-glass] header.top{background:rgba(10,12,22,.62)}:root[data-glass] #mainNav{background:rgba(10,12,22,.55);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%)}}
+header.top .brand{cursor:pointer}
+:root[data-glass] .jt .chartbox{background:rgba(10,13,24,.84)}
+.bs-dock button{white-space:nowrap}

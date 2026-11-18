@@ -113,6 +113,9 @@
   };
   J.decorate = v => { try { D[v] && D[v](); } catch (e) { console.warn('Jarvis-Einbau', e); } };
   J.initHooks = () => {
+    /* Glas-Design (Standard an) und Second Brain beim Öffnen ohne Unterseite */
+    if (typeof Space !== 'undefined') { if (Space.glassOn()) Space.setGlass(true); if (!location.hash || location.hash === '#') history.replaceState(null, '', '#brain'); }
+    document.querySelector('header.top .brand')?.addEventListener('click', () => { location.hash = '#brain'; });
     const f = document.querySelector('#tradeModal .dlg-f');
     if (f && !document.getElementById('tdJarvis')) { const b = document.createElement('button'); b.className = 'btn jt-gold'; b.id = 'tdJarvis'; b.type = 'button'; b.textContent = 'Jarvis bewerten'; b.onclick = () => reviewTrade(UI._trade); const show = document.getElementById('tdShow'); show ? f.insertBefore(b, show) : f.append(b); }
     D.charts();
