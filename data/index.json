@@ -1,6 +1,6 @@
 {
- "updated": "2026-11-19T20:40:26.989Z",
- "refreshed": "2026-11-19T02:36:03.589Z",
+ "updated": "2026-11-20T02:21:08.852Z",
+ "refreshed": "2026-11-20T02:21:08.852Z",
  "source": "Dukascopy Bank SA, Bid-Kurse, 1 Minute",
  "format": "t,o,h,l,c,v (t = Unix-Sekunden UTC)",
  "instruments": [
