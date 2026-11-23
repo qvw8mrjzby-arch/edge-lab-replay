@@ -1581,7 +1581,7 @@ body.jv-full #view-copilot .jt{max-width:1240px}
   border-color: rgba(255,255,255,.10);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.08), inset 0 0 0 .5px rgba(255,255,255,.03), 0 20px 50px -28px rgba(0,0,0,.8);
 }
-:root[data-glass] .sess, :root[data-glass] .welcome { -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); }
+:root[data-glass] .sess, :root[data-glass] .welcome, :root[data-glass] .dz-tile { -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); }
 
 /* ---------- Bedienelemente: weichere Knöpfe, iOS-Segmente, runde Felder ---------- */
 .btn { border-radius: 9px; }
@@ -1706,13 +1706,15 @@ body.jv-full #view-copilot .jt{max-width:1240px}
   :root { --a-card: 16px; }
 }
 
+:root[data-glass] .dz-tile { background: var(--panel); border-color: rgba(255,255,255,.10); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 20px 50px -28px rgba(0,0,0,.8); }
+
 /* ==========================================================================
    Helles Apple-Design (Standard seit 23.11.2026). Aus: Einstellungen → „Helles Design“
    (localStorage elr.light = '0'), dann gilt wieder das dunkle Glas-Design mit den Shop-Designs.
    ========================================================================== */
 :root[data-light] {
   color-scheme: light;
-  --bg: #f5f5f7; --panel: #ffffff; --panel2: #f4f4f7; --raise: #ebebf0; --line: #e2e2e7; --grid: #efeff3;
+  --bg: rgba(248,248,251,.9); --panel: rgba(255,255,255,.62); --panel2: #f4f4f7; --raise: #ebebf0; --line: #e2e2e7; --grid: #efeff3;
   --text: #1d1d1f; --muted: #6e6e73; --faint: #a1a1a6;
   --vwap: #c98a12; --band: #b8862e; --accent: #0071e3; --accent-ink: #ffffff;
   --info: #0a84ff; --warn: #d9730d; --ema1: #8b5cf6; --ema2: #0e9bb5; --ema3: #e0457b; --ema4: #636366;
@@ -1725,20 +1727,26 @@ body.jv-full #view-copilot .jt{max-width:1240px}
 
 /* Fläche: weiches Weiß mit einem Hauch Farbe, wie ein macOS-Hintergrund */
 :root[data-light] body {
-  background: #f5f5f7 radial-gradient(60% 50% at 12% 0%, rgba(0,113,227,.07), transparent 60%) fixed,
-              radial-gradient(50% 45% at 100% 100%, rgba(175,82,222,.06), transparent 60%) fixed;
-  background-color: #f5f5f7;
+  background-color: #eef0f6;
+  background-image:
+    radial-gradient(42% 46% at 8% 6%, rgba(10,132,255,.30), transparent 70%),
+    radial-gradient(38% 42% at 92% 10%, rgba(191,90,242,.24), transparent 70%),
+    radial-gradient(46% 50% at 85% 92%, rgba(255,159,10,.20), transparent 70%),
+    radial-gradient(44% 48% at 12% 90%, rgba(48,209,88,.18), transparent 70%),
+    radial-gradient(60% 60% at 50% 50%, rgba(255,255,255,.65), transparent 80%);
+  background-attachment: fixed;
 }
-:root[data-light] body::before { background: rgba(245,245,247,.9); }
+:root[data-light] body::before { background: transparent; }
 
-/* Karten: reines Weiß, fast unsichtbare Kante, weicher Schatten */
-:root[data-light] :is(.card, .kpis, .strat-card, .welcome, .sess, .jt .card, .jt .tile, .jt .chartbox, .pass-hero, .an-hero, .empty-state, .hero, .dz-tile) {
-  background: #fff; border-color: rgba(0,0,0,.06);
-  box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 28px -12px rgba(0,0,0,.10);
+/* Karten: helles Milchglas – halbtransparentes Weiß, Weichzeichner, weiße Lichtkante */
+:root[data-light] :is(.card, .kpis, .strat-card, .welcome, .sess, .jt .card, .jt .tile, .jt .chartbox, .pass-hero, .an-hero, .empty-state, .hero, .dz-tile, table.jt, .page table.tbl) {
+  background: rgba(255,255,255,.58); border-color: rgba(255,255,255,.75);
+  -webkit-backdrop-filter: blur(26px) saturate(180%); backdrop-filter: blur(26px) saturate(180%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 1px 2px rgba(0,0,0,.04), 0 12px 32px -14px rgba(31,38,80,.18);
 }
-:root[data-light] .jt .card.glass { background: #fff; }
+:root[data-light] .jt .card.glass { background: rgba(255,255,255,.58); }
 :root[data-light] .kpis { background: rgba(0,0,0,.06); }
-:root[data-light] :is(.jt .kpi, .jt .news article, .jt .pos, .si, .sr-item, .steps > *) { background: #f7f7f9; border-color: rgba(0,0,0,.06); }
+:root[data-light] :is(.jt .kpi, .jt .news article, .jt .pos, .si, .sr-item, .steps > *) { background: rgba(255,255,255,.55); border-color: rgba(255,255,255,.8); box-shadow: inset 0 1px 0 rgba(255,255,255,.9); }
 :root[data-light] .resume-card { background: color-mix(in srgb, var(--accent) 6%, #fff); }
 
 /* Kopf, Seitenleiste, Tabs: helles Milchglas */
@@ -1792,13 +1800,13 @@ body.jv-full #view-copilot .jt{max-width:1240px}
 /* Dialoge, Menüs, Hinweise */
 :root[data-light] .modal { background: rgba(0,0,0,.25); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 :root[data-light] #jtmodal .bg { background: rgba(0,0,0,.25); }
-:root[data-light] :is(.dlg, #jtmodal .box, .pop, .more-menu, #indMenu) { background: rgba(255,255,255,.96); border-color: rgba(0,0,0,.08); }
-:root[data-light] :is(.dlg-h, .dlg-f) { background: rgba(255,255,255,.92); }
-:root[data-light] .toast { background: rgba(255,255,255,.95); border-color: rgba(0,0,0,.08); }
+:root[data-light] :is(.dlg, #jtmodal .box, .pop, .more-menu, #indMenu) { background: rgba(255,255,255,.78); -webkit-backdrop-filter: blur(30px) saturate(180%); backdrop-filter: blur(30px) saturate(180%); border-color: rgba(0,0,0,.08); }
+:root[data-light] :is(.dlg-h, .dlg-f) { background: rgba(255,255,255,.7); }
+:root[data-light] .toast { background: rgba(255,255,255,.8); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border-color: rgba(0,0,0,.08); }
 
 /* Charts-Bereich */
-:root[data-light] :is(#chartBar, #replayBar, nav#tools, aside.side, #mAct) { background: rgba(255,255,255,.82); }
-:root[data-light] .jt .chartbox { background: #fff; }
+:root[data-light] :is(#chartBar, #replayBar, nav#tools, aside.side, #mAct) { background: rgba(255,255,255,.6); -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%); }
+:root[data-light] .jt .chartbox { background: rgba(255,255,255,.82); }
 
 /* Hover im hellen Modus (statt weißer Lichtkanten: dunkle, ganz zarte) */
 @media (hover: hover) and (pointer: fine) {
@@ -1858,10 +1866,27 @@ body.jv-full #view-copilot .jt{max-width:1240px}
 @media (max-width: 860px) { .dz-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .dz-tile { padding: 14px; } .dz-tile b { font-size: 21px; } }
 
 /* Journal-Tabelle (table.jt) als weiße Karte mit zarten Linien */
-:root[data-light] table.jt, :root[data-light] .page table.tbl { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 28px -12px rgba(0,0,0,.10); }
+:root[data-light] table.jt, :root[data-light] .page table.tbl { border-radius: 16px; overflow: hidden; }
 :root[data-light] .jt td { border-bottom-color: rgba(0,0,0,.06); }
-:root[data-light] .jt th { background: #fff; border-bottom-color: rgba(0,0,0,.08); }
+:root[data-light] .jt th { background: rgba(255,255,255,.7); border-bottom-color: rgba(0,0,0,.08); }
 :root[data-light] .jt tr.jrow:hover td, :root[data-light] .jt tr.click:hover td { background: #f5f8fe; }
+
+/* Kopf etwas transparenter, damit der Hintergrund durchscheint */
+:root[data-light] body.jv-tabs #jvTabs { background: rgba(255,255,255,.55); }
+@media (min-width: 861px) and (min-height: 501px) { :root[data-light] header.top { background: rgba(255,255,255,.45); } }
+
+/* ---------- Hell/Dunkel-Schalter oben in der Leiste ---------- */
+.jvt-mode { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 99px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.07); color: #f5d27a; cursor: pointer; padding: 0;
+  transition: transform var(--t-med, .2s) var(--a-spring, ease), background-color .2s ease; }
+.jvt-mode svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.jvt-mode .mo-moon { display: none; }
+.jvt-mode:hover { background: rgba(255,255,255,.14); transform: rotate(-12deg) scale(1.06); }
+.jvt-mode:active { transform: scale(.92); }
+:root[data-light] .jvt-mode { color: #3a3a6e; border-color: rgba(0,0,0,.08); background: rgba(255,255,255,.7); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+:root[data-light] .jvt-mode:hover { background: #fff; }
+:root[data-light] .jvt-mode .mo-sun { display: none; }
+:root[data-light] .jvt-mode .mo-moon { display: block; }
+html.mode-anim, html.mode-anim * { transition: background-color .35s ease, border-color .35s ease, color .35s ease, box-shadow .35s ease !important; }
 </style>
 </head>
 <body>
@@ -2317,7 +2342,7 @@ body.jv-full #view-copilot .jt{max-width:1240px}
         </div>
         <p class="hint">Werden Stop und Ziel in derselben Basis-Kerze berührt, weiß niemand, was zuerst kam. „Konservativ“ rechnet mit dem schlechteren Fall – so überschätzt du deine Strategie nicht. Mit 1-Minuten-Daten passiert das selten.</p>
         <label class="ck"><input type="checkbox" data-s="photos"> Automatische Chart-Fotos bei Einstieg und Ausstieg</label>
-        <label class="ck"><input type="checkbox" id="setLight"> Helles Design (Apple-Look) – aus = dunkles Glas-Design</label>
+        <label class="ck"><input type="checkbox" id="setLight"> Helles Design (Glas) – aus = Dunkel-Modus (Glas). Schnell umschalten: Sonne/Mond oben rechts</label>
       </fieldset>
       </div>
       <div class="tabpanel" role="tabpanel" data-panel="kosten" hidden>
@@ -11396,7 +11421,7 @@ V.copilot = el => {
     /* Jarvis als Hülle: Tabs oben (Second Brain · Jarvis · Trading Terminal) */
     if (!document.getElementById('jvTabs')) {
       const t = document.createElement('div'); t.id = 'jvTabs'; t.setAttribute('role', 'tablist'); t.setAttribute('aria-label', 'Jarvis');
-      t.innerHTML = `<div class="jvt-brand"><canvas></canvas><b>JARVIS</b></div><div class="jvt-tabs"><a href="#start" data-tab="dash" role="tab">Dashboard</a><a href="#charts" data-tab="term" role="tab" id="jvtTerm">Trading Terminal</a><a href="#copilot" data-tab="jarvis" role="tab">Jarvis</a><a href="#brain" data-tab="brain" role="tab" class="jvt-minor">Universum</a></div><div class="jvt-right"><span id="jvtClock"></span></div>`;
+      t.innerHTML = `<div class="jvt-brand"><canvas></canvas><b>JARVIS</b></div><div class="jvt-tabs"><a href="#start" data-tab="dash" role="tab">Dashboard</a><a href="#charts" data-tab="term" role="tab" id="jvtTerm">Trading Terminal</a><a href="#copilot" data-tab="jarvis" role="tab">Jarvis</a><a href="#brain" data-tab="brain" role="tab" class="jvt-minor">Universum</a></div><button type="button" class="jvt-mode" id="jvMode" title="Hell / Dunkel umschalten" aria-label="Hell oder Dunkel umschalten"><svg class="mo-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="mo-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button><div class="jvt-right"><span id="jvtClock"></span></div>`;
       document.body.insertBefore(t, document.body.firstChild); document.body.classList.add('jv-tabs');
       try { Jarvis.orb(t.querySelector('canvas'), false); } catch { }
       const clock = () => { const el2 = document.getElementById('jvtClock'); if (el2) el2.textContent = new Date().toLocaleString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' }); };
@@ -12746,23 +12771,29 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
   }, { passive: true });
 })();
 
-/* Helles Design an/aus (Einstellungen → Konto & Risiko) */
-(() => {
-  const box = document.getElementById('setLight'); if (!box) return;
+/* Hell (Glas) / Dunkel (Glas): Schalter oben in der Leiste (#jvMode) und in den Einstellungen (#setLight) */
+const Mode = (() => {
   const on = () => { try { return localStorage.getItem('elr.light') !== '0'; } catch { return true; } };
-  const sync = () => { box.checked = on(); };
-  sync(); document.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('#btnSettings')) setTimeout(sync, 0); }, true);
-  box.addEventListener('change', () => {
-    try { localStorage.setItem('elr.light', box.checked ? '1' : '0'); } catch { }
+  const set = (light) => {
+    try { localStorage.setItem('elr.light', light ? '1' : '0'); } catch { }
     const root = document.documentElement;
-    if (box.checked) { root.setAttribute('data-light', ''); root.removeAttribute('data-glass'); }
-    else { root.removeAttribute('data-light'); if (typeof Space !== 'undefined' && Space.glassOn()) Space.setGlass(true); }
+    root.classList.add('mode-anim'); setTimeout(() => root.classList.remove('mode-anim'), 450);
+    if (light) { root.setAttribute('data-light', ''); root.removeAttribute('data-glass'); }
+    else { root.removeAttribute('data-light'); if (typeof Space !== 'undefined') Space.setGlass(true); else root.setAttribute('data-glass', ''); }
+    const box = document.getElementById('setLight'); if (box) box.checked = light;
+    const mt = document.querySelector('meta[name="theme-color"]'); if (mt) mt.content = light ? '#eef0f6' : '#080d19';
     try { readColors(); App.requestRender(); if (App.view === 'start') App.renderStart(); } catch { }
-  });
+  };
+  document.addEventListener('click', (e) => {
+    if (e.target.closest && e.target.closest('#jvMode')) { set(!on()); if (typeof App !== 'undefined' && App.toast) App.toast(on() ? 'Hell (Glas)' : 'Dunkel (Glas)'); }
+    if (e.target.closest && e.target.closest('#btnSettings')) setTimeout(() => { const b = document.getElementById('setLight'); if (b) b.checked = on(); }, 0);
+  }, true);
+  document.addEventListener('change', (e) => { if (e.target && e.target.id === 'setLight') set(e.target.checked); });
+  return { on, set };
 })();
 
 
-Object.assign(window, {$, $$, APP_VERSION, Analysis, App, Archive, Binance, COL, CRYPTO_START, Chart, DEFAULTS, Dash, EMPTY_ART, FONT_MONO, FONT_UI, GLOSSARY, Gallery, Guard, HB, HBFig, HB_GLOSSAR, HB_SHOW, Handbook, IDB, Install, JT_VIEWS, Lightbox, Loader, MIN_BAR_W, MISTAKES, MORE_VIEWS, NewSess, Onboard, Pass, PassCore, Photos, RIGHT_PAD_BARS, SESS_FLAGS, SEV_LBL, Sheet, Shop, ShopCore, Start, Store, TV, TW, Tips, UI, Update, VIEWS, WD, alpha, bindTabs, closeModal, deepMerge, emptyState, esc, fmtVol, freshDefaults, getPath, hbBox, hbBtns, hbL, hbSetup, lastFocus, localMinute, openModal, raf2, readColors, selectTab, sessionFlagBits, setBusy, setPath, skeleton, store, syncModalState, textW});
+Object.assign(window, {$, $$, APP_VERSION, Analysis, App, Archive, Binance, COL, CRYPTO_START, Chart, DEFAULTS, Dash, EMPTY_ART, FONT_MONO, FONT_UI, GLOSSARY, Gallery, Guard, HB, HBFig, HB_GLOSSAR, HB_SHOW, Handbook, IDB, Install, JT_VIEWS, Lightbox, Loader, MIN_BAR_W, MISTAKES, MORE_VIEWS, Mode, NewSess, Onboard, Pass, PassCore, Photos, RIGHT_PAD_BARS, SESS_FLAGS, SEV_LBL, Sheet, Shop, ShopCore, Start, Store, TV, TW, Tips, UI, Update, VIEWS, WD, alpha, bindTabs, closeModal, deepMerge, emptyState, esc, fmtVol, freshDefaults, getPath, hbBox, hbBtns, hbL, hbSetup, lastFocus, localMinute, openModal, raf2, readColors, selectTab, sessionFlagBits, setBusy, setPath, skeleton, store, syncModalState, textW});
 </script>
 <script>
 if ('serviceWorker' in navigator && location.protocol === 'https:') addEventListener('load', () => {

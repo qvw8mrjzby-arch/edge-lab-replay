@@ -52,7 +52,7 @@
   border-color: rgba(255,255,255,.10);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.08), inset 0 0 0 .5px rgba(255,255,255,.03), 0 20px 50px -28px rgba(0,0,0,.8);
 }
-:root[data-glass] .sess, :root[data-glass] .welcome { -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); }
+:root[data-glass] .sess, :root[data-glass] .welcome, :root[data-glass] .dz-tile { -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); }
 
 /* ---------- Bedienelemente: weichere Knöpfe, iOS-Segmente, runde Felder ---------- */
 .btn { border-radius: 9px; }
@@ -176,3 +176,5 @@
   .page-h h1, .st-head h1 { font-size: 24px; }
   :root { --a-card: 16px; }
 }
+
+:root[data-glass] .dz-tile { background: var(--panel); border-color: rgba(255,255,255,.10); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 20px 50px -28px rgba(0,0,0,.8); }

@@ -38,6 +38,7 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Helles Design ist Standard: `src/light.css` (alles unter `:root[data-light]`), gesetzt in `J.initHooks` (jt-hooks.js) aus `elr.light` (≠ '0'). Umschalter: Einstellungen → Konto & Risiko → „Helles Design“ (apple.js); aus = dunkles Glas-Design wie vorher, Shop-Designs wirken nur dort, gekaufte Kerzenfarben (data-candles) auch im hellen Modus.
 - Start ohne # ist jetzt das Dashboard (#start) statt des schwarzen Lochs. Tabs oben: Dashboard · Trading Terminal · Jarvis · Universum (Second Brain, jetzt Nebensache; in der Seitenleiste ganz unten).
 - Dashboard (`src/dash.js`, hängt sich an App.renderStart): Begrüßung, 6 Kacheln (Trades, Sessions, Strategien, Notizen & Briefings, Pass, Funded) mit 8-Wochen-Verlauf, Aktivität 30 Tage, „Zuletzt gemacht“ (Zeit = wann du gehandelt hast, nicht Replay-Zeit); darunter die bisherigen Kennzahlen/Kontokurve/Sessions.
+- Hell = helles Milchglas über farbigem, weichem Hintergrund; Dunkel = bisheriges Glas-Design. Schnellschalter Sonne/Mond oben in der Jarvis-Leiste (#jvMode, Logik `Mode` in apple.js), zusätzlich in den Einstellungen.
 - Achtung: backdrop-filter auf header.top nur ab Tablet – auf dem Handy liegt #mainNav (position fixed) im Kopf und würde sonst nach oben springen.
 
 ## Daten

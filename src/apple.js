@@ -19,17 +19,23 @@
   }, { passive: true });
 })();
 
-/* Helles Design an/aus (Einstellungen → Konto & Risiko) */
-(() => {
-  const box = document.getElementById('setLight'); if (!box) return;
+/* Hell (Glas) / Dunkel (Glas): Schalter oben in der Leiste (#jvMode) und in den Einstellungen (#setLight) */
+const Mode = (() => {
   const on = () => { try { return localStorage.getItem('elr.light') !== '0'; } catch { return true; } };
-  const sync = () => { box.checked = on(); };
-  sync(); document.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('#btnSettings')) setTimeout(sync, 0); }, true);
-  box.addEventListener('change', () => {
-    try { localStorage.setItem('elr.light', box.checked ? '1' : '0'); } catch { }
+  const set = (light) => {
+    try { localStorage.setItem('elr.light', light ? '1' : '0'); } catch { }
     const root = document.documentElement;
-    if (box.checked) { root.setAttribute('data-light', ''); root.removeAttribute('data-glass'); }
-    else { root.removeAttribute('data-light'); if (typeof Space !== 'undefined' && Space.glassOn()) Space.setGlass(true); }
+    root.classList.add('mode-anim'); setTimeout(() => root.classList.remove('mode-anim'), 450);
+    if (light) { root.setAttribute('data-light', ''); root.removeAttribute('data-glass'); }
+    else { root.removeAttribute('data-light'); if (typeof Space !== 'undefined') Space.setGlass(true); else root.setAttribute('data-glass', ''); }
+    const box = document.getElementById('setLight'); if (box) box.checked = light;
+    const mt = document.querySelector('meta[name="theme-color"]'); if (mt) mt.content = light ? '#eef0f6' : '#080d19';
     try { readColors(); App.requestRender(); if (App.view === 'start') App.renderStart(); } catch { }
-  });
+  };
+  document.addEventListener('click', (e) => {
+    if (e.target.closest && e.target.closest('#jvMode')) { set(!on()); if (typeof App !== 'undefined' && App.toast) App.toast(on() ? 'Hell (Glas)' : 'Dunkel (Glas)'); }
+    if (e.target.closest && e.target.closest('#btnSettings')) setTimeout(() => { const b = document.getElementById('setLight'); if (b) b.checked = on(); }, 0);
+  }, true);
+  document.addEventListener('change', (e) => { if (e.target && e.target.id === 'setLight') set(e.target.checked); });
+  return { on, set };
 })();
