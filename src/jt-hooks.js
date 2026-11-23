@@ -13,6 +13,7 @@
       Jarvis.speak(t);
     } catch (e) { o.innerHTML = `<p class="note">${esc(Jarvis.err(e))}</p>`; }
   });
+  J.jvAsk = (...x) => ask(...x);
   const bar = (host, id, html) => { if (!host) return null; let el = host.querySelector('#' + id); if (el) return el; host.insertAdjacentHTML('afterbegin', `<div class="jt jt-bar" id="${id}"><span class="jt-orb" aria-hidden="true"></span>${html}</div>`); return host.querySelector('#' + id); };
   const r2 = x => (x == null || !isFinite(x)) ? null : +(+x).toFixed(2);
   const f4 = x => (x == null || !isFinite(x)) ? null : +(+x).toPrecision(7);
@@ -34,9 +35,13 @@
       nachStunde: by(t => t.entryT ? hb(t) + ' Uhr' : null), nachWochentag: by(t => t.entryT ? WD[new Date(t.entryT * 1000).getDay()] : null), nachAusstieg: by(t => t.reason), nachQuelle: by(t => t.src === 'desk' ? 'Handels-Desk' : 'Replay/Backtest'),
       regeln: by(t => t.rulesTotal ? (t.rulesOk ? 'alle Regeln erfüllt' : 'Regeln verletzt') : null),
       mfeMae: { avgMfeR: r2(mfeR.reduce((a, t) => a + t.mfeR, 0) / (mfeR.length || 1)), avgMaeR: r2(maeR.reduce((a, t) => a + t.maeR, 0) / (maeR.length || 1)), stopVerschobenAnzahl: moved },
-      ohneNotiz: T.filter(t => !(t.note || '').trim()).length, ohneStop: T.filter(t => t.sl == null).length
+      ohneNotiz: T.filter(t => !(t.note || '').trim()).length, ohneStop: T.filter(t => t.sl == null).length,
+      nachMerkmal: (() => { const m = {}; for (const t of T) for (const x of (Array.isArray(t.tags) ? t.tags : [])) (m[x] = m[x] || []).push(t); return Object.fromEntries(Object.entries(m).map(([k, L]) => { const s = TA.journalStats(L); return [k, { trades: s.n, netto: r2(s.net), trefferquote: r2(s.winRate), avgR: r2(s.avgR) }]; })); })(),
+      nachAusfuehrungSterne: by(t => t.grade ? t.grade + ' Sterne' : null),
+      bewertetProzent: T.length ? r2(T.filter(t => t.grade).length / T.length * 100) : 0
     };
   };
+  J.deepStats = deepStats;
 
   /* ---------- Charts & Replay: nur Kerzen bis zur aktuellen Replay-Kerze ---------- */
   const replayRead = () => {
@@ -67,20 +72,20 @@
   const reviewTrade = async (j) => {
     if (!j) return;
     const photos = []; try { if (typeof Photos !== 'undefined' && Photos.ok) for (const p of (await Photos.list(j.id)).slice(0, 2)) { const b64 = await toB64(p.blob); if (b64) photos.push({ mime: (p.blob && p.blob.type) || 'image/jpeg', b64 }); } } catch { }
-    const ctx = { markt: j.sym, richtung: j.side > 0 ? 'Long' : 'Short', quelle: j.src, einstieg: f4(j.entryPrice), ausstieg: f4(j.avgExit || j.exitPrice), stopStart: f4(j.sl), stopEnde: f4(j.slFinal), ziel: f4(j.tp), grund: j.reason, pnl: r2(j.pnl), r: r2(j.r), risiko: r2(j.risk), dauerMin: j.exitT && j.entryT ? Math.round((j.exitT - j.entryT) / 60) : null, maeR: r2(j.maeR), mfeR: r2(j.mfeR), geplantesR: r2(j.plannedR), regeln: j.rulesTotal ? `${j.rulesChecked || 0}/${j.rulesTotal} abgehakt` : 'keine Checkliste', notiz: j.note || '', strategie: stratRules(j.setup) || j.setup || 'keine', fotos: photos.length };
+    const ctx = { markt: j.sym, richtung: j.side > 0 ? 'Long' : 'Short', merkmale: Array.isArray(j.tags) ? j.tags : [], ausfuehrungSterne: j.grade || null, quelle: j.src, einstieg: f4(j.entryPrice), ausstieg: f4(j.avgExit || j.exitPrice), stopStart: f4(j.sl), stopEnde: f4(j.slFinal), ziel: f4(j.tp), grund: j.reason, pnl: r2(j.pnl), r: r2(j.r), risiko: r2(j.risk), dauerMin: j.exitT && j.entryT ? Math.round((j.exitT - j.entryT) / 60) : null, maeR: r2(j.maeR), mfeR: r2(j.mfeR), geplantesR: r2(j.plannedR), regeln: j.rulesTotal ? `${j.rulesChecked || 0}/${j.rulesTotal} abgehakt` : 'keine Checkliste', notiz: j.note || '', strategie: stratRules(j.setup) || j.setup || 'keine', fotos: photos.length };
     const useImg = photos.length && Jarvis.brain() === 'gemini';
     ask('Jarvis bewertet den Trade', (on) => Jarvis.think(`${Jarvis.persona()}\n\nBewerte diesen einen Trade wie ein strenger, fairer Coach – Prozess vor Ergebnis. ${useImg ? 'Die angehängten Bilder sind die Chart-Fotos bei Ein- und Ausstieg.' : ''} Struktur: ### Note für den Prozess (A–F, ein Satz warum), ### Was gut war, ### Was du anders machen solltest (konkret, mit Zahlen wie MAE/MFE und R), ### Regel für den nächsten Trade. Max. 200 Wörter.\n\nTrade (JSON): ${JSON.stringify(ctx)}`, { onText: ({ text }) => on(text), images: useImg ? photos : undefined }), photos.length ? (useImg ? `Mit ${photos.length} Chart-Foto(s).` : 'Fotos können nur mit Gemini mitgeschickt werden.') : '');
   };
   const reviewRecent = () => {
     const T = J.journal().slice().sort((a, b) => (a.exitT || 0) - (b.exitT || 0)).slice(-20);
     if (!T.length) return J.toast('Noch keine Trades im Journal.');
-    const list = T.map(j => ({ markt: j.sym, richtung: j.side > 0 ? 'L' : 'S', r: r2(j.r), pnl: r2(j.pnl), grund: j.reason, strategie: j.setup || '', stopVerschoben: j.slFinal != null && j.sl != null && j.slFinal !== j.sl, regelnOk: j.rulesTotal ? !!j.rulesOk : null, maeR: r2(j.maeR), mfeR: r2(j.mfeR), notiz: (j.note || '').slice(0, 120) }));
+    const list = T.map(j => ({ merkmale: Array.isArray(j.tags) ? j.tags : [], sterne: j.grade || null, markt: j.sym, richtung: j.side > 0 ? 'L' : 'S', r: r2(j.r), pnl: r2(j.pnl), grund: j.reason, strategie: j.setup || '', stopVerschoben: j.slFinal != null && j.sl != null && j.slFinal !== j.sl, regelnOk: j.rulesTotal ? !!j.rulesOk : null, maeR: r2(j.maeR), mfeR: r2(j.mfeR), notiz: (j.note || '').slice(0, 120) }));
     ask('Jarvis: deine letzten Trades', (on) => Jarvis.think(`${Jarvis.persona()}\n\nWerte meine letzten ${T.length} Trades aus (Prozess vor Ergebnis). Struktur: ### Muster, die sich wiederholen, ### Stärkster Trade & warum, ### Größtes Leck (mit Zahlen), ### Drei Regeln für die nächste Session, ### Eine Frage an mich. Max. 250 Wörter.\n\n${JSON.stringify(list)}`, { onText: ({ text }) => on(text) }));
   };
   /* ---------- Statistik & Analyse ---------- */
   const coach = () => {
     const T = J.journal(); if (T.length < 3) return J.toast('Für ein Coaching braucht Jarvis mindestens 3 Trades.');
-    ask('Jarvis-Coaching', (on) => Jarvis.think(`${Jarvis.persona()}\n\nDu bist mein Trading-Coach. Werte meine Journal-Statistik aus. Struktur: ### Was funktioniert (mit Zahlen), ### Größte Leaks (Strategie, Uhrzeit, Wochentag, Richtung, Ausstiege – nur was die Daten zeigen), ### Edge-Check (reicht die Stichprobe?), ### 3 konkrete Regeln für nächste Woche, ### Eine Frage an mich. Max. 280 Wörter.\n\n${JSON.stringify(deepStats(T))}`, { onText: ({ text }) => on(text) }));
+    ask('Jarvis-Coaching', (on) => Jarvis.think(`${Jarvis.persona()}\n\nDu bist mein Trading-Coach. Werte meine Journal-Statistik aus. Struktur: ### Was funktioniert (mit Zahlen), ### Größte Leaks (Strategie, Uhrzeit, Wochentag, Richtung, Ausstiege – nur was die Daten zeigen), ### Edge-Check (reicht die Stichprobe?), ### 3 konkrete Regeln für nächste Woche, ### Eine Frage an mich. Beziehe mein Tagebuch (Plan, Regeltreue, Verfassung, Lektionen) und die Merkmale (Gefühle/Fehler) ein, wenn vorhanden. Max. 280 Wörter.\n\n${JSON.stringify({ statistik: deepStats(T), tagebuch: J.diaryCtx ? J.diaryCtx(14) : [] })}`, { onText: ({ text }) => on(text) }));
   };
   const explainAnalysis = () => {
     const txt = (document.getElementById('aBody')?.innerText || '').replace(/\n{2,}/g, '\n').slice(0, 7000);

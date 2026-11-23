@@ -47,6 +47,7 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
   Suche, Long/Short, Merkmal-Filter, Kennzahlen zur aktuellen Auswahl. Trade-Fenster: Ausführung 1–5 ★ (`j.grade`), Gefühle und Ausführung/Fehler als Merkmale (`j.tags`).
   Statistik: Wochentag × Uhrzeit (Heatmap), Gefühle & Ausführung (Netto je Merkmal), Nach Bewertung. Ansicht in localStorage 'elr.jview'.
 - Dashboard: Karte „Heute“ mit Börsenzeiten (Tokio, London, New York; offen/zu + Countdown) und High/Medium-Terminen aus data/calendar.json.
+- KI (`src/jt-ai.js`, nutzt Jarvis.think wie der Copilot): Dashboard-Karte „Jarvis-Insight“ (einmal pro Tag automatisch, Cache localStorage 'jx.insight', „Neu auswerten“, „Wochenrückblick“), Journal-Knopf „KI-Auswertung“ (aktuelle Filterauswahl), Tagebuch „Plan prüfen“ / „Tag auswerten“ (Antwort im Tagebuch, „Als Lektion übernehmen“). jt-hooks.js exportiert J.deepStats (jetzt mit nachMerkmal, nachAusfuehrungSterne) und J.jvAsk; Coaching, Trade-Bewertung und „Letzte 20“ bekommen Merkmale/Sterne bzw. Tagebuch (J.diaryCtx).
 - Klassennamen-Fallen: `.short` (Nav-Labels) und `.pos` (Positionsliste) sind global belegt – eigene Klassen jx-/dz- verwenden.
 
 ## Daten
