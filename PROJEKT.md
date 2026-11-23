@@ -62,7 +62,7 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 
 ## Code
 - Quellen in `src/`: core.js (Rechenlogik, Engine, Indikatoren, Analyse-Kern), chart.js (Canvas), app.js, notes.js, start.js, data.js, photos.js, storage.js, sync.js, econ.js, analysis.js, handbook.js, ui.js, template.html.
-- Bauen: `cd src && python3 build.py` → `src/site/index.html`. Deploy: `src/site/index.html` und `src/site/sw.js` ins Repo-Wurzelverzeichnis kopieren; bei jeder Veröffentlichung die Cache-Version in sw.js erhöhen (aktuell edge-lab-replay-v12).
+- Bauen: `cd src && python3 build.py` → `src/site/index.html`. Deploy: `src/site/index.html` und `src/site/sw.js` ins Repo-Wurzelverzeichnis kopieren; bei jeder Veröffentlichung die Cache-Version in sw.js erhöhen (aktuell edge-lab-replay-v13).
 - Tests (Playwright/Chromium headless, Netz gemockt): `node test-shop.js`, `python3 test-shop.py`, `node test-core.js`, `node test-analysis.js`, `node test-sync.js`, `node test-econ.js`, `python3 test-ui.py`, `python3 test-live.py`, `python3 test-v3.py`, `python3 test-v4.py`, `python3 test-econ.py`, `python3 test-sync.py`, `python3 test-perf.py`. Bauplan-Historie: `src/SPEC-v2.md` … `SPEC-v5.md`.
 - Wichtigste Regel: kein Lookahead im Replay.
 
@@ -82,3 +82,4 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Home-Panel „Dein Leben“, Pages „Dein Leben“, Suche über alle Bereiche; Jarvis bekommt die Bereiche als Kontext (Gemini) bzw. Werkzeug `second_brain` (Claude).
 - Live auf index.html; sw.js Cache v11.
 - 23.11.2026: Apple-Look, heller Glas-Modus als Standard, Hell/Dunkel-Schalter, Dashboard als Start live auf index.html; sw.js Cache v12.
+- 23.11.2026: Journal+, Heute-Karte und KI-Auswertung live; sw.js Cache v13.
