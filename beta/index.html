@@ -1887,6 +1887,163 @@ body.jv-full #view-copilot .jt{max-width:1240px}
 :root[data-light] .jvt-mode .mo-sun { display: none; }
 :root[data-light] .jvt-mode .mo-moon { display: block; }
 html.mode-anim, html.mode-anim * { transition: background-color .35s ease, border-color .35s ease, color .35s ease, box-shadow .35s ease !important; }
+
+/* ---------- Journal+ (Ansichten, Kennzahlen, Tage, Kalender, Tagebuch, Merkmale) ---------- */
+#view-journal #jSummary { display: none; }
+.jx-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.jx-bar .seg button { padding: 6px 12px; font-size: 13px; font-weight: 600; }
+.jx-search { flex: 1 1 260px; display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); }
+.jx-search svg { width: 16px; height: 16px; flex: none; fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-linecap: round; }
+.jx-search input { flex: 1; min-width: 0; border: 0 !important; background: transparent !important; outline: none; font-size: 13.5px; padding: 0 !important; }
+.jx-search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+#jxTag { height: 36px; }
+.jx-active { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 12px; background: color-mix(in srgb, var(--accent) 10%, transparent); font-size: 13px; }
+.jx-kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.jx-kpis:empty { display: none; }
+.jx-k { display: grid; gap: 2px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel); }
+.jx-k span { font-size: 12px; color: var(--muted); }
+.jx-k b { font-size: 18px; font-weight: 700; letter-spacing: -.01em; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jx-k small { font-size: 11.5px; color: var(--faint); }
+.jx-diary .jx-kpis, .jx-diary #jfSym, .jx-diary #jfStrat, .jx-diary #jfRes, .jx-diary #jfSess, .jx-diary .jx-search, .jx-diary .jx-side, .jx-diary #jxTag { display: none; }
+
+.jx-days { display: grid; gap: 14px; }
+.jx-day { border-radius: var(--a-card, 18px); border: 1px solid var(--line); background: var(--panel); overflow: hidden; }
+.jx-day header { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.jx-day header > div { display: grid; flex: 1; min-width: 0; }
+.jx-day header b { font-size: 14.5px; font-weight: 700; }
+.jx-day header small { color: var(--muted); font-size: 12px; }
+.jx-net { font-size: 17px !important; font-variant-numeric: tabular-nums; }
+.jx-mini { display: flex; align-items: center; gap: 2px; height: 26px; }
+.jx-mini i { width: 5px; border-radius: 2px; background: var(--faint); }
+.jx-mini i.up { background: var(--bull); } .jx-mini i.dn { background: var(--bear); }
+.jx-row { display: grid; grid-template-columns: 56px 48px 120px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 10px 16px; cursor: pointer; border-top: 1px solid var(--grid); transition: background-color var(--t-fast) ease; }
+.jx-row:first-of-type { border-top: 0; }
+.jx-row:hover, .jx-row:focus-visible { background: var(--a-hl, rgba(255,255,255,.05)); }
+.jx-th { width: 56px; height: 36px; border-radius: 8px; object-fit: cover; display: block; border: 1px solid var(--line); background: var(--panel2); }
+.jx-th.none { display: grid; place-items: center; }
+.jx-th.none svg { width: 18px; height: 18px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.jx-th.d-long { background: color-mix(in srgb, var(--bull) 12%, transparent); border-color: transparent; } .jx-th.d-long svg { stroke: var(--bull); }
+.jx-th.d-short { background: color-mix(in srgb, var(--bear) 12%, transparent); border-color: transparent; } .jx-th.d-short svg { stroke: var(--bear); }
+.jx-time { font: 12.5px var(--f-mono); color: var(--muted); }
+.jx-sym { display: flex; align-items: center; gap: 8px; }
+.jx-sym b { font: 600 13px var(--f-mono); }
+.jx-dir { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 99px; }
+.jx-dir.d-long { color: var(--bull); background: color-mix(in srgb, var(--bull) 14%, transparent); }
+.jx-dir.d-short { color: var(--bear); background: color-mix(in srgb, var(--bear) 14%, transparent); }
+.jx-mid { display: grid; min-width: 0; gap: 1px; }
+.jx-mid b { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jx-mid small { color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jx-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+.jx-tags:empty { display: none; }
+.jx-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: var(--panel2); color: var(--muted); white-space: nowrap; }
+.jx-tag.good { color: var(--bull); background: color-mix(in srgb, var(--bull) 13%, transparent); }
+.jx-tag.bad { color: var(--bear); background: color-mix(in srgb, var(--bear) 12%, transparent); }
+.jx-tag.emo { color: #8b5cf6; background: rgba(139,92,246,.13); }
+.jx-stars { color: #f5a623; font-size: 11.5px; letter-spacing: 1px; } .jx-stars em { font-style: normal; color: var(--faint); opacity: .5; }
+.jx-res { display: grid; justify-items: end; font-variant-numeric: tabular-nums; }
+.jx-res b { font: 600 13.5px var(--f-mono); } .jx-res small { font: 12px var(--f-mono); }
+
+.jx-cal-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.jx-cal-h h3 { margin: 0; font-size: 17px; min-width: 150px; text-align: center; text-transform: capitalize; }
+.jx-cal-h .hspace { flex: 1; }
+.jx-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) minmax(90px, .9fr); gap: 6px; margin-top: 12px; }
+.jx-h { font-size: 11px; font-weight: 600; color: var(--faint); text-transform: uppercase; letter-spacing: .05em; padding: 0 4px; }
+.jx-c { min-height: 78px; display: grid; align-content: start; gap: 2px; text-align: left; padding: 8px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel2); color: var(--text); font: inherit; }
+.jx-c.empty { background: transparent; border-color: transparent; }
+.jx-c:disabled { opacity: .55; cursor: default; }
+.jx-c.has { cursor: pointer; transition: transform var(--t-med) var(--a-spring, ease), box-shadow var(--t-med) ease; }
+.jx-c.jp { background: color-mix(in srgb, var(--bull) calc(var(--a) * 100%), var(--panel)); border-color: color-mix(in srgb, var(--bull) 35%, transparent); }
+.jx-c.jn { background: color-mix(in srgb, var(--bear) calc(var(--a) * 100%), var(--panel)); border-color: color-mix(in srgb, var(--bear) 35%, transparent); }
+.jx-c.has:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -12px rgba(0,0,0,.5); }
+.jx-d { font-size: 12px; color: var(--muted); font-weight: 600; }
+.jx-c b { font: 700 13px var(--f-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jx-c small { font-size: 11px; color: var(--muted); }
+.jx-wk { display: grid; align-content: center; gap: 2px; padding: 8px 10px; border-radius: 12px; background: color-mix(in srgb, var(--accent) 7%, transparent); }
+.jx-wk span { font-size: 11px; color: var(--faint); } .jx-wk b { font: 700 13px var(--f-mono); } .jx-wk small { font-size: 11px; color: var(--muted); }
+
+.jx-diary-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; align-items: start; }
+.jx-dy { gap: 12px; }
+.jx-dy h4 { margin: 10px 0 0; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.jx-dy textarea { width: 100%; resize: vertical; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel2); color: var(--text); font: 14px/1.5 var(--f-ui); }
+.jx-dy textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.jx-form { display: flex; gap: 18px; flex-wrap: wrap; }
+.jx-dy .seg button { padding: 6px 12px; font-size: 13px; }
+.jx-side-col { display: grid; gap: 16px; }
+.jx-list { display: grid; gap: 2px; }
+.jx-li { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; text-align: left; padding: 8px 10px; border: 0; border-radius: 10px; background: none; color: var(--text); cursor: pointer; font: inherit; }
+.jx-li small { grid-column: 1 / -1; color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jx-li:hover { background: var(--a-hl, rgba(255,255,255,.06)); }
+.jx-li b { font: 600 13px var(--f-mono); }
+.jx-dnet { margin: 0; font: 700 22px var(--f-mono); }
+
+/* Trade-Fenster */
+.jx-psy { display: grid; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--panel2); border: 1px solid var(--line); }
+.jx-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.jx-chip { padding: 5px 11px; border-radius: 99px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); font: 600 12.5px var(--f-ui); cursor: pointer; transition: all var(--t-fast) ease; }
+.jx-chip:hover { color: var(--text); border-color: var(--faint); }
+.jx-chip[aria-pressed="true"] { color: #fff; background: var(--bear); border-color: transparent; }
+.jx-chip.good[aria-pressed="true"] { background: var(--bull); }
+.jx-psy .fld:first-child + .fld .jx-chip[aria-pressed="true"]:not(.good) { background: #8b5cf6; }
+.jx-rate { display: flex; align-items: center; gap: 2px; }
+.jx-rate button { border: 0; background: none; font-size: 24px; line-height: 1; color: var(--faint); opacity: .45; cursor: pointer; padding: 0 2px; transition: transform var(--t-fast) ease, color var(--t-fast) ease; }
+.jx-rate button[aria-pressed="true"] { color: #f5a623; opacity: 1; }
+.jx-rate button:hover { transform: scale(1.18); }
+.jx-rate small { margin-left: 8px; color: var(--muted); font-size: 12.5px; }
+
+/* Statistik-Karten */
+.jx-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 14px; margin-top: 14px; }
+.jx-wide { grid-column: 1 / -1; }
+.jx-heat { display: grid; gap: 4px; overflow-x: auto; }
+.jx-heat > span { font-size: 11px; color: var(--faint); text-align: center; align-self: center; }
+.jx-heat .jx-hd { text-align: left; font-weight: 600; color: var(--muted); }
+.jx-heat i { height: 30px; border-radius: 7px; background: var(--panel2); }
+.jx-heat i.jp { background: color-mix(in srgb, var(--bull) calc(var(--a) * 100%), transparent); }
+.jx-heat i.jn { background: color-mix(in srgb, var(--bear) calc(var(--a) * 100%), transparent); }
+.jx-heat i[title]:hover { outline: 2px solid var(--text); outline-offset: -2px; }
+.jx-bars { display: grid; gap: 8px; }
+.jx-br { display: grid; grid-template-columns: 130px minmax(0, 1fr) 92px; grid-template-areas: "t bar v" "t s s"; gap: 2px 10px; align-items: center; }
+.jx-br .jx-tag { grid-area: t; justify-self: start; } .jx-br .jx-track { grid-area: bar; } .jx-br b { grid-area: v; text-align: right; font: 600 12.5px var(--f-mono); } .jx-br small { grid-area: s; color: var(--faint); font-size: 11px; }
+.jx-track { height: 8px; border-radius: 99px; background: var(--panel2); overflow: hidden; }
+.jx-track i { display: block; height: 100%; border-radius: 99px; }
+.jx-track i.jp { background: var(--bull); } .jx-track i.jn { background: var(--bear); }
+
+@media (max-width: 1000px) { .jx-diary-wrap { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 860px) {
+  .jx-bar .jx-views { width: 100%; display: flex; } .jx-bar .jx-views button { flex: 1; }
+  .jx-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .jx-row { grid-template-columns: 44px minmax(0, 1fr) auto; grid-template-areas: "th sym res" "th mid res"; gap: 2px 10px; padding: 10px 12px; }
+  .jx-row .jx-th { grid-area: th; width: 44px; height: 44px; } .jx-row .jx-time { display: none; } .jx-row .jx-sym { grid-area: sym; } .jx-row .jx-mid { grid-area: mid; } .jx-row .jx-res { grid-area: res; }
+  .jx-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; } .jx-h:last-child { display: none; } .jx-wk { display: none; }
+  .jx-c { min-height: 54px; padding: 5px; border-radius: 8px; } .jx-c b { font-size: 10px; } .jx-c small { display: none; }
+  .jx-stats { grid-template-columns: minmax(0, 1fr); }
+  .jx-br { grid-template-columns: 110px minmax(0, 1fr) 80px; }
+}
+:root[data-light] :is(.jx-day, .jx-k, .jx-search) { background: rgba(255,255,255,.58); border-color: rgba(255,255,255,.75); -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%); box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 10px 28px -16px rgba(31,38,80,.2); }
+:root[data-light] .jx-day header { border-bottom-color: rgba(0,0,0,.06); }
+:root[data-light] .jx-row { border-top-color: rgba(0,0,0,.05); }
+:root[data-light] .jx-c:not(.has):not(.empty) { background: rgba(255,255,255,.45); border-color: rgba(255,255,255,.7); }
+:root[data-glass] :is(.jx-day, .jx-k) { -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 18px 50px -26px rgba(0,0,0,.75); }
+
+/* Dashboard: Heute (Börsenzeiten + Termine) */
+.dz-today-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 18px; }
+.dz-mkts { display: grid; gap: 8px; align-content: start; }
+.dz-ses { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--panel2); border: 1px solid var(--line); }
+.dz-ses b { font-size: 13.5px; } .dz-ses small { display: block; color: var(--muted); font-size: 12px; }
+.dz-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--faint); }
+.dz-ses.open .dz-dot { background: var(--bull); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bull) 22%, transparent); animation: dzPulse 2s ease-in-out infinite; }
+.dz-ses.open small { color: var(--bull); }
+@keyframes dzPulse { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--bull) 8%, transparent); } }
+.dz-prog { grid-column: 1 / -1; height: 4px; border-radius: 99px; background: color-mix(in srgb, var(--bull) 15%, transparent); overflow: hidden; }
+.dz-prog i { display: block; height: 100%; background: var(--bull); border-radius: 99px; }
+.dz-evl { display: grid; gap: 2px; }
+.dz-e { display: grid; grid-template-columns: 46px 10px 40px minmax(0, 1fr); grid-template-areas: "t i c n" ". . . s"; gap: 0 10px; align-items: center; padding: 7px 8px; border-radius: 10px; }
+.dz-e:hover { background: var(--a-hl, rgba(255,255,255,.05)); }
+.dz-e.past { opacity: .5; }
+.dz-e time { grid-area: t; font: 600 12.5px var(--f-mono); } .dz-imp { grid-area: i; width: 8px; height: 8px; border-radius: 50%; } .dz-imp.hi { background: var(--bear); } .dz-imp.md { background: var(--warn); }
+.dz-cc { grid-area: c; font: 600 11.5px var(--f-mono); color: var(--muted); } .dz-et { grid-area: n; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dz-e small { grid-area: s; color: var(--faint); font-size: 11.5px; }
+:root[data-light] .dz-ses { background: rgba(255,255,255,.5); border-color: rgba(255,255,255,.8); }
+@media (max-width: 860px) { .dz-today-in { grid-template-columns: minmax(0, 1fr); } }
 </style>
 </head>
 <body>
@@ -11810,13 +11967,47 @@ const Dash = (() => {
     const tl = '<section class="card dz-feed"><div class="card-h"><h3>Zuletzt gemacht</h3><a href="#journal">Journal</a></div>' +
       (feed.length ? '<div class="dz-list">' + feed.map((x) => '<button type="button" class="dz-row" data-go="' + x.go + '"><span class="dz-ic dz-' + x.k + '">' + ic(x.k) + '</span><span class="dz-m"><b>' + esc(x.txt) + '</b><small class="' + (x.cls || '') + '">' + esc(x.sub) + '</small></span><time>' + ago(x.t) + '</time></button>').join('') + '</div>'
         : '<p class="hint">Noch nichts passiert – starte eine Backtest-Session oder einen Trade im Handels-Desk. Alles, was du machst, erscheint hier.</p>') + '</section>';
-    return h + '<div class="dz-two">' + act + tl + '</div></section>';
+    return h + '<section class="card dz-today" id="dzToday"></section><div class="dz-two">' + act + tl + '</div></section>';
   }
+
+  /* ---------- Heute: Börsenzeiten mit Countdown + wichtige Termine ---------- */
+  const SESS = [
+    { k: 'asia', n: 'Asien', tz: 'Asia/Tokyo', o: [9, 0], c: [15, 0], sub: 'Tokio' },
+    { k: 'lon', n: 'London', tz: 'Europe/London', o: [8, 0], c: [16, 30], sub: 'Europa' },
+    { k: 'ny', n: 'New York', tz: 'America/New_York', o: [9, 30], c: [16, 0], sub: 'US-Aktien' }
+  ];
+  const local = (tz) => { const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour12: false, weekday: 'short', hour: '2-digit', minute: '2-digit' }).formatToParts(new Date()).map((x) => [x.type, x.value])); return { wd: p.weekday, m: (+p.hour % 24) * 60 + +p.minute }; };
+  const dur = (min) => { const h = Math.floor(min / 60), m = min % 60; return h ? h + ' Std. ' + m + ' Min.' : m + ' Min.'; };
+  function sessState(s) {
+    const L = local(s.tz), o = s.o[0] * 60 + s.o[1], c = s.c[0] * 60 + s.c[1];
+    const wknd = L.wd === 'Sat' || L.wd === 'Sun';
+    if (!wknd && L.m >= o && L.m < c) return { open: true, txt: 'offen · schließt in ' + dur(c - L.m), pct: (L.m - o) / (c - o) };
+    const W = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], wi = W.indexOf(L.wd);
+    let wait = 0;
+    for (let d = 0; d < 4; d++) { const off = d * 1440 + o - L.m, wd = (wi + d) % 7; if (off > 0 && wd !== 0 && wd !== 6) { wait = off; break; } }
+    return { open: false, txt: 'geschlossen · öffnet in ' + dur(wait), pct: 0 };
+  }
+  async function today() {
+    const box = document.getElementById('dzToday'); if (!box) return;
+    const ses = SESS.map((s) => { const st = sessState(s); return '<div class="dz-ses ' + (st.open ? 'open' : '') + '"><span class="dz-dot"></span><div><b>' + s.n + '</b><small>' + st.txt + '</small></div>' + (st.open ? '<span class="dz-prog"><i style="width:' + Math.round(st.pct * 100) + '%"></i></span>' : '') + '</div>'; }).join('');
+    let ev = '<p class="hint">Termine werden geladen …</p>';
+    box.innerHTML = '<div class="card-h"><h3>Heute</h3><span class="hint">' + new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' }) + '</span></div><div class="dz-today-in"><div class="dz-mkts">' + ses + '</div><div class="dz-ev" id="dzEv">' + ev + '</div></div>';
+    try {
+      const c = await J.getJSON('calendar.json'); const td = J.today();
+      const L = (c.events || []).filter((e) => (e.impact === 'High' || e.impact === 'Medium') && J.dayOf(Date.parse(e.date) / 1000) === td).sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+      const t0 = Date.now();
+      ev = L.length ? '<div class="dz-evl">' + L.slice(0, 6).map((e) => { const t = Date.parse(e.date), past = t < t0; return '<div class="dz-e' + (past ? ' past' : '') + '"><time>' + new Date(t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' }) + '</time><span class="dz-imp ' + (e.impact === 'High' ? 'hi' : 'md') + '" title="' + (e.impact === 'High' ? 'Hohe' : 'Mittlere') + ' Wirkung"></span><span class="dz-cc">' + esc(e.country) + '</span><span class="dz-et">' + esc(e.title) + '</span><small>' + (e.forecast ? 'Prognose ' + esc(e.forecast) : '') + (e.previous ? ' · vorher ' + esc(e.previous) : '') + '</small></div>'; }).join('') + '</div>' + (L.length > 6 ? '<a class="hint" href="#makro">+' + (L.length - 6) + ' weitere in Makroökonomie</a>' : '')
+        : '<p class="hint">Heute keine wichtigen Wirtschaftstermine. Ruhiger Tag für Backtesting.</p>';
+    } catch { ev = '<p class="hint">Wirtschaftstermine sind gerade nicht erreichbar.</p>'; }
+    const evb = document.getElementById('dzEv'); if (evb) evb.innerHTML = ev;
+  }
+  setInterval(() => { if (typeof App !== 'undefined' && App.view === 'start' && document.getElementById('dzToday')) today(); }, 60000);
 
   function render() {
     const body = document.getElementById('stBody'); if (!body) return;
     const old = body.querySelector('.dz'); if (old) old.remove();
     body.insertAdjacentHTML('afterbegin', html());
+    today();
     body.querySelectorAll('.dz [data-go]').forEach((b) => b.addEventListener('click', () => { location.hash = '#' + b.dataset.go; }));
     const name = (typeof J !== 'undefined' && J.S && J.S.settings && J.S.settings.name) || '';
     const h = new Date().getHours(), greet = h < 11 ? 'Guten Morgen' : h < 18 ? 'Hallo' : 'Guten Abend';
@@ -12750,6 +12941,255 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
   window.addEventListener('wheel', (e) => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
 })();
 
+/* Journal+ (Nov 2026): Kennzahlen zur Auswahl, Ansichten Tage/Tabelle/Kalender/Tagebuch, Suche, Long/Short,
+   Emotionen, Fehler & Bewertung je Trade, Tagebuch (Plan & Rückblick) und neue Statistik-Karten. */
+'use strict';
+const JX = (() => {
+  const EMO = ['Ruhig', 'Selbstsicher', 'Geduldig', 'Ungeduldig', 'FOMO', 'Angst', 'Gier', 'Rache', 'Müde', 'Gelangweilt'];
+  const EXEC = ['Nach Plan', 'Zu früh rein', 'Zu spät rein', 'Zu früh raus', 'Zu lange gehalten', 'Stop verschoben', 'Gegen den Plan', 'Zu groß', 'Kein Setup', 'Overtrading'];
+  const GOOD = new Set(['Ruhig', 'Selbstsicher', 'Geduldig', 'Nach Plan']);
+  const WDN = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  const S = { q: '', side: '', tag: '', day: null, month: null, diaryDay: null };
+  let view = (() => { try { return localStorage.getItem('elr.jview') || 'days'; } catch { return 'days'; } })();
+  const setView = (v) => { view = v; try { localStorage.setItem('elr.jview', v); } catch { } };
+  const tz = () => App.settings.tz;
+  const key = (t) => { const p = Core.localParts(t, tz()); return p.y + '-' + String(p.m).padStart(2, '0') + '-' + String(p.d).padStart(2, '0'); };
+  const todayKey = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  const money = (v) => App.fmtMoney(v, true);
+  const cls = (v) => (v > 0 ? 'up' : v < 0 ? 'dn' : '');
+  const tagsOf = (j) => (Array.isArray(j.tags) ? j.tags : []);
+
+  /* ---------- Filter: Suche, Richtung, Tag, Merkmal ---------- */
+  const baseList = UI.journalList.bind(UI);
+  UI.journalList = function () {
+    let L = baseList();
+    if (this.idFilter) return L;
+    const q = S.q.trim().toLowerCase();
+    if (q) L = L.filter((j) => [j.sym, j.setup, j.note, j.reason, ...tagsOf(j)].join(' ').toLowerCase().includes(q));
+    if (S.side) L = L.filter((j) => (S.side === 'long' ? j.side > 0 : j.side < 0));
+    if (S.tag) L = L.filter((j) => tagsOf(j).includes(S.tag));
+    if (S.day) L = L.filter((j) => key(j.entryT) === S.day);
+    return L;
+  };
+
+  /* ---------- Kopf: Suche, Long/Short, Ansichten + Kennzahlen ---------- */
+  function ensureBar() {
+    if (document.getElementById('jxBar')) return;
+    const sum = document.getElementById('jSummary'); if (!sum) return;
+    sum.insertAdjacentHTML('beforebegin', '<div class="jx-bar" id="jxBar">' +
+      '<div class="seg jx-views" role="tablist" aria-label="Ansicht">' + [['days', 'Tage'], ['table', 'Tabelle'], ['cal', 'Kalender'], ['diary', 'Tagebuch']].map(([v, l]) => '<button type="button" data-jv="' + v + '">' + l + '</button>').join('') + '</div>' +
+      '<label class="jx-search"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M13 13l4 4"/></svg><input id="jxQ" type="search" placeholder="Suchen: Markt, Strategie, Notiz, Merkmal …" autocomplete="off"></label>' +
+      '<div class="seg jx-side" aria-label="Richtung"><button type="button" data-js="">Alle</button><button type="button" data-js="long">Long</button><button type="button" data-js="short">Short</button></div>' +
+      '<select class="sel" id="jxTag" aria-label="Merkmal"></select></div>' +
+      '<div class="jx-active" id="jxActive" hidden></div><div class="jx-kpis" id="jxKpis"></div>');
+    const bar = document.getElementById('jxBar');
+    let t = 0;
+    document.getElementById('jxQ').addEventListener('input', (e) => { clearTimeout(t); t = setTimeout(() => { S.q = e.target.value; UI.renderJournal(); }, 160); });
+    bar.addEventListener('click', (e) => {
+      const v = e.target.closest('[data-jv]'); if (v) { setView(v.dataset.jv); UI.renderJournal(); return; }
+      const s = e.target.closest('[data-js]'); if (s) { S.side = s.dataset.js; UI.renderJournal(); }
+    });
+    document.getElementById('jxTag').addEventListener('change', (e) => { S.tag = e.target.value; UI.renderJournal(); });
+    document.getElementById('jxActive').addEventListener('click', (e) => { if (e.target.closest('[data-clear-day]')) { S.day = null; UI.renderJournal(); } });
+  }
+  function syncBar() {
+    document.querySelectorAll('#jxBar [data-jv]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.jv === view)));
+    document.querySelectorAll('#jxBar [data-js]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.js === S.side)));
+    const used = new Set(); App.visibleJournal().forEach((j) => tagsOf(j).forEach((x) => used.add(x)));
+    const sel = document.getElementById('jxTag');
+    sel.innerHTML = '<option value="">Alle Merkmale</option>' + [...used].sort().map((x) => '<option' + (x === S.tag ? ' selected' : '') + '>' + esc(x) + '</option>').join('');
+    if (S.tag && !used.has(S.tag)) S.tag = '';
+    const a = document.getElementById('jxActive');
+    a.hidden = !S.day; if (S.day) { const [y, m, d] = S.day.split('-'); a.innerHTML = '<span>Nur Trades vom <b>' + d + '.' + m + '.' + y + '</b></span><button type="button" class="btn sm ghost" data-clear-day>Alle Tage zeigen</button>'; }
+    const diary = view === 'diary';
+    document.getElementById('view-journal').classList.toggle('jx-diary', diary);
+  }
+  function kpis(list) {
+    const el = document.getElementById('jxKpis'); if (!el) return;
+    if (!list.length || view === 'diary') { el.innerHTML = ''; return; }
+    const s = Core.stats(list, 0);
+    const wins = list.filter((j) => j.pnl > 0), loss = list.filter((j) => j.pnl <= 0);
+    const avgW = wins.length ? wins.reduce((a, j) => a + j.pnl, 0) / wins.length : 0, avgL = loss.length ? loss.reduce((a, j) => a + j.pnl, 0) / loss.length : 0;
+    const days = new Map(); list.forEach((j) => { const k = key(j.entryT); days.set(k, (days.get(k) || 0) + j.pnl); });
+    const best = Math.max(...days.values()), worst = Math.min(...days.values());
+    const pf = s.pf === Infinity ? '∞' : s.n ? App.fmtN(s.pf, 2) : '–';
+    const k = (l, v, c, sub) => '<div class="jx-k"><span>' + l + '</span><b class="' + (c || '') + '">' + v + '</b>' + (sub ? '<small>' + sub + '</small>' : '') + '</div>';
+    el.innerHTML = k('Netto', money(s.net), cls(s.net), list.length + ' Trades · ' + days.size + ' Tage') +
+      k('Trefferquote', App.fmtPct(s.winRate), '', s.wins + ' G / ' + (s.n - s.wins) + ' V') +
+      k('Ø R', s.avgR == null ? '–' : App.fmtR(s.avgR), cls(s.avgR)) +
+      k('Profit-Faktor', pf, s.pf >= 1 ? 'up' : 'dn') +
+      k('Ø Gewinn / Verlust', '<span class="up">' + App.fmtMoney(avgW) + '</span> / <span class="dn">' + App.fmtMoney(avgL) + '</span>', '', avgL ? 'Payoff ' + App.fmtN(Math.abs(avgW / avgL), 2) : '') +
+      k('Bester / schlechtester Tag', '<span class="up">' + money(best) + '</span> / <span class="dn">' + money(worst) + '</span>', '');
+  }
+
+  /* ---------- Ansicht „Tage“: Trades nach Handelstag gruppiert ---------- */
+  async function daysView(list, el) {
+    const thumbs = Photos.ok ? await Photos.owners() : new Map();
+    const groups = new Map();
+    list.slice().sort((a, b) => b.entryT - a.entryT).slice(0, 500).forEach((j) => { const k = key(j.entryT); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(j); });
+    el.innerHTML = '<div class="jx-days">' + [...groups.entries()].map(([k, L]) => {
+      const net = L.reduce((a, j) => a + j.pnl, 0), w = L.filter((j) => j.pnl > 0).length, r = L.reduce((a, j) => a + (j.r || 0), 0);
+      const mx = Math.max(...L.map((j) => Math.abs(j.r || 0)), .5);
+      return '<section class="jx-day"><header><div><b>' + esc(App.fmtDate(L[0].entryT)) + '</b><small>' + L.length + ' Trade' + (L.length > 1 ? 's' : '') + ' · ' + w + ' Gewinner · ' + App.fmtR(r) + '</small></div>' +
+        '<span class="jx-mini" aria-hidden="true">' + L.slice().reverse().map((j) => '<i class="' + cls(j.r || j.pnl) + '" style="height:' + Math.max(12, Math.abs(j.r || 0) / mx * 100) + '%"></i>').join('') + '</span>' +
+        '<b class="jx-net ' + cls(net) + '">' + money(net) + '</b></header>' +
+        L.map((j) => {
+          const ph = thumbs.get(j.id);
+          const img = ph ? '<img class="jx-th" alt="" src="' + Gallery.url(ph.blob) + '">' : '<span class="jx-th none ' + (j.side > 0 ? 'd-long' : 'd-short') + '"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="' + (j.side > 0 ? 'M5 14L14 5M7 5h7v7' : 'M5 6l9 9M14 8v7H7') + '"/></svg></span>';
+          const tg = tagsOf(j).slice(0, 4).map((x) => '<span class="jx-tag' + (GOOD.has(x) ? ' good' : EMO.includes(x) ? ' emo' : ' bad') + '">' + esc(x) + '</span>').join('');
+          const stars = j.grade ? '<span class="jx-stars" title="Ausführung ' + j.grade + '/5">' + '★'.repeat(j.grade) + '<em>' + '★'.repeat(5 - j.grade) + '</em></span>' : '';
+          return '<div class="jrow jx-row" data-id="' + esc(j.id) + '" tabindex="0" role="button">' + img +
+            '<span class="jx-time">' + App.hm(Core.localParts(j.entryT, tz())) + '</span>' +
+            '<span class="jx-sym"><b>' + esc(j.sym) + '</b><span class="jx-dir ' + (j.side > 0 ? 'long' : 'short') + '">' + (j.side > 0 ? 'Long' : 'Short') + '</span></span>' +
+            '<span class="jx-mid"><b>' + esc(j.setup || 'ohne Strategie') + '</b><small>' + (esc(j.note || (j.reason ? 'Ausstieg: ' + j.reason : '')) || '&nbsp;') + '</small><span class="jx-tags">' + tg + stars + '</span></span>' +
+            '<span class="jx-res"><b class="' + cls(j.pnl) + '">' + money(j.pnl) + '</b><small class="' + cls(j.r) + '">' + App.fmtR(j.r) + '</small></span></div>';
+        }).join('') + '</section>';
+    }).join('') + '</div>' + (list.length > 500 ? '<p class="hint">Es werden die neuesten 500 von ' + list.length + ' Trades gezeigt.</p>' : '');
+  }
+
+  /* ---------- Ansicht „Kalender“: Monat mit Tages- und Wochenergebnis ---------- */
+  function calView(list, el) {
+    const m = new Map(); list.forEach((j) => { const k = key(j.entryT); const e = m.get(k) || { pnl: 0, n: 0, w: 0 }; e.pnl += j.pnl; e.n++; if (j.pnl > 0) e.w++; m.set(k, e); });
+    if (!S.month) { const last = list.reduce((a, j) => Math.max(a, j.entryT), 0); const p = Core.localParts(last || Date.now() / 1000, tz()); S.month = [p.y, p.m]; }
+    const [y, mo] = S.month;
+    const first = new Date(Date.UTC(y, mo - 1, 1)), days = new Date(Date.UTC(y, mo, 0)).getUTCDate();
+    const lead = (first.getUTCDay() + 6) % 7;
+    const mx = Math.max(1, ...[...m.values()].map((e) => Math.abs(e.pnl)));
+    let monthNet = 0, monthN = 0, cells = '', week = 0, weekN = 0, col = 0;
+    const flushWeek = () => { cells += '<div class="jx-wk"><span>Woche</span><b class="' + cls(week) + '">' + (weekN ? money(week) : '–') + '</b><small>' + (weekN ? weekN + ' Trades' : '') + '</small></div>'; week = 0; weekN = 0; col = 0; };
+    for (let i = 0; i < lead; i++) { cells += '<div class="jx-c empty"></div>'; col++; }
+    for (let d = 1; d <= days; d++) {
+      const k = y + '-' + String(mo).padStart(2, '0') + '-' + String(d).padStart(2, '0'), e = m.get(k);
+      if (e) { monthNet += e.pnl; monthN += e.n; week += e.pnl; weekN += e.n; }
+      const a = e ? (.12 + .5 * Math.abs(e.pnl) / mx).toFixed(2) : 0;
+      cells += '<button type="button" class="jx-c' + (e ? ' has ' + (e.pnl >= 0 ? 'jp' : 'jn') : '') + '"' + (e ? ' data-day="' + k + '" style="--a:' + a + '"' : ' disabled') + '><span class="jx-d">' + d + '</span>' +
+        (e ? '<b>' + App.fmtMoney(e.pnl, true) + '</b><small>' + e.n + ' T · ' + Math.round(e.w / e.n * 100) + ' %</small>' : '') + '</button>';
+      if (++col === 7) flushWeek();
+    }
+    if (col) { while (col < 7) { cells += '<div class="jx-c empty"></div>'; col++; } flushWeek(); }
+    const name = first.toLocaleDateString('de-DE', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+    el.innerHTML = '<section class="card jx-cal"><div class="jx-cal-h"><button type="button" class="btn sm" data-mo="-1" aria-label="Vormonat">‹</button><h3>' + name + '</h3><button type="button" class="btn sm" data-mo="1" aria-label="Nächster Monat">›</button><span class="hspace"></span><span>Monat: <b class="' + cls(monthNet) + '">' + (monthN ? money(monthNet) : '–') + '</b> · ' + monthN + ' Trades</span></div>' +
+      '<div class="jx-grid">' + ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So', ''].map((x) => '<div class="jx-h">' + x + '</div>').join('') + cells + '</div>' +
+      '<p class="hint">Tippe einen Tag an, um seine Trades zu sehen. Datum = Handelstag im Replay.</p></section>';
+    el.querySelectorAll('[data-mo]').forEach((b) => b.onclick = () => { let [yy, mm] = S.month; mm += +b.dataset.mo; if (mm < 1) { mm = 12; yy--; } if (mm > 12) { mm = 1; yy++; } S.month = [yy, mm]; UI.renderJournal(); });
+    el.querySelectorAll('[data-day]').forEach((b) => b.onclick = () => { S.day = b.dataset.day; setView('days'); UI.renderJournal(); });
+  }
+
+  /* ---------- Ansicht „Tagebuch“: Plan vor dem Handel, Rückblick danach ---------- */
+  function diaryView(el) {
+    const D = App.settings.diary = App.settings.diary || {};
+    const k = S.diaryDay || todayKey(); S.diaryDay = k;
+    const e = D[k] || {};
+    const [y, m, d] = k.split('-');
+    const seg = (f, opts) => '<div class="seg" data-df="' + f + '">' + opts.map(([v, l]) => '<button type="button" data-v="' + v + '" aria-pressed="' + (e[f] === v) + '">' + l + '</button>').join('') + '</div>';
+    const ta = (f, ph, rows) => '<textarea data-df="' + f + '" rows="' + (rows || 4) + '" placeholder="' + ph + '">' + esc(e[f] || '') + '</textarea>';
+    const created = new Map((App.sessions || []).map((s) => [s.replayId, s.created]));
+    const done = App.visibleJournal().filter((j) => { const t = j.src === 'desk' ? j.exitT : created.get(j.replay); return t && key(t) === k; });
+    const net = done.reduce((a, j) => a + j.pnl, 0);
+    const past = Object.keys(D).filter((x) => x !== k && Object.values(D[x] || {}).some((v) => v)).sort().reverse().slice(0, 12);
+    el.innerHTML = '<div class="jx-diary-wrap"><section class="card jx-dy">' +
+      '<div class="jx-cal-h"><button type="button" class="btn sm" data-dd="-1" aria-label="Tag zurück">‹</button><h3>' + new Date(Date.UTC(+y, +m - 1, +d)).toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) + '</h3><button type="button" class="btn sm" data-dd="1" aria-label="Tag vor">›</button>' +
+      (k !== todayKey() ? '<button type="button" class="btn sm ghost" data-dd="0">Heute</button>' : '') + '<span class="hspace"></span><span class="hint" id="jxSaved">Wird automatisch gespeichert</span></div>' +
+      '<h4>Vor dem Handel</h4><div class="jx-form"><label class="fld"><span>Markt-Bias</span>' + seg('bias', [['long', 'Bullisch'], ['neutral', 'Neutral'], ['short', 'Bärisch']]) + '</label>' +
+      '<label class="fld"><span>Verfassung</span>' + seg('mood', [['1', '😣'], ['2', '😕'], ['3', '😐'], ['4', '🙂'], ['5', '😄']]) + '</label></div>' +
+      '<label class="fld"><span>Plan für heute – welche Setups, wo steige ich ein, wann höre ich auf?</span>' + ta('plan', 'z. B. Nur ORB auf NAS100, max. 2 Trades, Stopp nach −1R am Tag') + '</label>' +
+      '<label class="fld"><span>Wichtige Level & Termine</span>' + ta('levels', 'Vortageshoch/-tief, VWAP, CPI 14:30 …', 2) + '</label>' +
+      '<h4>Nach dem Handel</h4><div class="jx-form"><label class="fld"><span>Regeln eingehalten?</span>' + seg('rules', [['ja', 'Ja'], ['teils', 'Teilweise'], ['nein', 'Nein']]) + '</label>' +
+      '<label class="fld"><span>Tag bewerten</span>' + seg('grade', [['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5']]) + '</label></div>' +
+      '<label class="fld"><span>Was lief gut, was nicht?</span>' + ta('review', 'Ehrlich und kurz – Fakten statt Gefühle') + '</label>' +
+      '<label class="fld"><span>Lektion für morgen</span>' + ta('lesson', 'Eine Sache, die ich morgen anders mache', 2) + '</label></section>' +
+      '<aside class="jx-side-col"><section class="card"><h3>Heute gehandelt</h3>' + (done.length ? '<p class="jx-dnet ' + cls(net) + '">' + money(net) + '</p><div class="jx-list">' + done.map((j) => '<button type="button" class="jx-li jrow" data-id="' + esc(j.id) + '"><span>' + esc(j.sym) + ' ' + (j.side > 0 ? 'Long' : 'Short') + '</span><b class="' + cls(j.pnl) + '">' + money(j.pnl) + '</b></button>').join('') + '</div>' : '<p class="hint">An diesem Tag noch keine Trades oder Sessions.</p>') + '</section>' +
+      '<section class="card"><h3>Frühere Einträge</h3>' + (past.length ? '<div class="jx-list">' + past.map((x) => { const p = D[x]; const [a, b, c] = x.split('-'); return '<button type="button" class="jx-li" data-goday="' + x + '"><span>' + c + '.' + b + '.' + a + '</span><small>' + esc((p.lesson || p.review || p.plan || '').slice(0, 60)) + '</small></button>'; }).join('') + '</div>' : '<p class="hint">Dein Tagebuch füllt sich, sobald du Einträge schreibst.</p>') + '</section></aside></div>';
+    const save = () => { D[k] = e; App.saveSettings(); const s = document.getElementById('jxSaved'); if (s) { s.textContent = 'Gespeichert ✓'; clearTimeout(save.t); save.t = setTimeout(() => { s.textContent = 'Wird automatisch gespeichert'; }, 1400); } };
+    let t = 0;
+    el.querySelectorAll('textarea[data-df]').forEach((x) => x.addEventListener('input', () => { e[x.dataset.df] = x.value; clearTimeout(t); t = setTimeout(save, 400); }));
+    el.querySelectorAll('.seg[data-df]').forEach((g) => g.addEventListener('click', (ev) => { const b = ev.target.closest('[data-v]'); if (!b) return; const f = g.dataset.df; e[f] = e[f] === b.dataset.v ? '' : b.dataset.v; g.querySelectorAll('[data-v]').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.v === e[f]))); save(); }));
+    el.querySelectorAll('[data-dd]').forEach((b) => b.onclick = () => { const n = +b.dataset.dd; if (!n) S.diaryDay = todayKey(); else { const dt = new Date(Date.UTC(+y, +m - 1, +d + n)); S.diaryDay = dt.toISOString().slice(0, 10); } UI.renderJournal(); });
+    el.querySelectorAll('[data-goday]').forEach((b) => b.onclick = () => { S.diaryDay = b.dataset.goday; UI.renderJournal(); });
+  }
+
+  /* ---------- Journal-Rendering ---------- */
+  const baseRender = UI.renderJournal.bind(UI);
+  UI.renderJournal = async function () {
+    ensureBar(); syncBar();
+    const el = document.getElementById('jTable');
+    if (view === 'diary') { this.fillJournalFilters(); kpis([]); diaryView(el); return; }
+    const list = this.journalList();
+    kpis(list);
+    if (view === 'table' || !list.length || this.idFilter) return baseRender();
+    this.fillJournalFilters();
+    const chip = document.getElementById('jIdFilter'); chip.hidden = true;
+    if (typeof Gallery !== 'undefined') Gallery.revoke();
+    if (view === 'cal') calView(list, el); else await daysView(list, el);
+  };
+
+  /* ---------- Trade-Fenster: Bewertung, Emotionen, Ausführung ---------- */
+  const baseOpen = UI.openTrade.bind(UI);
+  UI.openTrade = async function (id) {
+    const p = baseOpen(id);
+    const j = this._trade;
+    const box = document.getElementById('tdBody');
+    if (j && box && !box.querySelector('.jx-psy')) {
+      const ph = box.querySelector('#tdPhotos'); const anchor = ph ? ph.closest('.fld') : null;
+      const chips = (arr) => arr.map((x) => '<button type="button" class="jx-chip' + (GOOD.has(x) ? ' good' : '') + '" data-tag="' + esc(x) + '" aria-pressed="' + tagsOf(j).includes(x) + '">' + esc(x) + '</button>').join('');
+      const html = '<div class="jx-psy"><div class="fld"><span>Ausführung bewerten</span><div class="jx-rate" role="radiogroup" aria-label="Ausführung 1 bis 5">' + [1, 2, 3, 4, 5].map((n) => '<button type="button" data-grade="' + n + '" aria-pressed="' + ((j.grade || 0) >= n) + '" aria-label="' + n + ' von 5">★</button>').join('') + '<small>' + (j.grade ? ['', 'schwach', 'mäßig', 'okay', 'gut', 'perfekt'][j.grade] : 'nicht bewertet') + '</small></div></div>' +
+        '<div class="fld"><span>Gefühl beim Trade</span><div class="jx-chips">' + chips(EMO) + '</div></div>' +
+        '<div class="fld"><span>Ausführung & Fehler</span><div class="jx-chips">' + chips(EXEC) + '</div></div></div>';
+      if (anchor) anchor.insertAdjacentHTML('beforebegin', html); else box.insertAdjacentHTML('beforeend', html);
+    }
+    return p;
+  };
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest && e.target.closest('#tdBody .jx-chip, #tdBody [data-grade]'); if (!t) return;
+    const j = UI._trade; if (!j) return;
+    if (t.dataset.grade) {
+      const g = +t.dataset.grade; j.grade = j.grade === g ? 0 : g;
+      t.parentElement.querySelectorAll('[data-grade]').forEach((b) => b.setAttribute('aria-pressed', String((j.grade || 0) >= +b.dataset.grade)));
+      t.parentElement.querySelector('small').textContent = j.grade ? ['', 'schwach', 'mäßig', 'okay', 'gut', 'perfekt'][j.grade] : 'nicht bewertet';
+    } else {
+      const x = t.dataset.tag, L = tagsOf(j).slice(), i = L.indexOf(x);
+      if (i >= 0) L.splice(i, 1); else L.push(x);
+      j.tags = L; t.setAttribute('aria-pressed', String(i < 0));
+    }
+    App.saveJournal();
+    if (App.view === 'journal') UI.renderJournal();
+  });
+
+  /* ---------- Statistik: Emotionen & Fehler, Bewertung, Wochentag × Uhrzeit ---------- */
+  const baseStats = UI.renderStats.bind(UI);
+  UI.renderStats = function () {
+    const r = baseStats();
+    try { statsCards(this.statsList()); } catch (err) { console.warn('Journal+ Statistik', err); }
+    return r;
+  };
+  function statsCards(list) {
+    const host = document.getElementById('statsBody'); if (!host || !list.length) return;
+    host.querySelectorAll('.jx-stats').forEach((x) => x.remove());
+    /* Merkmale */
+    const g = new Map(); list.forEach((j) => tagsOf(j).forEach((x) => { const e = g.get(x) || { n: 0, w: 0, pnl: 0, r: 0 }; e.n++; if (j.pnl > 0) e.w++; e.pnl += j.pnl; e.r += j.r || 0; g.set(x, e); }));
+    const rows = [...g.entries()].sort((a, b) => a[1].pnl - b[1].pnl);
+    const mx = Math.max(1, ...rows.map(([, e]) => Math.abs(e.pnl)));
+    const tagCard = '<div class="card jx-stat"><h3>Gefühle & Ausführung</h3><p class="hint">Was dich welche Merkmale kosten – im Trade-Fenster vergibst du sie per Antippen.</p>' +
+      (rows.length ? '<div class="jx-bars">' + rows.map(([k, e]) => '<div class="jx-br"><span class="jx-tag' + (GOOD.has(k) ? ' good' : EMO.includes(k) ? ' emo' : ' bad') + '">' + esc(k) + '</span><span class="jx-track"><i class="' + (e.pnl >= 0 ? 'jp' : 'jn') + '" style="width:' + (Math.abs(e.pnl) / mx * 100).toFixed(0) + '%"></i></span><b class="' + cls(e.pnl) + '">' + money(e.pnl) + '</b><small>' + e.n + ' · ' + Math.round(e.w / e.n * 100) + ' % · Ø ' + App.fmtR(e.r / e.n) + '</small></div>').join('') + '</div>'
+        : '<p class="empty">Noch keine Merkmale vergeben. Öffne einen Trade im Journal und tippe an, wie du dich gefühlt hast und was gut oder schlecht lief.</p>') + '</div>';
+    /* Bewertung */
+    const gr = [1, 2, 3, 4, 5].map((n) => { const L = list.filter((j) => j.grade === n); return { n, c: L.length, pnl: L.reduce((a, j) => a + j.pnl, 0), r: L.length ? L.reduce((a, j) => a + (j.r || 0), 0) / L.length : 0 }; });
+    const gradeCard = '<div class="card jx-stat"><h3>Nach Ausführungs-Bewertung</h3><p class="hint">Saubere Trades (4–5 ★) sollten sich langfristig auszahlen – auch wenn einzelne verlieren.</p>' +
+      (gr.some((x) => x.c) ? '<table class="tbl"><tr><th>Bewertung</th><th>Trades</th><th>Netto</th><th>Ø R</th></tr>' + gr.map((x) => '<tr><td>' + '★'.repeat(x.n) + '</td><td>' + x.c + '</td><td class="' + cls(x.pnl) + '">' + (x.c ? money(x.pnl) : '–') + '</td><td class="' + cls(x.r) + '">' + (x.c ? App.fmtR(x.r) : '–') + '</td></tr>').join('') + '</table>' : '<p class="empty">Noch keine Trades bewertet.</p>') + '</div>';
+    /* Wochentag × Uhrzeit */
+    const cell = new Map(); const hours = new Set();
+    list.forEach((j) => { const p = Core.localParts(j.entryT, tz()); hours.add(p.h); const k = p.wd + '-' + p.h; const e = cell.get(k) || { pnl: 0, n: 0 }; e.pnl += j.pnl; e.n++; cell.set(k, e); });
+    const H = [...hours].sort((a, b) => a - b), wds = [1, 2, 3, 4, 5, 6, 0].filter((w) => H.some((h) => cell.has(w + '-' + h)));
+    const cm = Math.max(1, ...[...cell.values()].map((e) => Math.abs(e.pnl)));
+    const heat = '<div class="card jx-stat jx-wide"><h3>Wochentag × Uhrzeit</h3><p class="hint">Netto je Einstiegsstunde (' + esc(tz()) + '). Grün = hier verdienst du, Rot = hier verlierst du.</p><div class="jx-heat" style="grid-template-columns:34px repeat(' + H.length + ',minmax(34px,1fr))"><span></span>' +
+      H.map((h) => '<span class="jx-hh">' + h + '</span>').join('') +
+      wds.map((w) => '<span class="jx-hd">' + WDN[w] + '</span>' + H.map((h) => { const e = cell.get(w + '-' + h); return e ? '<i class="' + (e.pnl >= 0 ? 'jp' : 'jn') + '" style="--a:' + (.15 + .7 * Math.abs(e.pnl) / cm).toFixed(2) + '" title="' + WDN[w] + ' ' + h + ' Uhr: ' + App.fmtMoney(e.pnl, true) + ' · ' + e.n + ' Trades"></i>' : '<i></i>'; }).join('')).join('') + '</div></div>';
+    host.insertAdjacentHTML('beforeend', '<div class="jx-stats">' + heat + tagCard + gradeCard + '</div>');
+  }
+
+  return { S, EMO, EXEC };
+})();
+
 /* Apple-Look: Lichtpunkt auf Karten folgt der Maus (nur Optik, keine Funktion). */
 (() => {
   if (!window.matchMedia || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
@@ -12793,7 +13233,7 @@ const Mode = (() => {
 })();
 
 
-Object.assign(window, {$, $$, APP_VERSION, Analysis, App, Archive, Binance, COL, CRYPTO_START, Chart, DEFAULTS, Dash, EMPTY_ART, FONT_MONO, FONT_UI, GLOSSARY, Gallery, Guard, HB, HBFig, HB_GLOSSAR, HB_SHOW, Handbook, IDB, Install, JT_VIEWS, Lightbox, Loader, MIN_BAR_W, MISTAKES, MORE_VIEWS, Mode, NewSess, Onboard, Pass, PassCore, Photos, RIGHT_PAD_BARS, SESS_FLAGS, SEV_LBL, Sheet, Shop, ShopCore, Start, Store, TV, TW, Tips, UI, Update, VIEWS, WD, alpha, bindTabs, closeModal, deepMerge, emptyState, esc, fmtVol, freshDefaults, getPath, hbBox, hbBtns, hbL, hbSetup, lastFocus, localMinute, openModal, raf2, readColors, selectTab, sessionFlagBits, setBusy, setPath, skeleton, store, syncModalState, textW});
+Object.assign(window, {$, $$, APP_VERSION, Analysis, App, Archive, Binance, COL, CRYPTO_START, Chart, DEFAULTS, Dash, EMPTY_ART, FONT_MONO, FONT_UI, GLOSSARY, Gallery, Guard, HB, HBFig, HB_GLOSSAR, HB_SHOW, Handbook, IDB, Install, JT_VIEWS, JX, Lightbox, Loader, MIN_BAR_W, MISTAKES, MORE_VIEWS, Mode, NewSess, Onboard, Pass, PassCore, Photos, RIGHT_PAD_BARS, SESS_FLAGS, SEV_LBL, Sheet, Shop, ShopCore, Start, Store, TV, TW, Tips, UI, Update, VIEWS, WD, alpha, bindTabs, closeModal, deepMerge, emptyState, esc, fmtVol, freshDefaults, getPath, hbBox, hbBtns, hbL, hbSetup, lastFocus, localMinute, openModal, raf2, readColors, selectTab, sessionFlagBits, setBusy, setPath, skeleton, store, syncModalState, textW});
 </script>
 <script>
 if ('serviceWorker' in navigator && location.protocol === 'https:') addEventListener('load', () => {

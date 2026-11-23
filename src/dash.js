@@ -74,13 +74,47 @@ const Dash = (() => {
     const tl = '<section class="card dz-feed"><div class="card-h"><h3>Zuletzt gemacht</h3><a href="#journal">Journal</a></div>' +
       (feed.length ? '<div class="dz-list">' + feed.map((x) => '<button type="button" class="dz-row" data-go="' + x.go + '"><span class="dz-ic dz-' + x.k + '">' + ic(x.k) + '</span><span class="dz-m"><b>' + esc(x.txt) + '</b><small class="' + (x.cls || '') + '">' + esc(x.sub) + '</small></span><time>' + ago(x.t) + '</time></button>').join('') + '</div>'
         : '<p class="hint">Noch nichts passiert – starte eine Backtest-Session oder einen Trade im Handels-Desk. Alles, was du machst, erscheint hier.</p>') + '</section>';
-    return h + '<div class="dz-two">' + act + tl + '</div></section>';
+    return h + '<section class="card dz-today" id="dzToday"></section><div class="dz-two">' + act + tl + '</div></section>';
   }
+
+  /* ---------- Heute: Börsenzeiten mit Countdown + wichtige Termine ---------- */
+  const SESS = [
+    { k: 'asia', n: 'Asien', tz: 'Asia/Tokyo', o: [9, 0], c: [15, 0], sub: 'Tokio' },
+    { k: 'lon', n: 'London', tz: 'Europe/London', o: [8, 0], c: [16, 30], sub: 'Europa' },
+    { k: 'ny', n: 'New York', tz: 'America/New_York', o: [9, 30], c: [16, 0], sub: 'US-Aktien' }
+  ];
+  const local = (tz) => { const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour12: false, weekday: 'short', hour: '2-digit', minute: '2-digit' }).formatToParts(new Date()).map((x) => [x.type, x.value])); return { wd: p.weekday, m: (+p.hour % 24) * 60 + +p.minute }; };
+  const dur = (min) => { const h = Math.floor(min / 60), m = min % 60; return h ? h + ' Std. ' + m + ' Min.' : m + ' Min.'; };
+  function sessState(s) {
+    const L = local(s.tz), o = s.o[0] * 60 + s.o[1], c = s.c[0] * 60 + s.c[1];
+    const wknd = L.wd === 'Sat' || L.wd === 'Sun';
+    if (!wknd && L.m >= o && L.m < c) return { open: true, txt: 'offen · schließt in ' + dur(c - L.m), pct: (L.m - o) / (c - o) };
+    const W = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], wi = W.indexOf(L.wd);
+    let wait = 0;
+    for (let d = 0; d < 4; d++) { const off = d * 1440 + o - L.m, wd = (wi + d) % 7; if (off > 0 && wd !== 0 && wd !== 6) { wait = off; break; } }
+    return { open: false, txt: 'geschlossen · öffnet in ' + dur(wait), pct: 0 };
+  }
+  async function today() {
+    const box = document.getElementById('dzToday'); if (!box) return;
+    const ses = SESS.map((s) => { const st = sessState(s); return '<div class="dz-ses ' + (st.open ? 'open' : '') + '"><span class="dz-dot"></span><div><b>' + s.n + '</b><small>' + st.txt + '</small></div>' + (st.open ? '<span class="dz-prog"><i style="width:' + Math.round(st.pct * 100) + '%"></i></span>' : '') + '</div>'; }).join('');
+    let ev = '<p class="hint">Termine werden geladen …</p>';
+    box.innerHTML = '<div class="card-h"><h3>Heute</h3><span class="hint">' + new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' }) + '</span></div><div class="dz-today-in"><div class="dz-mkts">' + ses + '</div><div class="dz-ev" id="dzEv">' + ev + '</div></div>';
+    try {
+      const c = await J.getJSON('calendar.json'); const td = J.today();
+      const L = (c.events || []).filter((e) => (e.impact === 'High' || e.impact === 'Medium') && J.dayOf(Date.parse(e.date) / 1000) === td).sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+      const t0 = Date.now();
+      ev = L.length ? '<div class="dz-evl">' + L.slice(0, 6).map((e) => { const t = Date.parse(e.date), past = t < t0; return '<div class="dz-e' + (past ? ' past' : '') + '"><time>' + new Date(t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' }) + '</time><span class="dz-imp ' + (e.impact === 'High' ? 'hi' : 'md') + '" title="' + (e.impact === 'High' ? 'Hohe' : 'Mittlere') + ' Wirkung"></span><span class="dz-cc">' + esc(e.country) + '</span><span class="dz-et">' + esc(e.title) + '</span><small>' + (e.forecast ? 'Prognose ' + esc(e.forecast) : '') + (e.previous ? ' · vorher ' + esc(e.previous) : '') + '</small></div>'; }).join('') + '</div>' + (L.length > 6 ? '<a class="hint" href="#makro">+' + (L.length - 6) + ' weitere in Makroökonomie</a>' : '')
+        : '<p class="hint">Heute keine wichtigen Wirtschaftstermine. Ruhiger Tag für Backtesting.</p>';
+    } catch { ev = '<p class="hint">Wirtschaftstermine sind gerade nicht erreichbar.</p>'; }
+    const evb = document.getElementById('dzEv'); if (evb) evb.innerHTML = ev;
+  }
+  setInterval(() => { if (typeof App !== 'undefined' && App.view === 'start' && document.getElementById('dzToday')) today(); }, 60000);
 
   function render() {
     const body = document.getElementById('stBody'); if (!body) return;
     const old = body.querySelector('.dz'); if (old) old.remove();
     body.insertAdjacentHTML('afterbegin', html());
+    today();
     body.querySelectorAll('.dz [data-go]').forEach((b) => b.addEventListener('click', () => { location.hash = '#' + b.dataset.go; }));
     const name = (typeof J !== 'undefined' && J.S && J.S.settings && J.S.settings.name) || '';
     const h = new Date().getHours(), greet = h < 11 ? 'Guten Morgen' : h < 18 ? 'Hallo' : 'Guten Abend';

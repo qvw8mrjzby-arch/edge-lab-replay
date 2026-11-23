@@ -41,6 +41,14 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Hell = helles Milchglas über farbigem, weichem Hintergrund; Dunkel = bisheriges Glas-Design. Schnellschalter Sonne/Mond oben in der Jarvis-Leiste (#jvMode, Logik `Mode` in apple.js), zusätzlich in den Einstellungen.
 - Achtung: backdrop-filter auf header.top nur ab Tablet – auf dem Handy liegt #mainNav (position fixed) im Kopf und würde sonst nach oben springen.
 
+## Journal+ und „Heute“ (23.11.2026, Beta)
+- `src/journal-plus.js` + `src/plus.css` (hängen sich an UI.journalList/renderJournal/openTrade/renderStats):
+  Journal-Ansichten Tage (gruppiert, Tagesnetto, Mini-Balken) · Tabelle (alt) · Kalender (Monat, Wochensummen, Klick = Tagesfilter) · Tagebuch (Bias, Verfassung, Plan, Level, Regeln, Tagesnote, Rückblick, Lektion; gespeichert in App.settings.diary[JJJJ-MM-TT], synchronisiert).
+  Suche, Long/Short, Merkmal-Filter, Kennzahlen zur aktuellen Auswahl. Trade-Fenster: Ausführung 1–5 ★ (`j.grade`), Gefühle und Ausführung/Fehler als Merkmale (`j.tags`).
+  Statistik: Wochentag × Uhrzeit (Heatmap), Gefühle & Ausführung (Netto je Merkmal), Nach Bewertung. Ansicht in localStorage 'elr.jview'.
+- Dashboard: Karte „Heute“ mit Börsenzeiten (Tokio, London, New York; offen/zu + Countdown) und High/Medium-Terminen aus data/calendar.json.
+- Klassennamen-Fallen: `.short` (Nav-Labels) und `.pos` (Positionsliste) sind global belegt – eigene Klassen jx-/dz- verwenden.
+
 ## Daten
 - Archiv: `data/<ID>/<JJJJ-MM>.csv.gz` (t,o,h,l,c,v; t = Unix-Sek. UTC), Index `data/index.json`. IDs: NAS100, US500, US30, XAUUSD, GER40 (Dukascopy-Bid-Kurse, Index-CFDs, Delta geschätzt). Wird von der GitHub Action `.github/workflows/daten.yml` (Skript `tools/fetch-data.mjs`) alle 3 Stunden aktualisiert.
 - Krypto live von Binance (echtes Taker-Volumen, Footprint per „Trades laden“).
