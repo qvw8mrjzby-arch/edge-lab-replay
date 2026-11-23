@@ -101,9 +101,17 @@ JV.err = e => {
   const call = async (b) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(a.gmodel || 'gemini-2.5-flash')}:generateContent?key=${encodeURIComponent(a.gemini)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b), signal: o.signal });
   let r = await call(body);
   if (!r.ok && body.tools) { delete body.tools; r = await call(body); }
+  /* Modell abgeschaltet oder unbekannt (404 bzw. 400 „not found/not supported“)? Dann automatisch neuere Modelle probieren und das funktionierende merken */
+  const gone = async (res) => { if (res.status === 404) return true; if (res.status !== 400) return false; try { const m = (await res.clone().json()).error?.message || ''; return /not found|not supported|deprecated|no longer/i.test(m); } catch { return false; } };
+  if (await gone(r)) {
+    for (const m of ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.0-flash'].filter(x => x !== a.gmodel)) {
+      const r2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(a.gemini)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: o.signal });
+      if (r2.ok || !(await gone(r2))) { r = r2; if (r2.ok) { a.gmodel = m; JV.saveAi(a); } break; }
+    }
+  }
   if (r.status === 400 || r.status === 403) { let m = ''; try { m = (await r.json()).error?.message || ''; } catch { } throw /key/i.test(m) ? { code: 'key' } : { code: r.status, message: m }; }
   if (r.status === 429) throw { code: 429 };
-  if (!r.ok) throw { code: r.status, message: 'Gemini-Fehler ' + r.status };
+  if (!r.ok) { let m = ''; try { m = (await r.json()).error?.message || ''; } catch { } throw { code: r.status, message: 'Gemini-Fehler ' + r.status + (m ? ' – ' + m : '') }; }
   const j = await r.json(); const cand = j.candidates?.[0];
   let text = (cand?.content?.parts || []).map(p => p.text || '').join('');
   const src = (cand?.groundingMetadata?.groundingChunks || []).map(c => c.web).filter(Boolean);

@@ -16,10 +16,24 @@ const JAI = (() => {
     const D = (App.settings && App.settings.diary) || {};
     return Object.keys(D).sort().reverse().slice(0, n).map((k) => { const e = D[k] || {}; return { tag: k, bias: e.bias || null, verfassung: e.mood ? +e.mood : null, plan: (e.plan || '').slice(0, 300), level: (e.levels || '').slice(0, 160), regelnEingehalten: e.rules || null, tagesnote: e.grade ? +e.grade : null, rueckblick: (e.review || '').slice(0, 300), lektion: (e.lesson || '').slice(0, 200) }; }).filter((x) => x.plan || x.rueckblick || x.lektion || x.bias);
   };
-  const noBrain = '<p class="note">Jarvis ist noch nicht verbunden. Öffne die App in claude.ai oder trage im <a href="#copilot">Copilot</a> deinen kostenlosen Gemini-Key ein.</p>';
+  const noBrain = '<div class="jx-key"><p><b>Jarvis braucht noch ein Gehirn auf diesem Gerät.</b> Hol dir kostenlos einen Gemini-Key bei <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> (mit Google-Konto anmelden → „API-Schlüssel erstellen“) und füge ihn hier ein. Er bleibt nur auf diesem Gerät.</p><div class="jx-key-row"><input type="password" class="jx-key-in" placeholder="Gemini-Key einfügen (beginnt meist mit AIza…)" autocomplete="off"><button type="button" class="btn sm jt-gold jx-key-save">Verbinden</button></div><small class="jx-key-msg"></small></div>';
+  J.keyForm = noBrain;
+  /* Key direkt in der Karte speichern und kurz testen */
+  document.addEventListener('click', async (e) => {
+    const b = e.target.closest && e.target.closest('.jx-key-save'); if (!b) return;
+    const box = b.closest('.jx-key'), inp = box.querySelector('.jx-key-in'), msg = box.querySelector('.jx-key-msg');
+    const k = (inp.value || '').trim(); if (k.length < 20) { msg.textContent = 'Das sieht nicht nach einem vollständigen Key aus.'; return; }
+    const a = Object.assign(Jarvis.ai(), { provider: 'gemini', gemini: k }); Jarvis.saveAi(a);
+    msg.textContent = 'Teste Verbindung …'; b.disabled = true;
+    try { await Jarvis.think('Antworte nur mit: OK'); msg.textContent = 'Verbunden ✓'; J.toast('Jarvis ist verbunden', 'good');
+      setTimeout(() => { if (App.view === 'start') { localStorage.removeItem('jx.insight'); const c = document.getElementById('jxIns'); if (c) c.remove(); App.renderStart(); } else if (App.view === 'journal') UI.renderJournal(); }, 400);
+    } catch (err) { msg.textContent = Jarvis.err(err); a.gemini = ''; Jarvis.saveAi(a); }
+    b.disabled = false;
+  });
 
   /* ---------- Journal: aktuelle Auswahl auswerten ---------- */
-  function journalAi() {
+  async function journalAi() {
+    if (!(await brainOk())) { J.modal('Jarvis verbinden', noBrain); return; }
     const T = UI.journalList(); if (T.length < 3) return J.toast('Für eine Auswertung braucht Jarvis mindestens 3 Trades in der Auswahl.');
     const F = App.settings.jf || {}, S = (typeof JX !== 'undefined' && JX.S) || {};
     const filter = { markt: F.sym || 'alle', strategie: F.strat || 'alle', ergebnis: F.res || 'alle', richtung: S.side || 'alle', merkmal: S.tag || 'alle', suche: S.q || '', tag: S.day || 'alle' };
@@ -78,7 +92,8 @@ const JAI = (() => {
     } catch (err) { body.innerHTML = '<p class="note">' + J.esc(Jarvis.err(err)) + '</p>'; }
     busy = false;
   }
-  function weekly() {
+  async function weekly() {
+    if (!(await brainOk())) { J.modal('Jarvis verbinden', noBrain); return; }
     J.jvAsk('Jarvis: dein Wochenrückblick', (on) => think(`${persona()}\n\nSchreib meinen Trading-Wochenrückblick (letzte 7 Tage im Vergleich zu meiner Gesamtstatistik). Struktur: ### Die Woche in Zahlen, ### Bester Moment, ### Teuerster Fehler (mit $ und R), ### Psychologie (Merkmale, Sterne, Verfassung im Tagebuch), ### Fortschritt vs. frühere Lektionen, ### Plan für nächste Woche (3 messbare Ziele). Max. 330 Wörter.\n\n${JSON.stringify(weekCtx())}`, on));
   }
 

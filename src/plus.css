@@ -169,3 +169,9 @@
 .jx-ins { border-color: color-mix(in srgb, #f2c14e 30%, var(--line)) !important; background-image: linear-gradient(120deg, color-mix(in srgb, #f2c14e 7%, transparent), transparent 55%); }
 .jx-ai-out h3, .jx-ai-out h4 { font-size: 14px; margin: 12px 0 4px; } .jx-ai-out ul { padding-left: 18px; }
 .jx-diary #jxAi { display: none; }
+
+.jx-key { display: grid; gap: 8px; font-size: 13.5px; color: var(--muted); }
+.jx-key p { margin: 0; line-height: 1.5; } .jx-key b { color: var(--text); } .jx-key a { color: var(--accent); }
+.jx-key-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.jx-key-in { flex: 1 1 240px; height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); color: var(--text); font: 14px var(--f-ui); }
+.jx-key-msg { color: var(--muted); }

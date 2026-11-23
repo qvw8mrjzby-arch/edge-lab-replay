@@ -4,7 +4,7 @@
   const esc = J.esc;
   const ask = (title, run, sub) => J.modal(title, `${sub ? `<p class="note">${esc(sub)}</p>` : ''}<div class="md" id="jhout"><p class="note"><span class="spin"></span> Jarvis denkt …</p></div><div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn sm" id="jhcopy">Kopieren</button><button class="btn sm" id="jhspeak">${J.icon('speaker')}Vorlesen</button></div>`, async (b) => {
     const o = b.querySelector('#jhout');
-    if (!Jarvis.brain()) { await Jarvis.ready; if (!Jarvis.brain()) { o.innerHTML = `<p class="note">${esc(Jarvis.err({ code: 'nobrain' }))}</p><a class="btn pri sm" href="#copilot">Zum Copilot</a>`; return; } }
+    if (!Jarvis.brain()) { await Jarvis.ready; if (!Jarvis.brain()) { o.innerHTML = J.keyForm || `<p class="note">${esc(Jarvis.err({ code: 'nobrain' }))}</p><a class="btn pri sm" href="#copilot">Zum Copilot</a>`; return; } }
     try {
       const t = await run(text => { o.innerHTML = J.md(text); });
       o.innerHTML = J.md(t);
