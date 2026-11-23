@@ -29,6 +29,11 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Jarvis-Hülle: Glas-Tableiste oben (#jvTabs, body.jv-tabs) mit „Second Brain“ (#brain), „Jarvis“ (#copilot, Vollbild ohne Seitenleiste: body.jv-full) und „Trading Terminal“ (letzte Terminal-Seite). Goldener Jarvis-Orb unten rechts (#jvFab).
 - Deploy: `beta/index.html` = Testversion. Nach OK: src/site/index.html ins Wurzelverzeichnis kopieren, sw.js-Cache-Version erhöhen.
 
+## Apple-Look (23.11.2026 – zuerst als Test unter /beta/)
+- Nur Optik, keine Funktion geändert: `src/apple.css` (wird von build.py nach jt.css eingebunden) und `src/apple.js` (Lichtpunkt auf Karten folgt der Maus, nur mit Maus/Trackpad).
+- Terminal-Hintergrund weichgezeichnet und abgedunkelt (#app::before), große Seitentitel überall, Karten 18px-Radius mit Lichtkante, iOS-Segmente, Seitenleiste mit macOS-Auswahl und Gruppen in Großbuchstaben, Hover: Karten leuchten, Kacheln heben sich, Knöpfe heben sich/sinken beim Drücken, Tabellenzeilen heben sich ab, sanftes Einblenden beim Bereichswechsel.
+- Nebenbei behoben: Marktüberblick warf „Cannot set properties of null“, wenn die Watchlist fertig lud, nachdem man die Seite verlassen hatte (jt-views.js renderW).
+
 ## Daten
 - Archiv: `data/<ID>/<JJJJ-MM>.csv.gz` (t,o,h,l,c,v; t = Unix-Sek. UTC), Index `data/index.json`. IDs: NAS100, US500, US30, XAUUSD, GER40 (Dukascopy-Bid-Kurse, Index-CFDs, Delta geschätzt). Wird von der GitHub Action `.github/workflows/daten.yml` (Skript `tools/fetch-data.mjs`) alle 3 Stunden aktualisiert.
 - Krypto live von Binance (echtes Taker-Volumen, Footprint per „Trades laden“).

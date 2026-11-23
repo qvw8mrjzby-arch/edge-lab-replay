@@ -1527,6 +1527,184 @@ body.jv-full #view-copilot .jt{max-width:1240px}
 .bs-areas button{display:grid;gap:2px;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#fff;font:13px var(--f-ui);cursor:pointer}
 .bs-areas button:hover{background:rgba(255,255,255,.09)}
 .bs-areas small{color:rgba(255,255,255,.45);font-size:11.5px}.bs-areas em{font-style:normal;color:#f5d27a;font-size:12px;margin-top:3px}
+
+/* ==========================================================================
+   Apple-Look (Nov 2026): ruhigere Flächen, größere Radien, klare Überschriften,
+   Milchglas wie im Second-Brain-Home und sanfte Hover-Effekte.
+   Nur Optik – keine Funktion wird entfernt oder hinzugefügt.
+   ========================================================================== */
+:root {
+  --f-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'IBM Plex Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --r: 8px; --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  --a-card: 18px;          /* Radius großer Karten */
+  --a-item: 12px;          /* Radius kleiner Kacheln/Zeilen */
+  --a-hl: rgba(255,255,255,.075);   /* Hover-Fläche */
+  --a-edge: rgba(255,255,255,.22);  /* Hover-Kante */
+  --a-spring: cubic-bezier(.22, 1, .36, 1);
+  --t-fast: 160ms; --t-med: 240ms;
+}
+
+/* ---------- Hintergrund: im Terminal ruhig & weichgezeichnet (wie ein Mac-Fenster über dem Wallpaper) ---------- */
+#app { position: relative; isolation: isolate; }
+:root[data-glass] #app::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 0%, rgba(14,18,32,.30), rgba(4,6,12,.62) 70%);
+  -webkit-backdrop-filter: blur(44px) saturate(150%); backdrop-filter: blur(44px) saturate(150%);
+}
+
+/* ---------- Seiten: großer Titel, mehr Luft ---------- */
+.page { padding-top: 28px; padding-bottom: 48px; scroll-behavior: smooth; }
+.page-in { gap: 20px; }
+.page-h { gap: 12px; row-gap: 10px; }
+.page-h h1, .st-head h1, .jt .page-hd h1 { font: 700 clamp(24px, 2.4vw, 30px)/1.12 var(--f-ui); letter-spacing: -.022em; margin-right: 14px; }
+.page-sub, .jt .page-hd p { font-size: 13.5px; color: var(--muted); letter-spacing: -.003em; }
+
+/* ---------- Karten & Flächen: Glas, 18px-Radius, feine Lichtkante ---------- */
+.card, .strat-card, .welcome, .resume-card, .an-hero, .pass-hero, .sess, .jt .card, .jt .chartbox, .jt .tile, .empty-state {
+  border-radius: var(--a-card);
+}
+.card, .strat-card, .welcome, .sess, .jt .card, .jt .tile { padding: 16px 18px; }
+.card h3 { font-size: 14.5px; letter-spacing: -.01em; }
+.kpis { border-radius: var(--a-card); }
+.kpi { padding: 12px 16px; }
+.kpi b { font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+.jt .kpi, .jt .news article, .jt .pos, .si, .sr-item, .sess-find, .an-low { border-radius: var(--a-item); }
+.steps > * { border-radius: 14px !important; }
+.jt.jt-bar { border-radius: 16px; padding: 12px 16px; }
+.empty-state { border-style: solid; border-color: var(--line); background: var(--panel); padding: 40px 24px; }
+:root[data-glass] .empty-state { -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 18px 50px -26px rgba(0,0,0,.75); }
+.empty-state h3 { font-size: 17px; letter-spacing: -.01em; }
+.empty-state p { font-size: 13.5px; line-height: 1.55; }
+.empty-state svg { opacity: .9; }
+
+:root[data-glass] :is(.card, .kpis, .strat-card, .welcome, .sess, .jt .card, .jt .tile, .jt .chartbox, .pass-hero, .an-hero, .resume-card) {
+  border-color: rgba(255,255,255,.10);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), inset 0 0 0 .5px rgba(255,255,255,.03), 0 20px 50px -28px rgba(0,0,0,.8);
+}
+:root[data-glass] .sess, :root[data-glass] .welcome { -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); }
+
+/* ---------- Bedienelemente: weichere Knöpfe, iOS-Segmente, runde Felder ---------- */
+.btn { border-radius: 9px; }
+.btn.lg { border-radius: 12px; }
+.page .btn { padding: 7px 14px; font-size: 13px; }
+.page .btn.sm { padding: 5px 10px; font-size: 12.5px; }
+.page .btn.lg { padding: 10px 18px; font-size: 14px; }
+.btn.primary { box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--accent) 80%, transparent), inset 0 1px 0 rgba(255,255,255,.22); }
+.page select.sel, .page-h select, .page-h input:not([type=checkbox]):not([type=radio]) { border-radius: 9px; padding: 6px 10px; font-size: 13px; }
+.page input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), .page textarea, .page select { border-radius: 10px; }
+.jt .btn { border-radius: 12px; }
+.jt input, .jt select, .jt textarea { border-radius: 12px; }
+:root[data-glass] .page select.sel { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); }
+
+.seg { border-radius: 10px; padding: 2px; gap: 2px; background: rgba(255,255,255,.04); }
+.seg button { border-radius: 8px; }
+.seg button + button { border-left: 0; }
+.seg button[aria-pressed="true"] { background: rgba(255,255,255,.14); box-shadow: 0 1px 3px rgba(0,0,0,.35), inset 0 .5px 0 rgba(255,255,255,.2); }
+.jt .seg { border-radius: 12px; }
+.jt .seg button { border-radius: 9px; }
+.jt .seg button.on { background: rgba(255,255,255,.14); box-shadow: 0 1px 3px rgba(0,0,0,.35), inset 0 .5px 0 rgba(255,255,255,.2); }
+.chip span, .jt .chip { transition: background-color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease); }
+
+/* Dialoge, Menüs, Hinweise */
+.dlg, #jtmodal .box { border-radius: 22px; }
+.dlg-h, .dlg-f { padding-inline: 20px; }
+.dlg-b { padding: 16px 20px; }
+.pop, .more-menu, #indMenu { border-radius: 14px; }
+.more-menu a { border-radius: 10px; }
+.toast { border-radius: 12px; }
+:root[data-glass] :is(.toast, .pop, .more-menu) { background: rgba(28,32,48,.72); -webkit-backdrop-filter: blur(24px) saturate(170%); backdrop-filter: blur(24px) saturate(170%); }
+:root[data-glass] .modal { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+:root[data-glass] :is(.dlg-h, .dlg-f) { background: rgba(22,26,40,.82); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+
+/* Tabellen: luftiger, Zeilen heben sich beim Überfahren ab */
+.tbl th { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; padding: 8px 8px; }
+.tbl td { padding: 8px 8px; }
+.tbl tbody tr { transition: background-color var(--t-fast) var(--ease); }
+
+/* ---------- Seitenleiste wie in macOS: klare Gruppen, gefüllte Auswahl ---------- */
+@media (min-width: 861px) and (min-height: 501px) {
+  .nav-h { margin: 18px 12px 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--faint); }
+  header.top #mainNav { gap: 2px; }
+  header.top #mainNav a { min-height: 36px; border-radius: 10px; transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), transform var(--t-fast) var(--a-spring); }
+  header.top #mainNav a svg { transition: transform var(--t-med) var(--a-spring), color var(--t-fast) var(--ease); }
+  header.top #mainNav a[aria-current="page"] { background: rgba(255,255,255,.10); box-shadow: inset 0 .5px 0 rgba(255,255,255,.14), 0 4px 14px -8px rgba(0,0,0,.6); color: var(--text); font-weight: 600; }
+  :root:not([data-glass]) header.top #mainNav a[aria-current="page"] { background: color-mix(in srgb, var(--accent) 16%, var(--panel2)); }
+  .jt-logo { border-radius: 12px; }
+  .side-foot .btn { border-radius: 10px; }
+}
+
+/* ---------- Hover-Effekte (nur mit Maus/Trackpad) ---------- */
+@media (hover: hover) and (pointer: fine) {
+  /* Karten: Kante leuchtet, leichter Schatten */
+  .card, .kpis, .strat-card, .welcome, .resume-card, .jt .card, .jt .chartbox, .pass-hero, .empty-state {
+    transition: border-color var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), background-color var(--t-med) var(--ease);
+  }
+  .card:hover, .strat-card:hover, .welcome:hover, .jt .card:hover, .pass-hero:hover, .kpis:hover {
+    border-color: rgba(255,255,255,.17);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 26px 60px -30px rgba(0,0,0,.9);
+  }
+  /* Kleine Kacheln & Listen-Karten: heben sich an */
+  .sess, .jt .tile, .jt .kpi, .si, .steps > *, .sr-item, .jt .news article, .jt .pos, .bs-stat, .shop-grid > * {
+    transition: transform var(--t-med) var(--a-spring), border-color var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), background-color var(--t-med) var(--ease);
+  }
+  .sess:hover, .jt .tile:hover, .si:hover, .steps > *:hover, .jt .news article:hover, .shop-grid > *:hover {
+    transform: translateY(-3px);
+    border-color: var(--a-edge);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 22px 40px -22px rgba(0,0,0,.9);
+  }
+  .jt .kpi:hover, .sr-item:hover, .jt .pos:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.18); background-color: rgba(255,255,255,.07); }
+  .kpi { transition: background-color var(--t-fast) var(--ease); }
+  .kpi:hover { background: color-mix(in srgb, var(--panel) 70%, rgba(255,255,255,.12)); }
+  .tbl tbody tr:hover { background: var(--a-hl); }
+  .srow:hover { background: rgba(255,255,255,.07); }
+
+  /* Knöpfe: aufhellen, minimal anheben; beim Drücken einsinken */
+  .page .btn:hover:not(:disabled), .jt .btn:hover:not(:disabled) { transform: translateY(-1px); border-color: rgba(255,255,255,.22); box-shadow: 0 8px 20px -12px rgba(0,0,0,.8); }
+  .btn.primary:hover:not(:disabled), .jt .btn.pri:hover:not(:disabled) { filter: brightness(1.1); box-shadow: 0 10px 26px -10px color-mix(in srgb, var(--accent) 90%, transparent), inset 0 1px 0 rgba(255,255,255,.25); }
+  .btn.jt-gold:hover, .jt .btn.gold:hover, .bs-btn.gold:hover { filter: brightness(1.08); box-shadow: 0 10px 26px -10px rgba(242,193,78,.7); }
+  .btn:active:not(:disabled), .jt .btn:active:not(:disabled) { transform: scale(.97); }
+  .chip:hover span { border-color: rgba(255,255,255,.25); color: var(--text); }
+  .jt .chip:hover { border-color: rgba(255,255,255,.25); }
+  .linkbtn:hover, a.linkbtn:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Seitenleiste */
+  header.top #mainNav a:hover { background: rgba(255,255,255,.06); }
+  header.top #mainNav a:hover svg { transform: scale(1.1); }
+  header.top #mainNav a:active { transform: scale(.98); }
+  .more-menu a:hover svg { stroke: var(--text); }
+
+  /* Jarvis-Orb & Tabs */
+  .jt-fab { transition: transform var(--t-med) var(--a-spring), border-color var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease); }
+  .jt-fab:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 16px 40px -14px rgba(242,193,78,.55); }
+  .jvt-tabs a:active { transform: scale(.97); }
+
+  /* Lichtpunkt, der der Maus folgt (Apple-Glas) */
+  .a-spot { position: relative; isolation: isolate; }
+  .a-spot::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,.065), transparent 45%);
+    opacity: 0; transition: opacity var(--t-med) var(--ease);
+  }
+  .a-spot:hover::before { opacity: 1; }
+}
+
+/* Dünne, runde Scrollbalken */
+.page, .dlg, aside.side, #jtmodal .box { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; }
+.page::-webkit-scrollbar, .dlg::-webkit-scrollbar { width: 10px; }
+.page::-webkit-scrollbar-thumb, .dlg::-webkit-scrollbar-thumb { background: rgba(255,255,255,.16); border-radius: 99px; border: 3px solid transparent; background-clip: padding-box; }
+.page::-webkit-scrollbar-thumb:hover { background-color: rgba(255,255,255,.28); }
+
+/* Sanftes Einblenden beim Bereichswechsel */
+@keyframes aIn { from { opacity: 0; transform: translateY(6px); } }
+.view.page:not([hidden]) > .page-in, .view.page:not([hidden]) > .jt { animation: aIn .32s var(--a-spring) both; }
+
+/* Handy: Karten etwas kompakter, Titel bleibt groß */
+@media (max-width: 860px) {
+  .page { padding-top: 18px; }
+  .card, .strat-card, .welcome, .sess, .jt .card, .jt .tile { padding: 14px 15px; }
+  .page-h h1, .st-head h1 { font-size: 24px; }
+  :root { --a-card: 16px; }
+}
 </style>
 </head>
 <body>
@@ -10345,6 +10523,7 @@ V.markt = el => {
     } catch (e) { ch.opt.empty = J.errText(e); ch.set([], {}); }
   };
   const renderW = () => {
+    if (!$('#wlist')) return; // Seite wurde inzwischen verlassen
     const list = J.S.watch.map(x => { const dd = rows[x]; const q = dd && J.quote(dd); return { s: x, d: dd, q }; });
     $('#wlist').innerHTML = `<table><tbody>${list.map(({ s: x, d: dd, q }) => `<tr class="click" data-s="${esc(x)}"><td style="padding-left:4px"><b>${esc(J.short(x))}</b><div class="note" style="max-width:130px;overflow:hidden;text-overflow:ellipsis">${esc(J.name(x))}</div></td><td style="width:70px">${dd ? Spark(dd.candles.slice(-30).map(b => b.c), q.chp >= 0 ? '#2fcf9f' : '#ef5d78', 70, 26).replace('<svg', '<svg style="width:70px;height:26px"') : ''}</td><td class="r"><b>${q ? price(q.last) : '–'}</b><div class="${cls(q?.chp)}" style="font-size:12.5px">${q ? pct(q.chp) : 'noch keine Daten'}</div></td></tr>`).join('')}</tbody></table>`;
     $$('#wlist tr').forEach(tr => tr.onclick = () => { sym = s.sym = tr.dataset.s; $('#ovsym').innerHTML = J.symOptions(sym); J.store.save('settings'); loadMain(); });
@@ -12289,6 +12468,27 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
   document.addEventListener('touchmove', (e) => { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
   /* Trackpad-Pinch (Strg+Mausrad) zoomt nie die Seite */
   window.addEventListener('wheel', (e) => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+})();
+
+/* Apple-Look: Lichtpunkt auf Karten folgt der Maus (nur Optik, keine Funktion). */
+(() => {
+  if (!window.matchMedia || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const SEL = '.card, .jt .tile, .sess, .strat-card, .welcome, .si, .steps > *, .pass-hero, .bs-stat, .bs-box';
+  let el = null, x = 0, y = 0, raf = 0;
+  const paint = () => {
+    raf = 0; if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--mx', (x - r.left) + 'px');
+    el.style.setProperty('--my', (y - r.top) + 'px');
+  };
+  document.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    const t = e.target.closest && e.target.closest(SEL);
+    if (t !== el) { el = t; if (el && !el.classList.contains('a-spot')) el.classList.add('a-spot'); }
+    x = e.clientX; y = e.clientY;
+    if (el && !raf) raf = requestAnimationFrame(paint);
+  }, { passive: true });
 })();
 
 

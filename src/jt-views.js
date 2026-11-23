@@ -67,6 +67,7 @@ V.markt = el => {
     } catch (e) { ch.opt.empty = J.errText(e); ch.set([], {}); }
   };
   const renderW = () => {
+    if (!$('#wlist')) return; // Seite wurde inzwischen verlassen
     const list = J.S.watch.map(x => { const dd = rows[x]; const q = dd && J.quote(dd); return { s: x, d: dd, q }; });
     $('#wlist').innerHTML = `<table><tbody>${list.map(({ s: x, d: dd, q }) => `<tr class="click" data-s="${esc(x)}"><td style="padding-left:4px"><b>${esc(J.short(x))}</b><div class="note" style="max-width:130px;overflow:hidden;text-overflow:ellipsis">${esc(J.name(x))}</div></td><td style="width:70px">${dd ? Spark(dd.candles.slice(-30).map(b => b.c), q.chp >= 0 ? '#2fcf9f' : '#ef5d78', 70, 26).replace('<svg', '<svg style="width:70px;height:26px"') : ''}</td><td class="r"><b>${q ? price(q.last) : '–'}</b><div class="${cls(q?.chp)}" style="font-size:12.5px">${q ? pct(q.chp) : 'noch keine Daten'}</div></td></tr>`).join('')}</tbody></table>`;
     $$('#wlist tr').forEach(tr => tr.onclick = () => { sym = s.sym = tr.dataset.s; $('#ovsym').innerHTML = J.symOptions(sym); J.store.save('settings'); loadMain(); });
