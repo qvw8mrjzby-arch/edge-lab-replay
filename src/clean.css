@@ -141,3 +141,7 @@
 .bs-dash .card-h h3 { margin: 0; font-size: 15px; }
 .bs-dash .card-h a, .bs-dash a.hint { color: #64d2ff; }
 .bs-dash .hint { color: rgba(235,235,245,.55); font-size: 12px; }
+
+/* Chart: „↺ Auto“-Knopf, wenn die Preisachse frei verschoben wurde (23.11.2026) */
+.badge.badge-auto { cursor: pointer; background: color-mix(in srgb, var(--accent) 12%, transparent); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); color: var(--accent); font-family: inherit; font-weight: 600; line-height: 16px; }
+.badge.badge-auto:hover { background: color-mix(in srgb, var(--accent) 20%, transparent); }

@@ -330,8 +330,13 @@ class Chart {
     if (A.baseEst) b.push('<span class="badge warn" title="Kein Taker-Volumen in den Daten: Delta wird aus der Kerzenform geschätzt">Δ geschätzt</span>');
     else b.push('<span class="badge ok" title="Delta aus echtem Kauf-/Verkaufs-Aggressor-Volumen">Δ echt</span>');
     if (A.settings.ind.fp && A.trades && this.view.barW < 56) b.push('<span class="badge" title="Hineinzoomen, um den Footprint zu sehen">Footprint: zoomen</span>');
+    if (!this.view.auto) b.push('<button type="button" class="badge badge-auto" data-auto title="Preisachse wieder automatisch anpassen (auch: Doppelklick in den Chart)">↺ Auto</button>');
     const html = b.join('');
     if (html !== this._bh) { this.badges.innerHTML = html; this._bh = html; }
+    if (!this._bb) {
+      this._bb = true;
+      this.badges.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('[data-auto]')) { this.view.auto = true; this.app.requestRender(); } });
+    }
   }
   /* Wirtschaftstermine: gestrichelte Linie nur für Termine, die schon passiert sind (≤ jetzt); Vorwarnung als Banner.
      Blind-Modus: kein Kürzel, nur generischer Hinweis. */
@@ -1233,6 +1238,9 @@ class Chart {
     }
     if (md.type === 'pan') {
       v.rightIdx = md.r0 - (p.x - md.x0) / v.barW;
+      /* 23.11.2026: frei in alle Richtungen ziehen – zieht man spürbar nach oben/unten, wird die Auto-Skala
+         für diesen Chart ausgeschaltet (zurück: „Auto“-Knopf oben oder Doppelklick) */
+      if (v.auto && !md.noY && Math.abs(p.y - md.y0) > 12) { v.auto = false; md.a = v.yMin; md.b = v.yMax; md.y0 = p.y; }
       if (!v.auto && !md.noY) { const dy = (p.y - md.y0) / this.plot.h * (md.b - md.a); v.yMin = md.a + dy; v.yMax = md.b + dy; }
     } else if (md.type === 'yscale') {
       const f = Math.exp((p.y - md.y0) * 0.006);
