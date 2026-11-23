@@ -34,6 +34,12 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Terminal-Hintergrund weichgezeichnet und abgedunkelt (#app::before), große Seitentitel überall, Karten 18px-Radius mit Lichtkante, iOS-Segmente, Seitenleiste mit macOS-Auswahl und Gruppen in Großbuchstaben, Hover: Karten leuchten, Kacheln heben sich, Knöpfe heben sich/sinken beim Drücken, Tabellenzeilen heben sich ab, sanftes Einblenden beim Bereichswechsel.
 - Nebenbei behoben: Marktüberblick warf „Cannot set properties of null“, wenn die Watchlist fertig lud, nachdem man die Seite verlassen hatte (jt-views.js renderW).
 
+## Weißer Apple-Look + Dashboard (23.11.2026 – Beta)
+- Helles Design ist Standard: `src/light.css` (alles unter `:root[data-light]`), gesetzt in `J.initHooks` (jt-hooks.js) aus `elr.light` (≠ '0'). Umschalter: Einstellungen → Konto & Risiko → „Helles Design“ (apple.js); aus = dunkles Glas-Design wie vorher, Shop-Designs wirken nur dort, gekaufte Kerzenfarben (data-candles) auch im hellen Modus.
+- Start ohne # ist jetzt das Dashboard (#start) statt des schwarzen Lochs. Tabs oben: Dashboard · Trading Terminal · Jarvis · Universum (Second Brain, jetzt Nebensache; in der Seitenleiste ganz unten).
+- Dashboard (`src/dash.js`, hängt sich an App.renderStart): Begrüßung, 6 Kacheln (Trades, Sessions, Strategien, Notizen & Briefings, Pass, Funded) mit 8-Wochen-Verlauf, Aktivität 30 Tage, „Zuletzt gemacht“ (Zeit = wann du gehandelt hast, nicht Replay-Zeit); darunter die bisherigen Kennzahlen/Kontokurve/Sessions.
+- Achtung: backdrop-filter auf header.top nur ab Tablet – auf dem Handy liegt #mainNav (position fixed) im Kopf und würde sonst nach oben springen.
+
 ## Daten
 - Archiv: `data/<ID>/<JJJJ-MM>.csv.gz` (t,o,h,l,c,v; t = Unix-Sek. UTC), Index `data/index.json`. IDs: NAS100, US500, US30, XAUUSD, GER40 (Dukascopy-Bid-Kurse, Index-CFDs, Delta geschätzt). Wird von der GitHub Action `.github/workflows/daten.yml` (Skript `tools/fetch-data.mjs`) alle 3 Stunden aktualisiert.
 - Krypto live von Binance (echtes Taker-Volumen, Footprint per „Trades laden“).

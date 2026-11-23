@@ -18,3 +18,18 @@
     if (el && !raf) raf = requestAnimationFrame(paint);
   }, { passive: true });
 })();
+
+/* Helles Design an/aus (Einstellungen → Konto & Risiko) */
+(() => {
+  const box = document.getElementById('setLight'); if (!box) return;
+  const on = () => { try { return localStorage.getItem('elr.light') !== '0'; } catch { return true; } };
+  const sync = () => { box.checked = on(); };
+  sync(); document.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('#btnSettings')) setTimeout(sync, 0); }, true);
+  box.addEventListener('change', () => {
+    try { localStorage.setItem('elr.light', box.checked ? '1' : '0'); } catch { }
+    const root = document.documentElement;
+    if (box.checked) { root.setAttribute('data-light', ''); root.removeAttribute('data-glass'); }
+    else { root.removeAttribute('data-light'); if (typeof Space !== 'undefined' && Space.glassOn()) Space.setGlass(true); }
+    try { readColors(); App.requestRender(); if (App.view === 'start') App.renderStart(); } catch { }
+  });
+})();

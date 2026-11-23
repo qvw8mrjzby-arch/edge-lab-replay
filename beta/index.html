@@ -1705,6 +1705,163 @@ body.jv-full #view-copilot .jt{max-width:1240px}
   .page-h h1, .st-head h1 { font-size: 24px; }
   :root { --a-card: 16px; }
 }
+
+/* ==========================================================================
+   Helles Apple-Design (Standard seit 23.11.2026). Aus: Einstellungen → „Helles Design“
+   (localStorage elr.light = '0'), dann gilt wieder das dunkle Glas-Design mit den Shop-Designs.
+   ========================================================================== */
+:root[data-light] {
+  color-scheme: light;
+  --bg: #f5f5f7; --panel: #ffffff; --panel2: #f4f4f7; --raise: #ebebf0; --line: #e2e2e7; --grid: #efeff3;
+  --text: #1d1d1f; --muted: #6e6e73; --faint: #a1a1a6;
+  --vwap: #c98a12; --band: #b8862e; --accent: #0071e3; --accent-ink: #ffffff;
+  --info: #0a84ff; --warn: #d9730d; --ema1: #8b5cf6; --ema2: #0e9bb5; --ema3: #e0457b; --ema4: #636366;
+  --poc: #c99a00; --va: #7d8fa3; --sessA: #8b5cf6; --sessL: #0a84ff; --sessN: #1f9d74; --draw: #2f6fd6; --sel: #c99a00; --rth: #8b5cf6;
+  --sh-float: 0 20px 50px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.06);
+  --a-hl: rgba(0,0,0,.04); --a-edge: rgba(0,0,0,.12);
+  --gold-ink: #9a6b00;
+}
+:root[data-light]:not([data-candles]) { --bull: #1fa37a; --bear: #e0364f; --buy: #1f9d74; --sell: #e0405a; }
+
+/* Fläche: weiches Weiß mit einem Hauch Farbe, wie ein macOS-Hintergrund */
+:root[data-light] body {
+  background: #f5f5f7 radial-gradient(60% 50% at 12% 0%, rgba(0,113,227,.07), transparent 60%) fixed,
+              radial-gradient(50% 45% at 100% 100%, rgba(175,82,222,.06), transparent 60%) fixed;
+  background-color: #f5f5f7;
+}
+:root[data-light] body::before { background: rgba(245,245,247,.9); }
+
+/* Karten: reines Weiß, fast unsichtbare Kante, weicher Schatten */
+:root[data-light] :is(.card, .kpis, .strat-card, .welcome, .sess, .jt .card, .jt .tile, .jt .chartbox, .pass-hero, .an-hero, .empty-state, .hero, .dz-tile) {
+  background: #fff; border-color: rgba(0,0,0,.06);
+  box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 28px -12px rgba(0,0,0,.10);
+}
+:root[data-light] .jt .card.glass { background: #fff; }
+:root[data-light] .kpis { background: rgba(0,0,0,.06); }
+:root[data-light] :is(.jt .kpi, .jt .news article, .jt .pos, .si, .sr-item, .steps > *) { background: #f7f7f9; border-color: rgba(0,0,0,.06); }
+:root[data-light] .resume-card { background: color-mix(in srgb, var(--accent) 6%, #fff); }
+
+/* Kopf, Seitenleiste, Tabs: helles Milchglas */
+:root[data-light] header.top { background: rgba(255,255,255,.94); border-color: rgba(0,0,0,.07); }
+/* Blur nur ab Tablet: backdrop-filter würde auf dem Handy die feste untere Leiste (#mainNav liegt im Kopf) mitverschieben */
+@media (min-width: 861px) and (min-height: 501px) { :root[data-light] header.top { background: rgba(255,255,255,.72); -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%); } }
+@media (max-width: 860px) { :root[data-light] #mainNav { background: rgba(255,255,255,.82); -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%); border-top-color: rgba(0,0,0,.08); } }
+:root[data-light] body.jv-tabs #jvTabs { background: rgba(255,255,255,.75); border-bottom-color: rgba(0,0,0,.07); box-shadow: none; }
+:root[data-light] .jvt-brand { color: var(--gold-ink); }
+:root[data-light] .jvt-right { color: var(--muted); }
+:root[data-light] .jvt-tabs a { color: rgba(0,0,0,.55); }
+:root[data-light] .jvt-tabs a:hover { color: #000; background: rgba(0,0,0,.05); }
+:root[data-light] .jvt-tabs a.on { color: #000; background: #fff; border-color: rgba(0,0,0,.06); box-shadow: 0 1px 3px rgba(0,0,0,.10), 0 4px 14px -6px rgba(0,0,0,.15); }
+:root[data-light] .jvt-tabs a[data-tab="jarvis"].on { color: var(--gold-ink); background: #fff8e6; border-color: rgba(201,138,18,.3); }
+.jvt-tabs a.jvt-minor { opacity: .8; font-weight: 500; }
+@media (min-width: 861px) and (min-height: 501px) {
+  :root[data-light] header.top #mainNav a[aria-current="page"] { background: rgba(0,0,0,.065); box-shadow: none; }
+  :root[data-light] header.top #mainNav a[aria-current="page"] svg { color: var(--accent); }
+}
+:root[data-light] .jt-logo { background: linear-gradient(135deg, #0a84ff, #5e5ce6); box-shadow: 0 6px 18px -8px rgba(10,132,255,.6); }
+
+/* Bedienelemente */
+:root[data-light] .seg { background: rgba(0,0,0,.05); border-color: transparent; }
+:root[data-light] .seg button[aria-pressed="true"], :root[data-light] .jt .seg button.on { background: #fff; color: #000; box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 0 0 .5px rgba(0,0,0,.04); }
+:root[data-light] .btn:not(.gold):not(.jt-gold):not(.pri):not(.long):not(.short):not(.primary):not(.buy):not(.sell):not(.ghost) { background: #fff; border-color: rgba(0,0,0,.12); }
+:root[data-light] .btn:not(.gold):not(.jt-gold):not(.pri):not(.primary):not(.buy):not(.sell):hover:not(:disabled) { background: #f7f7f9; border-color: rgba(0,0,0,.18); }
+:root[data-light] .btn.primary, :root[data-light] .btn.primary:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-light] .btn.buy { background: var(--buy); border-color: var(--buy); color: #fff; }
+:root[data-light] .btn.sell { background: var(--sell); border-color: var(--sell); color: #fff; }
+:root[data-light] .btn.ghost { background: transparent; }
+:root[data-light] .jt .btn:not(.gold):not(.pri):not(.long):not(.short):not(.ghost) { background: #fff; border-color: rgba(0,0,0,.12); }
+:root[data-light] .jt .btn.pri { background: linear-gradient(135deg, #0a84ff, #0071e3); color: #fff; border-color: transparent; }
+:root[data-light] .jt .btn.ghost { background: none; border-color: transparent; }
+:root[data-light] .jt .btn.long { background: #e8f7f1; border-color: #a6dfc8; color: #12805d; }
+:root[data-light] .jt .btn.short { background: #fdecef; border-color: #f3b3bf; color: #c22a43; }
+:root[data-light] :is(.jt .btn.gold, .btn.jt-gold, .bs-btn.gold) { color: #2a1d00; }
+:root[data-light] .jt .chip.up { color: #12805d; border-color: #a6dfc8; background: #e8f7f1; }
+:root[data-light] .jt .chip.dn { color: #c22a43; border-color: #f3b3bf; background: #fdecef; }
+:root[data-light] .jt .chip.warn { color: #a85a00; border-color: #f1cf9c; background: #fff4e3; }
+:root[data-light] .jt .chip.acc { color: var(--accent); border-color: #b5d3f7; background: #eef5fe; }
+:root[data-light] .jt .chip { background: #f4f4f7; border-color: rgba(0,0,0,.08); }
+:root[data-light] select.sel, :root[data-light] .page select, :root[data-light] .page input:not([type=checkbox]):not([type=radio]):not([type=range]), :root[data-light] .page textarea { background: #fff; border-color: rgba(0,0,0,.12); }
+:root[data-light] .jt :is(input, select, textarea) { background: #fff; border-color: rgba(0,0,0,.12); }
+
+/* Jarvis-Elemente in Gold, lesbar auf Weiß */
+:root[data-light] .jt.jt-bar { background: linear-gradient(100deg, #fff8e6, #fff 60%); border-color: rgba(201,138,18,.28); color: var(--muted); box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+:root[data-light] .jt.jt-bar b { color: var(--gold-ink); }
+:root[data-light] #btnJarvis { color: var(--gold-ink); background: #fff8e6; border-color: rgba(201,138,18,.35); }
+:root[data-light] .jt-fab { background: rgba(255,255,255,.85); color: var(--gold-ink); border-color: rgba(201,138,18,.35); box-shadow: 0 10px 30px -12px rgba(0,0,0,.25); }
+
+/* Dialoge, Menüs, Hinweise */
+:root[data-light] .modal { background: rgba(0,0,0,.25); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+:root[data-light] #jtmodal .bg { background: rgba(0,0,0,.25); }
+:root[data-light] :is(.dlg, #jtmodal .box, .pop, .more-menu, #indMenu) { background: rgba(255,255,255,.96); border-color: rgba(0,0,0,.08); }
+:root[data-light] :is(.dlg-h, .dlg-f) { background: rgba(255,255,255,.92); }
+:root[data-light] .toast { background: rgba(255,255,255,.95); border-color: rgba(0,0,0,.08); }
+
+/* Charts-Bereich */
+:root[data-light] :is(#chartBar, #replayBar, nav#tools, aside.side, #mAct) { background: rgba(255,255,255,.82); }
+:root[data-light] .jt .chartbox { background: #fff; }
+
+/* Hover im hellen Modus (statt weißer Lichtkanten: dunkle, ganz zarte) */
+@media (hover: hover) and (pointer: fine) {
+  :root[data-light] :is(.card, .strat-card, .welcome, .jt .card, .pass-hero, .kpis):hover { border-color: rgba(0,0,0,.10); box-shadow: 0 2px 4px rgba(0,0,0,.04), 0 18px 40px -16px rgba(0,0,0,.18); }
+  :root[data-light] :is(.sess, .jt .tile, .si, .steps > *, .jt .news article, .shop-grid > *, .dz-tile):hover { border-color: rgba(0,113,227,.25); box-shadow: 0 2px 6px rgba(0,0,0,.05), 0 20px 40px -18px rgba(0,0,0,.22); }
+  :root[data-light] :is(.jt .kpi, .sr-item, .jt .pos):hover { background: #fff; border-color: rgba(0,0,0,.10); }
+  :root[data-light] .kpi:hover { background: #fafafc; }
+  :root[data-light] .srow:hover { background: rgba(0,0,0,.035); }
+  :root[data-light] :is(.page .btn, .jt .btn):hover:not(:disabled) { border-color: rgba(0,0,0,.18); box-shadow: 0 6px 16px -10px rgba(0,0,0,.3); }
+  :root[data-light] header.top #mainNav a:hover { background: rgba(0,0,0,.045); }
+  :root[data-light] .chip:hover span, :root[data-light] .jt .chip:hover { border-color: rgba(0,0,0,.2); }
+  :root[data-light] .a-spot::before { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(0,113,227,.06), transparent 45%); }
+}
+:root[data-light] :is(.page, .dlg, aside.side, #jtmodal .box) { scrollbar-color: rgba(0,0,0,.2) transparent; }
+:root[data-light] :is(.page, .dlg)::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,.18); }
+
+/* ---------- Dashboard (Startseite) ---------- */
+.dz { display: grid; gap: 16px; }
+.dz-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.dz-tile { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; text-align: left;
+  padding: 16px; border-radius: var(--a-card, 18px); border: 1px solid var(--line); background: var(--panel); color: var(--text); cursor: pointer; font: inherit; overflow: hidden;
+  transition: transform var(--t-med) var(--a-spring, ease), border-color var(--t-med) ease, box-shadow var(--t-med) ease; }
+.dz-v { display: grid; gap: 1px; }
+.dz-tile b { font-size: 26px; font-weight: 700; letter-spacing: -.025em; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.dz-tile .dz-l { font-size: 13px; font-weight: 600; color: var(--text); }
+.dz-tile small { color: var(--muted); font-size: 12px; line-height: 1.35; margin-top: auto; }
+.dz-tile small em { font-style: normal; color: var(--faint); } .dz-tile small em.up { color: var(--bull); }
+.dz-spark { align-self: stretch; display: flex; align-items: flex-end; gap: 3px; height: 24px; }
+.dz-spark i { flex: 1; border-radius: 3px; background: color-mix(in srgb, var(--accent) 16%, transparent); }
+.dz-spark i.on { background: var(--accent); }
+@media (hover: hover) and (pointer: fine) { .dz-tile:hover { transform: translateY(-3px); } }
+.dz-ic { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; flex: none; color: #fff; }
+.dz-ic svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.dz-trade { background: linear-gradient(135deg, #34c759, #1fa37a); }
+.dz-sess { background: linear-gradient(135deg, #0a84ff, #0060df); }
+.dz-strat { background: linear-gradient(135deg, #ff9f0a, #ff7a00); }
+.dz-note { background: linear-gradient(135deg, #bf5af2, #8e44d6); }
+.dz-pass { background: linear-gradient(135deg, #5e5ce6, #3a3ab8); }
+.dz-fund { background: linear-gradient(135deg, #ff375f, #d92a4c); }
+.dz-two { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 1000px) { .dz-two { grid-template-columns: minmax(0, 1fr); } }
+.dz-act, .dz-feed { display: flex; flex-direction: column; gap: 10px; }
+.dz-cols { flex: 1; display: flex; align-items: flex-end; gap: 4px; min-height: 140px; padding-top: 8px; }
+.dz-cols i { flex: 1; border-radius: 4px 4px 2px 2px; background: color-mix(in srgb, var(--accent) 14%, transparent); min-height: 3px; transition: filter var(--t-fast) ease; }
+.dz-cols i.on { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 75%, #fff), var(--accent)); }
+.dz-cols i:hover { filter: brightness(1.15); }
+.dz-axis { display: flex; justify-content: space-between; color: var(--faint); font-size: 11px; margin-top: 6px; }
+.dz-list { display: grid; gap: 2px; }
+.dz-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px; margin: 0 -8px; border: 0; border-radius: 12px; background: none; color: var(--text); text-align: left; cursor: pointer; font: inherit; transition: background-color var(--t-fast) ease; }
+.dz-row:hover { background: var(--a-hl, rgba(255,255,255,.06)); }
+.dz-row .dz-ic { width: 32px; height: 32px; border-radius: 9px; }
+.dz-row .dz-ic svg { width: 16px; height: 16px; }
+.dz-m { display: grid; min-width: 0; }
+.dz-m b { font-weight: 600; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dz-m small { color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dz-row time { color: var(--faint); font-size: 12px; white-space: nowrap; }
+@media (max-width: 860px) { .dz-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .dz-tile { padding: 14px; } .dz-tile b { font-size: 21px; } }
+
+/* Journal-Tabelle (table.jt) als weiße Karte mit zarten Linien */
+:root[data-light] table.jt, :root[data-light] .page table.tbl { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 28px -12px rgba(0,0,0,.10); }
+:root[data-light] .jt td { border-bottom-color: rgba(0,0,0,.06); }
+:root[data-light] .jt th { background: #fff; border-bottom-color: rgba(0,0,0,.08); }
+:root[data-light] .jt tr.jrow:hover td, :root[data-light] .jt tr.click:hover td { background: #f5f8fe; }
 </style>
 </head>
 <body>
@@ -1718,8 +1875,7 @@ body.jv-full #view-copilot .jt{max-width:1240px}
       <span class="brand-old">Edge Lab <i>Replay</i></span>
     </div>
     <nav id="mainNav" aria-label="Bereiche">
-      <a href="#start" data-view="start" title="Übersicht"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="9" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="14" width="6" height="3" rx="1"/></svg><span class="full">Übersicht</span><span class="short">Start</span></a>
-      <a href="#brain" data-view="brain" class="nav-x nav-brain" title="Second Brain"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="2.6" fill="currentColor"/><ellipse cx="10" cy="10" rx="8" ry="2.2"/><circle cx="10" cy="10" r="4.6" opacity=".55"/></svg><span>Second Brain</span></a>
+      <a href="#start" data-view="start" title="Dashboard"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="9" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="14" width="6" height="3" rx="1"/></svg><span class="full">Dashboard</span><span class="short">Start</span></a>
       <span class="nav-h">Markt</span>
       <a href="#markt" data-view="markt" class="nav-x" title="Marktüberblick"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="6" height="6" rx="1.2"/><rect x="11.5" y="3.5" width="6" height="3.5" rx="1.2"/><rect x="11.5" y="9.5" width="6" height="7" rx="1.2"/><rect x="2.5" y="12" width="6" height="4.5" rx="1.2"/></svg><span>Marktüberblick</span></a>
       <a href="#briefing" data-view="briefing" class="nav-x" title="Morning Briefing"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 2.5h6l4 4v11h-10z"/><path d="M11.5 2.5v4h4"/></svg><span>Morning Briefing</span></a>
@@ -1746,6 +1902,7 @@ body.jv-full #view-copilot .jt{max-width:1240px}
       <a href="#tradingview" data-view="tradingview" class="nav-x" title="TradingView"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.5"/><path d="M7 17h6M10 14v3M5 11l3-3 2.5 2L15 6"/></svg><span class="full">TradingView</span><span class="short">TV-Chart</span></a>
       <a href="#pass" data-view="pass" class="nav-x" title="Pass"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5l6.5 3.75v7.5L10 17.5l-6.5-3.75v-7.5z"/><path d="M10 7l2.2 1.3v2.4L10 12l-2.2-1.3V8.3z"/></svg><span>Pass</span></a>
       <a href="#shop" data-view="shop" class="nav-x" title="Shop"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 7h12l-1 10H5z"/><path d="M7 7V5.5a3 3 0 016 0V7"/></svg><span>Shop</span></a>
+      <a href="#brain" data-view="brain" class="nav-x nav-brain" title="Universum (Second Brain)"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="2.6" fill="currentColor"/><ellipse cx="10" cy="10" rx="8" ry="2.2"/><circle cx="10" cy="10" r="4.6" opacity=".55"/></svg><span>Universum</span></a>
       <button type="button" class="nav-more" id="navMore" aria-haspopup="true" aria-expanded="false" aria-controls="moreMenu"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="4.5" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="10" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10" r="1.4" fill="currentColor" stroke="none"/></svg><span>Mehr</span></button>
     </nav>
     <span class="hspace"></span>
@@ -1761,7 +1918,7 @@ body.jv-full #view-copilot .jt{max-width:1240px}
   <div id="views">
   <section class="view page" id="view-start" hidden aria-label="Übersicht">
     <div class="page-in">
-      <div class="st-head"><div><h1>Übersicht</h1><p class="page-sub" id="stSub">Dein Backtesting auf einen Blick.</p></div><span class="hspace"></span><button class="btn" id="stInstall" hidden>Als App installieren</button></div>
+      <div class="st-head"><div><h1>Dashboard</h1><p class="page-sub" id="stSub">Dein Backtesting auf einen Blick.</p></div><span class="hspace"></span><button class="btn" id="stInstall" hidden>Als App installieren</button></div>
       <p class="note" id="stIos" hidden>Als App nutzen: in Safari unten auf <b>Teilen</b> tippen, dann <b>Zum Home-Bildschirm</b>.</p>
       <div class="resume-card" id="stResume" hidden></div>
       <p class="note warn" id="stBackup" hidden></p>
@@ -2160,6 +2317,7 @@ body.jv-full #view-copilot .jt{max-width:1240px}
         </div>
         <p class="hint">Werden Stop und Ziel in derselben Basis-Kerze berührt, weiß niemand, was zuerst kam. „Konservativ“ rechnet mit dem schlechteren Fall – so überschätzt du deine Strategie nicht. Mit 1-Minuten-Daten passiert das selten.</p>
         <label class="ck"><input type="checkbox" data-s="photos"> Automatische Chart-Fotos bei Einstieg und Ausstieg</label>
+        <label class="ck"><input type="checkbox" id="setLight"> Helles Design (Apple-Look) – aus = dunkles Glas-Design</label>
       </fieldset>
       </div>
       <div class="tabpanel" role="tabpanel" data-panel="kosten" hidden>
@@ -11210,15 +11368,16 @@ V.copilot = el => {
       if (el) { const h = host.querySelector('.page-h'); const sub = document.getElementById('aSub'); const after = sub || h; if (after && el.previousElementSibling !== after) after.after(el); el.querySelector('[data-j="explain"]').onclick = explainAnalysis; }
     }
   };
-  let lastTerm = 'markt';
+  let lastTerm = 'charts';
   J.updateTabs = v => {
-    const tab = v === 'brain' ? 'brain' : v === 'copilot' ? 'jarvis' : 'term';
+    const tab = v === 'brain' ? 'brain' : v === 'copilot' ? 'jarvis' : v === 'start' ? 'dash' : 'term';
     if (tab === 'term' && v) lastTerm = v;
     document.querySelectorAll('#jvTabs [data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const tt = document.getElementById('jvtTerm'); if (tt) tt.setAttribute('href', '#' + lastTerm);
     document.body.classList.toggle('jv-full', tab === 'jarvis');
   };
   J.decorate = v => { try { D[v] && D[v](); } catch (e) { console.warn('Jarvis-Einbau', e); } };
+  J.lightOn = () => { try { return localStorage.getItem('elr.light') !== '0'; } catch { return true; } };
   J.initHooks = () => {
     /* Glas-Design (Standard an) und Second Brain beim Öffnen ohne Unterseite */
     /* Privater Import deines Second Brains per Link (#brainimport=…): der Teil nach # verlässt nie dein Gerät */
@@ -11227,15 +11386,17 @@ V.copilot = el => {
       catch (e) { setTimeout(() => J.toast('Import-Link ungültig', 'bad'), 900); }
       history.replaceState(null, '', '#brain');
     }
-    if (typeof Space !== 'undefined') { if (Space.glassOn()) Space.setGlass(true); if (!location.hash || location.hash === '#') history.replaceState(null, '', '#brain'); }
-    document.querySelector('header.top .brand')?.addEventListener('click', () => { location.hash = '#brain'; });
+    /* Helles Apple-Design ist Standard (elr.light = '0' schaltet zurück auf dunkel/Glas); Start = Dashboard, das Universum ist nur noch ein Tab */
+    if (J.lightOn()) { document.documentElement.setAttribute('data-light', ''); try { readColors(); App.requestRender(); } catch { } }
+    if (typeof Space !== 'undefined') { if (Space.glassOn() && !J.lightOn()) Space.setGlass(true); if (!location.hash || location.hash === '#') history.replaceState(null, '', '#start'); }
+    document.querySelector('header.top .brand')?.addEventListener('click', () => { location.hash = '#start'; });
     const f = document.querySelector('#tradeModal .dlg-f');
     if (f && !document.getElementById('tdJarvis')) { const b = document.createElement('button'); b.className = 'btn jt-gold'; b.id = 'tdJarvis'; b.type = 'button'; b.textContent = 'Jarvis bewerten'; b.onclick = () => reviewTrade(UI._trade); const show = document.getElementById('tdShow'); show ? f.insertBefore(b, show) : f.append(b); }
     D.charts();
     /* Jarvis als Hülle: Tabs oben (Second Brain · Jarvis · Trading Terminal) */
     if (!document.getElementById('jvTabs')) {
       const t = document.createElement('div'); t.id = 'jvTabs'; t.setAttribute('role', 'tablist'); t.setAttribute('aria-label', 'Jarvis');
-      t.innerHTML = `<div class="jvt-brand"><canvas></canvas><b>JARVIS</b></div><div class="jvt-tabs"><a href="#brain" data-tab="brain" role="tab">Second Brain</a><a href="#copilot" data-tab="jarvis" role="tab">Jarvis</a><a href="#markt" data-tab="term" role="tab" id="jvtTerm">Trading Terminal</a></div><div class="jvt-right"><span id="jvtClock"></span></div>`;
+      t.innerHTML = `<div class="jvt-brand"><canvas></canvas><b>JARVIS</b></div><div class="jvt-tabs"><a href="#start" data-tab="dash" role="tab">Dashboard</a><a href="#charts" data-tab="term" role="tab" id="jvtTerm">Trading Terminal</a><a href="#copilot" data-tab="jarvis" role="tab">Jarvis</a><a href="#brain" data-tab="brain" role="tab" class="jvt-minor">Universum</a></div><div class="jvt-right"><span id="jvtClock"></span></div>`;
       document.body.insertBefore(t, document.body.firstChild); document.body.classList.add('jv-tabs');
       try { Jarvis.orb(t.querySelector('canvas'), false); } catch { }
       const clock = () => { const el2 = document.getElementById('jvtClock'); if (el2) el2.textContent = new Date().toLocaleString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' }); };
@@ -11502,7 +11663,7 @@ V.copilot = el => {
   const spark = (vals, col) => { const m = Math.max(1, ...vals); return `<div class="bs-bars">${vals.map(v => `<i style="height:${Math.max(6, v / m * 100)}%;background:${col}"></i>`).join('')}</div>`; };
   const weeks = (times, n = 8) => { const now = Date.now() / 1000, out = new Array(n).fill(0); for (const t of times) { if (!t) continue; const k = Math.floor((now - t) / 604800); if (k >= 0 && k < n) out[n - 1 - k]++; } return out; };
   const AREAS = () => J.NAV_ALL;
-  J.NAV_ALL = [['Markt', [['markt', 'Marktüberblick'], ['briefing', 'Morning Briefing'], ['explorer', 'Markt-Explorer'], ['charts', 'Charts & Replay'], ['news', 'News Intelligence'], ['makro', 'Makroökonomie']]], ['Handel', [['desk', 'Handels-Desk'], ['funded', 'Funded-Tracker'], ['journal', 'Journal'], ['stats', 'Statistik'], ['risk', 'Risk Command']]], ['Research', [['backtests', 'Backtests'], ['analyse', 'Analyse'], ['strategien', 'Strategien'], ['quant', 'Quant Lab'], ['regime', 'Marktregime'], ['research', 'Research Desk'], ['copilot', 'Intelligence Copilot']]], ['Wissen & Fortschritt', [['start', 'Übersicht'], ['handbuch', 'Handbuch'], ['tradingview', 'TradingView'], ['pass', 'Pass'], ['shop', 'Shop']]]];
+  J.NAV_ALL = [['Markt', [['markt', 'Marktüberblick'], ['briefing', 'Morning Briefing'], ['explorer', 'Markt-Explorer'], ['charts', 'Charts & Replay'], ['news', 'News Intelligence'], ['makro', 'Makroökonomie']]], ['Handel', [['desk', 'Handels-Desk'], ['funded', 'Funded-Tracker'], ['journal', 'Journal'], ['stats', 'Statistik'], ['risk', 'Risk Command']]], ['Research', [['backtests', 'Backtests'], ['analyse', 'Analyse'], ['strategien', 'Strategien'], ['quant', 'Quant Lab'], ['regime', 'Marktregime'], ['research', 'Research Desk'], ['copilot', 'Intelligence Copilot']]], ['Wissen & Fortschritt', [['start', 'Dashboard'], ['handbuch', 'Handbuch'], ['tradingview', 'TradingView'], ['pass', 'Pass'], ['shop', 'Shop']]]];
   const panel = (which, area) => {
     const p = el()?.querySelector('#bsPanel'); if (!p) return;
     if (!which || (p.dataset.k === which && which !== 'area' && !p.hidden)) { p.hidden = true; p.dataset.k = ''; return; }
@@ -11547,6 +11708,100 @@ V.copilot = el => {
     bindGo();
   };
 }
+
+/* Dashboard (Startseite): alles, was du gemacht hast, auf einen Blick – über den bisherigen Kennzahlen der Übersicht. */
+'use strict';
+const Dash = (() => {
+  const DAY = 86400, WEEK = 7 * DAY;
+  const now = () => Date.now() / 1000;
+  const fmtN = (n) => Number(n || 0).toLocaleString('de-DE');
+  const ago = (t) => {
+    const d = now() - t;
+    if (d < 90) return 'gerade eben'; if (d < 3600) return 'vor ' + Math.round(d / 60) + ' Min.';
+    if (d < DAY) return 'vor ' + Math.round(d / 3600) + ' Std.'; if (d < 2 * DAY) return 'gestern';
+    if (d < 7 * DAY) return 'vor ' + Math.round(d / DAY) + ' Tagen';
+    return new Date(t * 1000).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit' });
+  };
+  const weeks = (times, n = 8) => { const out = new Array(n).fill(0), t0 = now(); for (const t of times) { if (!t) continue; const k = Math.floor((t0 - t) / WEEK); if (k >= 0 && k < n) out[n - 1 - k]++; } return out; };
+  const spark = (vals) => { const m = Math.max(1, ...vals); return '<span class="dz-spark" aria-hidden="true">' + vals.map((v) => '<i style="height:' + Math.max(8, v / m * 100) + '%"' + (v ? ' class="on"' : '') + '></i>').join('') + '</span>'; };
+  const ICON = {
+    trade: '<path d="M3 14l4-4 3 3 7-7"/><path d="M13 6h4v4"/>',
+    sess: '<path d="M4 10a6 6 0 1 0 2-4.5"/><path d="M3.5 3v3.5H7"/><path d="M10 6.5V10l2.5 2"/>',
+    strat: '<circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/>',
+    note: '<path d="M5 2.5h6.5l4 4v11H5z"/><path d="M7.5 10h6M7.5 13.5h6"/>',
+    pass: '<path d="M10 2.5l6.5 3.75v7.5L10 17.5l-6.5-3.75v-7.5z"/>',
+    fund: '<circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="1.4"/><circle cx="10" cy="10" r="4"/>'
+  };
+  const ic = (k) => '<svg viewBox="0 0 20 20" aria-hidden="true">' + ICON[k] + '</svg>';
+
+  function data() {
+    const S = (typeof J !== 'undefined' && J.S) || {};
+    const sess = App.sessions || [], strat = App.strategies || [];
+    const journal = (App.journal || []).filter((t) => t && t.status !== 'open' && isFinite(t.pnl));
+    const created = new Map(sess.map((s) => [s.replayId, s.created]));
+    const when = (t) => (t.src === 'desk' ? t.exitT : created.get(t.replay)) || null; // Zeitpunkt, an dem DU gehandelt hast (nicht die Replay-Zeit)
+    const notes = S.notes || [], briefs = S.briefings || [], funded = S.funded || [];
+    return { sess, strat, journal, when, notes, briefs, funded };
+  }
+
+  function html() {
+    const d = data(), t0 = now(), wk = t0 - WEEK;
+    const tTimes = d.journal.map(d.when).filter(Boolean), sTimes = d.sess.map((s) => s.created).filter(Boolean);
+    const nTimes = [...d.notes.map((n) => n.t / 1000), ...d.briefs.map((b) => b.t / 1000)];
+    const lvl = (typeof Pass !== 'undefined' && Pass.last) ? Pass.last : null;
+    const tile = (go, k, val, lbl, sub, times) => {
+      const fresh = times ? times.filter((t) => t > wk).length : 0;
+      return '<button type="button" class="dz-tile" data-go="' + go + '"><span class="dz-ic dz-' + k + '">' + ic(k) + '</span>' +
+        '<span class="dz-v"><b>' + val + '</b><span class="dz-l">' + lbl + '</span></span><small>' + sub + (times ? ' · <em class="' + (fresh ? 'up' : '') + '">+' + fresh + ' diese Woche</em>' : '') + '</small>' + (times ? spark(weeks(times)) : '') + '</button>';
+    };
+    const ruled = d.strat.filter((s) => (s.rules || '').trim()).length;
+    let h = '<section class="dz" aria-label="Was du gemacht hast"><div class="dz-tiles">' +
+      tile('journal', 'trade', fmtN(d.journal.length), 'Trades', 'im Journal', tTimes) +
+      tile('backtests', 'sess', fmtN(d.sess.length), 'Backtest-Sessions', 'gesamt', sTimes) +
+      tile('strategien', 'strat', fmtN(d.strat.length), 'Strategien', ruled + ' mit Regeln', null) +
+      tile('research', 'note', fmtN(d.notes.length + d.briefs.length), 'Notizen & Briefings', 'Research Desk', nTimes) +
+      tile('pass', 'pass', lvl ? 'Level ' + lvl.level : '–', 'Pass', lvl ? fmtN(lvl.total) + ' XP' : 'XP für saubere Arbeit', null) +
+      tile('funded', 'fund', fmtN(d.funded.length), 'Funded-Konten', 'im Tracker', null) +
+      '</div>';
+
+    /* Aktivität der letzten 30 Tage */
+    const days = new Array(30).fill(0);
+    for (const t of [...sTimes, ...tTimes, ...nTimes]) { const k = Math.floor((t0 - t) / DAY); if (k >= 0 && k < 30) days[29 - k]++; }
+    const dmax = Math.max(1, ...days), active = days.filter(Boolean).length;
+    const lbl = (i) => new Date((t0 - (29 - i) * DAY) * 1000).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+    const act = '<section class="card dz-act"><div class="card-h"><h3>Aktivität</h3><span class="hint">' + active + ' von 30 Tagen aktiv</span></div>' +
+      '<div class="dz-cols" role="img" aria-label="Aktivität pro Tag, letzte 30 Tage">' + days.map((v, i) => '<i title="' + lbl(i) + ': ' + v + '" style="height:' + (v ? Math.max(8, v / dmax * 100) : 3) + '%"' + (v ? ' class="on"' : '') + '></i>').join('') + '</div>' +
+      '<div class="dz-axis"><span>' + lbl(0) + '</span><span>' + lbl(15) + '</span><span>heute</span></div></section>';
+
+    /* Zeitleiste: zuletzt gemacht */
+    const label = (t) => (t.sym || '') + ' ' + (t.side > 0 ? 'Long' : 'Short');
+    const res = (t) => (t.r != null ? (t.r >= 0 ? '+' : '') + App.fmtN(t.r, 2) + 'R' : App.fmtMoney(t.pnl, true));
+    const feed = [
+      ...d.sess.map((s) => ({ t: s.created, k: 'sess', txt: 'Backtest-Session ' + (s.sym || ''), sub: (s.strategy || 'ohne Strategie') + (s.net != null ? ' · ' + App.fmtMoney(s.net, true) : ''), go: 'backtests' })),
+      ...d.journal.filter(d.when).map((t) => ({ t: d.when(t), k: 'trade', txt: 'Trade ' + label(t), sub: (t.src === 'desk' ? 'Handels-Desk' : 'Replay') + ' · ' + res(t), cls: t.pnl >= 0 ? 'up' : 'dn', go: 'journal' })),
+      ...d.notes.map((n) => ({ t: n.t / 1000, k: 'note', txt: n.title || 'Notiz', sub: 'Research Desk', go: 'research' })),
+      ...d.briefs.map((b) => ({ t: b.t / 1000, k: 'note', txt: 'Morning Briefing', sub: 'Briefing', go: 'briefing' }))
+    ].filter((x) => x.t).sort((a, b) => b.t - a.t).slice(0, 7);
+    const tl = '<section class="card dz-feed"><div class="card-h"><h3>Zuletzt gemacht</h3><a href="#journal">Journal</a></div>' +
+      (feed.length ? '<div class="dz-list">' + feed.map((x) => '<button type="button" class="dz-row" data-go="' + x.go + '"><span class="dz-ic dz-' + x.k + '">' + ic(x.k) + '</span><span class="dz-m"><b>' + esc(x.txt) + '</b><small class="' + (x.cls || '') + '">' + esc(x.sub) + '</small></span><time>' + ago(x.t) + '</time></button>').join('') + '</div>'
+        : '<p class="hint">Noch nichts passiert – starte eine Backtest-Session oder einen Trade im Handels-Desk. Alles, was du machst, erscheint hier.</p>') + '</section>';
+    return h + '<div class="dz-two">' + act + tl + '</div></section>';
+  }
+
+  function render() {
+    const body = document.getElementById('stBody'); if (!body) return;
+    const old = body.querySelector('.dz'); if (old) old.remove();
+    body.insertAdjacentHTML('afterbegin', html());
+    body.querySelectorAll('.dz [data-go]').forEach((b) => b.addEventListener('click', () => { location.hash = '#' + b.dataset.go; }));
+    const name = (typeof J !== 'undefined' && J.S && J.S.settings && J.S.settings.name) || '';
+    const h = new Date().getHours(), greet = h < 11 ? 'Guten Morgen' : h < 18 ? 'Hallo' : 'Guten Abend';
+    const t = document.querySelector('#view-start .st-head h1');
+    if (t) t.textContent = name ? greet + ', ' + name : 'Dashboard';
+  }
+  const orig = App.renderStart;
+  App.renderStart = function () { const r = orig.apply(this, arguments); try { render(); } catch (e) { console.warn('Dashboard', e); } return r; };
+  return { render };
+})();
 
 /* Edge Lab Replay — Bedienung, Bereiche, Routing */
 'use strict';
@@ -12491,8 +12746,23 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
   }, { passive: true });
 })();
 
+/* Helles Design an/aus (Einstellungen → Konto & Risiko) */
+(() => {
+  const box = document.getElementById('setLight'); if (!box) return;
+  const on = () => { try { return localStorage.getItem('elr.light') !== '0'; } catch { return true; } };
+  const sync = () => { box.checked = on(); };
+  sync(); document.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('#btnSettings')) setTimeout(sync, 0); }, true);
+  box.addEventListener('change', () => {
+    try { localStorage.setItem('elr.light', box.checked ? '1' : '0'); } catch { }
+    const root = document.documentElement;
+    if (box.checked) { root.setAttribute('data-light', ''); root.removeAttribute('data-glass'); }
+    else { root.removeAttribute('data-light'); if (typeof Space !== 'undefined' && Space.glassOn()) Space.setGlass(true); }
+    try { readColors(); App.requestRender(); if (App.view === 'start') App.renderStart(); } catch { }
+  });
+})();
 
-Object.assign(window, {$, $$, APP_VERSION, Analysis, App, Archive, Binance, COL, CRYPTO_START, Chart, DEFAULTS, EMPTY_ART, FONT_MONO, FONT_UI, GLOSSARY, Gallery, Guard, HB, HBFig, HB_GLOSSAR, HB_SHOW, Handbook, IDB, Install, JT_VIEWS, Lightbox, Loader, MIN_BAR_W, MISTAKES, MORE_VIEWS, NewSess, Onboard, Pass, PassCore, Photos, RIGHT_PAD_BARS, SESS_FLAGS, SEV_LBL, Sheet, Shop, ShopCore, Start, Store, TV, TW, Tips, UI, Update, VIEWS, WD, alpha, bindTabs, closeModal, deepMerge, emptyState, esc, fmtVol, freshDefaults, getPath, hbBox, hbBtns, hbL, hbSetup, lastFocus, localMinute, openModal, raf2, readColors, selectTab, sessionFlagBits, setBusy, setPath, skeleton, store, syncModalState, textW});
+
+Object.assign(window, {$, $$, APP_VERSION, Analysis, App, Archive, Binance, COL, CRYPTO_START, Chart, DEFAULTS, Dash, EMPTY_ART, FONT_MONO, FONT_UI, GLOSSARY, Gallery, Guard, HB, HBFig, HB_GLOSSAR, HB_SHOW, Handbook, IDB, Install, JT_VIEWS, Lightbox, Loader, MIN_BAR_W, MISTAKES, MORE_VIEWS, NewSess, Onboard, Pass, PassCore, Photos, RIGHT_PAD_BARS, SESS_FLAGS, SEV_LBL, Sheet, Shop, ShopCore, Start, Store, TV, TW, Tips, UI, Update, VIEWS, WD, alpha, bindTabs, closeModal, deepMerge, emptyState, esc, fmtVol, freshDefaults, getPath, hbBox, hbBtns, hbL, hbSetup, lastFocus, localMinute, openModal, raf2, readColors, selectTab, sessionFlagBits, setBusy, setPath, skeleton, store, syncModalState, textW});
 </script>
 <script>
 if ('serviceWorker' in navigator && location.protocol === 'https:') addEventListener('load', () => {

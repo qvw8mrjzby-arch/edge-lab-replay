@@ -1231,8 +1231,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
       <span class="brand-old">Edge Lab <i>Replay</i></span>
     </div>
     <nav id="mainNav" aria-label="Bereiche">
-      <a href="#start" data-view="start" title="Übersicht"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="9" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="14" width="6" height="3" rx="1"/></svg><span class="full">Übersicht</span><span class="short">Start</span></a>
-      <a href="#brain" data-view="brain" class="nav-x nav-brain" title="Second Brain"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="2.6" fill="currentColor"/><ellipse cx="10" cy="10" rx="8" ry="2.2"/><circle cx="10" cy="10" r="4.6" opacity=".55"/></svg><span>Second Brain</span></a>
+      <a href="#start" data-view="start" title="Dashboard"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="9" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="14" width="6" height="3" rx="1"/></svg><span class="full">Dashboard</span><span class="short">Start</span></a>
       <span class="nav-h">Markt</span>
       <a href="#markt" data-view="markt" class="nav-x" title="Marktüberblick"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="6" height="6" rx="1.2"/><rect x="11.5" y="3.5" width="6" height="3.5" rx="1.2"/><rect x="11.5" y="9.5" width="6" height="7" rx="1.2"/><rect x="2.5" y="12" width="6" height="4.5" rx="1.2"/></svg><span>Marktüberblick</span></a>
       <a href="#briefing" data-view="briefing" class="nav-x" title="Morning Briefing"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 2.5h6l4 4v11h-10z"/><path d="M11.5 2.5v4h4"/></svg><span>Morning Briefing</span></a>
@@ -1259,6 +1258,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
       <a href="#tradingview" data-view="tradingview" class="nav-x" title="TradingView"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.5"/><path d="M7 17h6M10 14v3M5 11l3-3 2.5 2L15 6"/></svg><span class="full">TradingView</span><span class="short">TV-Chart</span></a>
       <a href="#pass" data-view="pass" class="nav-x" title="Pass"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5l6.5 3.75v7.5L10 17.5l-6.5-3.75v-7.5z"/><path d="M10 7l2.2 1.3v2.4L10 12l-2.2-1.3V8.3z"/></svg><span>Pass</span></a>
       <a href="#shop" data-view="shop" class="nav-x" title="Shop"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 7h12l-1 10H5z"/><path d="M7 7V5.5a3 3 0 016 0V7"/></svg><span>Shop</span></a>
+      <a href="#brain" data-view="brain" class="nav-x nav-brain" title="Universum (Second Brain)"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="2.6" fill="currentColor"/><ellipse cx="10" cy="10" rx="8" ry="2.2"/><circle cx="10" cy="10" r="4.6" opacity=".55"/></svg><span>Universum</span></a>
       <button type="button" class="nav-more" id="navMore" aria-haspopup="true" aria-expanded="false" aria-controls="moreMenu"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="4.5" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="10" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10" r="1.4" fill="currentColor" stroke="none"/></svg><span>Mehr</span></button>
     </nav>
     <span class="hspace"></span>
@@ -1274,7 +1274,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
   <div id="views">
   <section class="view page" id="view-start" hidden aria-label="Übersicht">
     <div class="page-in">
-      <div class="st-head"><div><h1>Übersicht</h1><p class="page-sub" id="stSub">Dein Backtesting auf einen Blick.</p></div><span class="hspace"></span><button class="btn" id="stInstall" hidden>Als App installieren</button></div>
+      <div class="st-head"><div><h1>Dashboard</h1><p class="page-sub" id="stSub">Dein Backtesting auf einen Blick.</p></div><span class="hspace"></span><button class="btn" id="stInstall" hidden>Als App installieren</button></div>
       <p class="note" id="stIos" hidden>Als App nutzen: in Safari unten auf <b>Teilen</b> tippen, dann <b>Zum Home-Bildschirm</b>.</p>
       <div class="resume-card" id="stResume" hidden></div>
       <p class="note warn" id="stBackup" hidden></p>
@@ -1673,6 +1673,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
         </div>
         <p class="hint">Werden Stop und Ziel in derselben Basis-Kerze berührt, weiß niemand, was zuerst kam. „Konservativ“ rechnet mit dem schlechteren Fall – so überschätzt du deine Strategie nicht. Mit 1-Minuten-Daten passiert das selten.</p>
         <label class="ck"><input type="checkbox" data-s="photos"> Automatische Chart-Fotos bei Einstieg und Ausstieg</label>
+        <label class="ck"><input type="checkbox" id="setLight"> Helles Design (Apple-Look) – aus = dunkles Glas-Design</label>
       </fieldset>
       </div>
       <div class="tabpanel" role="tabpanel" data-panel="kosten" hidden>
