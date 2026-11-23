@@ -58,6 +58,7 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Build unter Windows: `set PYTHONUTF8=1` vor `python build.py` (sonst cp1252-Fehler).
 - Dashboard v2 (`src/dash.js`, Styles am Ende von `src/clean.css`): Aktionsleiste oben (Backtest-Session starten → NewSess.open, Weitermachen → Start.resume, Journal, Jarvis), „Wie läuft's?“ (7 Tage vs. Woche davor: Sessions, Trades, R, Trefferquote, Disziplin, Stop-Quote, Serie aktiver Tage), „Level & Wochenziele“ aus Pass.last. `Dash.mount(el, go)` setzt dasselbe Dashboard ins Second-Brain-Home (`jt-space.js`, Panel `home` 1240 px, dunkles Glas `.bs-dash`); Aktionen tauchen dort ins Terminal ein und öffnen dann den Dialog. Heute-Karte jetzt per Klasse `.dz-today` (keine doppelte ID).
 - Installierte App (display-mode standalone): frischer Start öffnet immer #start (`jt-hooks.js`).
+- 23.11.2026: Clean-Glas, KI-Fix, Termine, Dashboard v2 live auf index.html; sw.js Cache v15.
 
 ## Daten
 - Archiv: `data/<ID>/<JJJJ-MM>.csv.gz` (t,o,h,l,c,v; t = Unix-Sek. UTC), Index `data/index.json`. IDs: NAS100, US500, US30, XAUUSD, GER40 (Dukascopy-Bid-Kurse, Index-CFDs, Delta geschätzt). Wird von der GitHub Action `.github/workflows/daten.yml` (Skript `tools/fetch-data.mjs`) alle 3 Stunden aktualisiert.
