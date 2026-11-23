@@ -1,0 +1,143 @@
+
+/* ==========================================================================
+   Clean-Glas (23.11.2026, Claude) – nur Optik im hellen Modus (:root[data-light]).
+   Ruhigerer Hintergrund, einheitliches Milchglas, Hover ohne Springen:
+   Karten bekommen nur einen feinen Rand, etwas mehr Schatten und einen weichen weißen Lichtpunkt.
+   Dunkler Modus und Shop-Designs bleiben unverändert. Wird von build.py als letztes eingebunden.
+   ========================================================================== */
+:root[data-light] {
+  --cg-card: rgba(255,255,255,.64);
+  --cg-card-hover: rgba(255,255,255,.74);
+  --cg-hair: 0 0 0 .5px rgba(0,0,0,.06);
+  --cg-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 0 0 .5px rgba(0,0,0,.05), 0 1px 2px rgba(0,0,0,.03), 0 10px 30px -16px rgba(31,38,80,.16);
+  --cg-shadow-hover: inset 0 1px 0 rgba(255,255,255,1), 0 0 0 .5px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.03), 0 18px 42px -18px rgba(31,38,80,.24);
+  --cg-ease: cubic-bezier(.25,.8,.25,1);
+}
+
+/* Ruhiger Hintergrund: fast weiß, nur zwei sehr zarte Farbschleier statt vier bunter Flecken */
+:root[data-light] body {
+  background-color: #f3f4f8;
+  background-image:
+    radial-gradient(60% 55% at 0% 0%, rgba(10,132,255,.13), transparent 70%),
+    radial-gradient(55% 50% at 100% 0%, rgba(175,82,222,.09), transparent 70%),
+    radial-gradient(70% 60% at 50% 110%, rgba(255,255,255,.9), transparent 70%),
+    linear-gradient(180deg, #f6f7fa 0%, #eef0f5 100%);
+  background-attachment: fixed;
+}
+
+/* Einheitliches Milchglas */
+:root[data-light] body :is(.card, .strat-card, .welcome, .sess, .jt .card, .jt .tile, .pass-hero, .an-hero, .empty-state, .hero, .dz-tile) {
+  background-color: var(--cg-card);
+  border-color: rgba(255,255,255,.8);
+  box-shadow: var(--cg-shadow);
+  -webkit-backdrop-filter: blur(28px) saturate(170%); backdrop-filter: blur(28px) saturate(170%);
+  transition: background-color .3s var(--cg-ease), border-color .3s var(--cg-ease), box-shadow .3s var(--cg-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /* Hover: nichts springt mehr – nur Rand, Fläche und Schatten werden einen Hauch kräftiger */
+  :root[data-light] body :is(.card, .strat-card, .welcome, .sess, .jt .card, .jt .tile, .pass-hero, .kpis, .si, .steps > *, .jt .news article, .shop-grid > *, .dz-tile, .jx-c.has):hover {
+    transform: none;
+    background-color: var(--cg-card-hover);
+    border-color: rgba(255,255,255,.95);
+    box-shadow: var(--cg-shadow-hover);
+  }
+  :root[data-light] body :is(.jt .kpi, .sr-item, .jt .pos):hover { transform: none; }
+  /* Lichtpunkt: weiß und weich statt blau */
+  :root[data-light] .a-spot::before {
+    background: radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,.65), transparent 55%);
+    transition: opacity .35s var(--cg-ease);
+  }
+  /* Knöpfe: kein Hochspringen, klarer Hover- und Druck-Zustand */
+  :root[data-light] body :is(.page .btn, .jt .btn):hover:not(:disabled) { transform: none; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 6px 14px -10px rgba(0,0,0,.25); }
+  :root[data-light] body :is(.btn, .jt .btn):active:not(:disabled) { transform: scale(.98); transition-duration: .08s; }
+  :root[data-light] header.top #mainNav a:hover svg { transform: none; }
+  /* Listen und Tabellen: weiche Hervorhebung */
+  :root[data-light] body :is(.dz-row, .jx-row, .jx-li, .dz-e):hover { background: rgba(0,0,0,.035); }
+  :root[data-light] .jt tr.jrow:hover td, :root[data-light] .jt tr.click:hover td, :root[data-light] .tbl tbody tr:hover { background: rgba(0,113,227,.045); }
+  :root[data-light] .srow:hover { background: rgba(0,0,0,.03); }
+  /* Diagramm-Balken nicht aufblitzen lassen */
+  :root[data-light] .dz-cols i:hover { filter: brightness(1.06); }
+}
+
+/* Kopfleiste, Tabs und Seitenleiste auf dasselbe Glas */
+@media (min-width: 861px) and (min-height: 501px) {
+  :root[data-light] header.top { background: rgba(255,255,255,.5); border-color: rgba(0,0,0,.05); }
+}
+:root[data-light] body.jv-tabs #jvTabs { background: rgba(255,255,255,.6); border-bottom-color: rgba(0,0,0,.05); }
+:root[data-light] .jvt-tabs a { transition: background-color .2s var(--cg-ease), color .2s var(--cg-ease); }
+
+/* Hinweis-Leiste und Jarvis-Insight sauberer */
+:root[data-light] .jt.jt-bar { background: linear-gradient(100deg, rgba(255,248,230,.9), rgba(255,255,255,.7) 60%); border-color: rgba(201,138,18,.22); }
+
+/* Dashboard-Kacheln: Zahlen etwas ruhiger, Icons mit weichem Schatten */
+:root[data-light] .dz-tile .dz-ic { box-shadow: 0 6px 14px -8px rgba(0,0,0,.35); }
+:root[data-light] .dz-tile { transition: background-color .3s var(--cg-ease), box-shadow .3s var(--cg-ease), border-color .3s var(--cg-ease); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-light] * { transition-duration: .01s !important; }
+}
+
+/* ==========================================================================
+   Dashboard v2 (23.11.2026): Aktionsleiste, „Wie läuft's“, Level & Wochenziele – gilt in allen Modi.
+   Im Second Brain (.bs-dash) dunkles Glas über dem schwarzen Loch.
+   ========================================================================== */
+.dz-actions { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr)); gap: 12px; }
+.dz-act-btn { display: flex; align-items: center; gap: 12px; text-align: left; padding: 14px 16px; border-radius: 18px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font: inherit; cursor: pointer; min-width: 0;
+  transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease, filter .2s ease; }
+.dz-act-btn:active { transform: scale(.985); }
+.dz-ab-ic { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; flex: none; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+.dz-ab-ic svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.dz-ab-t { display: grid; gap: 2px; min-width: 0; }
+.dz-ab-t b { font-size: 15px; font-weight: 650; letter-spacing: -.01em; }
+.dz-ab-t small { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dz-act-btn.pri { background: linear-gradient(135deg, #0a84ff, #0060df); border-color: transparent; color: #fff; box-shadow: 0 10px 28px -12px rgba(10,132,255,.7); }
+.dz-act-btn.pri .dz-ab-ic { background: rgba(255,255,255,.2); color: #fff; }
+.dz-act-btn.pri .dz-ab-ic svg { fill: currentColor; stroke: none; }
+.dz-act-btn.pri small { color: rgba(255,255,255,.82); }
+.dz-act-btn.gold .dz-ab-ic { background: rgba(242,193,78,.18); color: #c98a12; }
+@media (hover: hover) and (pointer: fine) {
+  .dz-act-btn:hover { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); box-shadow: 0 8px 22px -14px rgba(0,0,0,.35); }
+  .dz-act-btn.pri:hover { filter: brightness(1.08); box-shadow: 0 14px 34px -12px rgba(10,132,255,.8); }
+}
+.dz-two-a { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+.dz-m2s { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.dz-m2 { display: grid; gap: 2px; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--text) 4%, transparent); min-width: 0; }
+.dz-m2 span { font-size: 12px; color: var(--muted); }
+.dz-m2 b { font-size: 22px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.dz-m2 b.up { color: var(--bull); } .dz-m2 b.dn { color: var(--bear); }
+.dz-dl { font-style: normal; font-size: 12px; font-weight: 600; color: var(--faint); font-variant-numeric: tabular-nums; }
+.dz-dl.up { color: var(--bull); } .dz-dl.dn { color: var(--bear); }
+.dz-streak { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, #ff9f0a 9%, transparent); }
+.dz-streak .fl { background: rgba(255,159,10,.18); color: #ff9f0a; }
+.dz-streak b { display: block; font-size: 14px; } .dz-streak small { color: var(--muted); font-size: 12px; }
+.dz-lv { display: grid; gap: 4px; margin-bottom: 14px; }
+.dz-lv b { font-size: 20px; font-weight: 700; letter-spacing: -.02em; } .dz-lv small { color: var(--muted); font-size: 12px; }
+.dz-bar { display: block; height: 8px; border-radius: 99px; background: color-mix(in srgb, var(--text) 8%, transparent); overflow: hidden; margin-top: 4px; }
+.dz-bar.sm { height: 5px; grid-column: 2; margin-top: 2px; }
+.dz-bar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #5e5ce6, #0a84ff); transition: width .8s cubic-bezier(.2,.8,.2,1); }
+.dz-gl { display: grid; gap: 10px; }
+.dz-g { display: grid; grid-template-columns: 26px minmax(0, 1fr); column-gap: 10px; align-items: center; }
+.dz-chk { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 12px; font-weight: 700; grid-row: 1 / 3; }
+.dz-g.done .dz-chk { background: var(--bull); border-color: var(--bull); color: #fff; }
+.dz-g.done .dz-bar i { background: var(--bull); }
+.dz-gt { display: flex; justify-content: space-between; gap: 8px; min-width: 0; }
+.dz-gt b { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .dz-gt small { color: var(--muted); font-size: 12px; white-space: nowrap; }
+@media (max-width: 1100px) { .dz-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); } .dz-two-a { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 560px) { .dz-actions { grid-template-columns: minmax(0, 1fr); } .dz-m2s { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Hell: Aktionsknöpfe als Milchglas */
+:root[data-light] body .dz-act-btn:not(.pri) { background: rgba(255,255,255,.64); border-color: rgba(255,255,255,.8); box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 0 0 .5px rgba(0,0,0,.05), 0 10px 30px -16px rgba(31,38,80,.16); -webkit-backdrop-filter: blur(28px) saturate(170%); backdrop-filter: blur(28px) saturate(170%); }
+@media (hover: hover) and (pointer: fine) { :root[data-light] body .dz-act-btn:not(.pri):hover { background: rgba(255,255,255,.78); box-shadow: inset 0 1px 0 #fff, 0 0 0 .5px rgba(0,0,0,.08), 0 18px 42px -18px rgba(31,38,80,.24); } }
+
+/* Second Brain: Home-Panel breiter, Dashboard in dunklem Glas über dem schwarzen Loch */
+.bs-panel[data-k="home"] { width: min(1240px, calc(100vw - 32px)); }
+.bs-dash { --text: #f2f2f7; --muted: rgba(235,235,245,.6); --faint: rgba(235,235,245,.35); --line: rgba(255,255,255,.1); --panel: rgba(255,255,255,.04); --accent: #0a84ff; --a-hl: rgba(255,255,255,.06); color: #f2f2f7; margin-top: 14px; }
+.bs-dash .dz { display: grid; gap: 14px; }
+:root .bs-dash :is(.card, .dz-tile, .dz-act-btn:not(.pri)) { background: rgba(255,255,255,.045) !important; border: 1px solid rgba(255,255,255,.09) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.06) !important; color: #f2f2f7; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+@media (hover: hover) and (pointer: fine) { :root .bs-dash :is(.card, .dz-tile, .dz-act-btn:not(.pri)):hover { background: rgba(255,255,255,.075) !important; border-color: rgba(255,255,255,.16) !important; transform: none !important; } }
+.bs-dash .card { padding: 16px; border-radius: 16px; }
+.bs-dash .card-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.bs-dash .card-h h3 { margin: 0; font-size: 15px; }
+.bs-dash .card-h a, .bs-dash a.hint { color: #64d2ff; }
+.bs-dash .hint { color: rgba(235,235,245,.55); font-size: 12px; }

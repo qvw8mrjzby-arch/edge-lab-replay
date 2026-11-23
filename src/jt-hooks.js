@@ -137,6 +137,12 @@
     /* Helles Apple-Design ist Standard (elr.light = '0' schaltet zurück auf dunkel/Glas); Start = Dashboard, das Universum ist nur noch ein Tab */
     if (J.lightOn()) { document.documentElement.setAttribute('data-light', ''); try { readColors(); App.requestRender(); } catch { } }
     if (typeof Space !== 'undefined') { if (Space.glassOn() && !J.lightOn()) Space.setGlass(true); if (!location.hash || location.hash === '#') history.replaceState(null, '', '#start'); }
+    /* 23.11.2026: Als App installiert (PWA) öffnet ein frischer Start immer das Dashboard – nicht die zuletzt offene Seite */
+    try {
+      const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+      const nav = performance.getEntriesByType('navigation')[0];
+      if (standalone && nav && nav.type === 'navigate' && location.hash !== '#start' && !location.hash.startsWith('#brainimport')) history.replaceState(null, '', '#start');
+    } catch { }
     document.querySelector('header.top .brand')?.addEventListener('click', () => { location.hash = '#start'; });
     const f = document.querySelector('#tradeModal .dlg-f');
     if (f && !document.getElementById('tdJarvis')) { const b = document.createElement('button'); b.className = 'btn jt-gold'; b.id = 'tdJarvis'; b.type = 'button'; b.textContent = 'Jarvis bewerten'; b.onclick = () => reviewTrade(UI._trade); const show = document.getElementById('tdShow'); show ? f.insertBefore(b, show) : f.append(b); }

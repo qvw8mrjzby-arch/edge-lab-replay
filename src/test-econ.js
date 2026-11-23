@@ -7,11 +7,13 @@ const find = (k, y, m, d) => E.events().find((e) => e.kind === k && e.y === y &&
 const chk = E.check();
 console.log('Termine:', chk.n, JSON.stringify(chk.count), chk.first, '…', chk.last);
 for (const w of chk.warn) console.log('  Hinweis:', w);
-eq('Anzahl CPI', chk.count.CPI, 81); eq('Anzahl NFP', chk.count.NFP, 81); eq('Anzahl FOMC', chk.count.FOMC, 57);
+eq('Anzahl CPI', chk.count.CPI, 95); eq('Anzahl NFP', chk.count.NFP, 95); eq('Anzahl FOMC', chk.count.FOMC, 66);
+eq('Nachtrag: CPI 10.12.2026 8:30 ET (EST)', iso(find('CPI', 2026, 12, 10).t), '2026-12-10T13:30:00.000Z');
+eq('Nachtrag: FOMC 9.12.2026 14:00 ET', iso(find('FOMC', 2026, 12, 9).t), '2026-12-09T19:00:00.000Z');
 eq('keine Umrechnungs-/Wochenendfehler', chk.warn.filter((w) => !/nicht Freitag|nicht Mittwoch/.test(w)), []);
 /* bekannte, belegte Ausnahmen (Feiertage, Stillstand 2025/26, Wahl 2024) */
 eq('Wochentag-Ausnahmen', chk.warn.filter((w) => /nicht/.test(w)).length, 8);
-eq('Zeitraum', [chk.first.slice(0, 7), chk.last.slice(0, 7)], ['2020-01', '2026-10']);
+eq('Zeitraum', [chk.first.slice(0, 7), chk.last.slice(0, 7)], ['2020-01', '2027-12']);
 /* Stichproben (Sommer-/Winterzeit) */
 eq('CPI 10.11.2022 8:30 ET (EST)', iso(find('CPI', 2022, 11, 10).t), '2022-11-10T13:30:00.000Z');
 eq('NFP 2.2.2024 8:30 ET', iso(find('NFP', 2024, 2, 2).t), '2024-02-02T13:30:00.000Z');

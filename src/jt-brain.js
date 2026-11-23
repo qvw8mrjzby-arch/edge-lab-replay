@@ -3,8 +3,28 @@
 {
   const JV = window.Jarvis = { state: 'idle', sample: null, tts: null, mcp: null };
   const AI_KEY = 'jt.ai';
-JV.ai = () => { try { return Object.assign({ provider: 'gemini', gemini: '', gmodel: 'gemini-2.5-flash', openrouter: '', omodel: 'nvidia/nemotron-3.5-super-vl:free', search: true }, JSON.parse(localStorage.getItem(AI_KEY) || '{}')); } catch { return { provider: 'gemini', gemini: '', gmodel: 'gemini-2.5-flash', openrouter: '', omodel: 'nvidia/nemotron-3.5-super-vl:free', search: true }; } };
-JV.saveAi = a => { try { localStorage.setItem(AI_KEY, JSON.stringify(a)); } catch { } };
+  /* 23.11.2026: gemini-2.5-flash ist abgeschaltet → Standard ist ein aktuelles, schnelles Modell mit großem Gratis-Limit */
+  const AI_DEF = () => ({ provider: 'gemini', gemini: '', gmodel: 'gemini-3.5-flash-lite', openrouter: '', omodel: 'nvidia/nemotron-3.5-super-vl:free', search: true, sync: false });
+  /* Key auf allen Geräten: liegt (nur wenn gewünscht) zusätzlich in App.settings.jt.settings.aiSync → Supabase, nur für dein Konto lesbar (RLS) */
+  const synced = () => { try { return (typeof App !== 'undefined' && App.settings?.jt?.settings?.aiSync) || null; } catch { return null; } };
+JV.ai = () => {
+  let a; try { a = Object.assign(AI_DEF(), JSON.parse(localStorage.getItem(AI_KEY) || '{}')); } catch { a = AI_DEF(); }
+  if (!a.gemini && !a.openrouter) { const s = synced(); if (s && (s.gemini || s.openrouter)) { a.gemini = s.gemini || ''; a.openrouter = s.openrouter || ''; a.sync = true; if (!a.gemini && a.openrouter) a.provider = 'openrouter'; } }
+  return a;
+};
+JV.saveAi = a => {
+  try { localStorage.setItem(AI_KEY, JSON.stringify(a)); } catch { }
+  try {
+    if (typeof J === 'undefined' || !J.S?.settings) return;
+    const cur = J.S.settings.aiSync;
+    if (a.sync && (a.gemini || a.openrouter)) {
+      if (cur && cur.gemini === (a.gemini || '') && cur.openrouter === (a.openrouter || '')) return;
+      J.S.settings.aiSync = { gemini: a.gemini || '', openrouter: a.openrouter || '' };
+    } else if (a.sync && cur) delete J.S.settings.aiSync;   /* Key wurde abgelehnt/gelöscht → auch auf den anderen Geräten weg */
+    else return;
+    J.store.save('settings');
+  } catch { }
+};
 JV.ready = (async () => {
   if (!window.claude?.use) return;
   try { JV.sample = await claude.use('sample'); } catch { }
@@ -14,7 +34,7 @@ JV.ready = (async () => {
 JV.setState = s => { JV.state = s; J.emit('orb', s); };
 /* Welches Gehirn denkt gerade? */
 JV.brain = () => { if (JV.sample) return 'claude'; const a = JV.ai(); if (a.provider === 'gemini' && a.gemini) return 'gemini'; if (a.provider === 'openrouter' && a.openrouter) return 'openrouter'; if (a.gemini) return 'gemini'; if (a.openrouter) return 'openrouter'; return null; };
-JV.brainLabel = () => ({ claude: 'Claude', gemini: 'Gemini (dein Key)', openrouter: 'OpenRouter (dein Key)' })[JV.brain()] || 'nicht verbunden';
+JV.brainLabel = () => { const b = JV.brain(), l = ({ claude: 'Claude', gemini: 'Gemini (dein Key)', openrouter: 'OpenRouter (dein Key)' })[b]; if (!l) return 'nicht verbunden'; const m = JV.lastModel || (b === 'gemini' ? JV.ai().gmodel : b === 'openrouter' ? JV.ai().omodel : ''); return m && b !== 'claude' ? l + ' · ' + m : l; };
 JV.canTools = () => JV.brain() === 'claude';
 
 /* ---------- Goldener Orb ---------- */
@@ -86,44 +106,71 @@ JV.err = e => {
   const c = e?.code;
   if (c === 'nobrain') return 'Jarvis hat noch kein Gehirn: Trage im Copilot unter „Jarvis verbinden“ deinen kostenlosen Gemini-Key (Google AI Studio) oder OpenRouter-Key ein.';
   if (c === 'not_granted') return 'Jarvis darf auf dieser Seite noch nicht denken – erlaube „Claude fragen“.';
-  if (c === 'rate_limited' || c === 429) return 'Das kostenlose Limit ist gerade erreicht. Versuch es in einer Minute erneut.';
+  if (c === 'rate_limited' || c === 429) return 'Alle kostenlosen Modelle sind gerade am Limit. Meist geht es nach einer Minute wieder; das Tageslimit von Google setzt sich um 9 Uhr (deutsche Zeit) zurück.';
+  if (c === 'timeout') return 'Jarvis hat zu lange gebraucht (über 40 Sekunden) – auch die Ausweich-Modelle. Prüf kurz dein Internet und versuch es nochmal.';
+  if (c === 'empty') return 'Das Modell hat eine leere Antwort geschickt – auch nach dem Wechsel auf andere Modelle. Versuch es gleich nochmal.';
   if (c === 'key') return 'Der API-Key wurde abgelehnt – bitte im Copilot prüfen.';
   return 'Jarvis konnte nicht antworten' + (e?.message ? ': ' + String(e.message).slice(0, 160) : c ? ` (${c})` : '') + '.';
 };
   const toMsgs = input => Array.isArray(input) ? input : [{ role: 'user', content: String(input) }];
   const extractJSON = t => { const s = String(t || ''); const a = s.indexOf('{'), b = s.lastIndexOf('}'); if (a < 0 || b < a) throw { code: 'json', message: 'Keine JSON-Antwort' }; return JSON.parse(s.slice(a, b + 1)); };
+  /* fetch mit Zeitlimit (23.11.2026): hängt eine Anfrage, wird sie nach TIMEOUT abgebrochen statt ewig zu laden.
+     Bricht der Aufrufer selbst ab (o.signal), geht dieser Abbruch unverändert weiter. */
+  const TIMEOUT = 40000;
+  async function fetchT(url, init, outer) {
+    const c = new AbortController(); let timedOut = false;
+    const t = setTimeout(() => { timedOut = true; c.abort(); }, TIMEOUT);
+    const fwd = () => c.abort();
+    if (outer) { if (outer.aborted) c.abort(); else outer.addEventListener('abort', fwd, { once: true }); }
+    try { return await fetch(url, Object.assign({}, init, { signal: c.signal })); }
+    catch (e) { if (timedOut) throw { code: 'timeout' }; throw e; }
+    finally { clearTimeout(t); if (outer) outer.removeEventListener('abort', fwd); }
+  }
+  const errMsg = async (r) => { try { return (await r.clone().json()).error?.message || ''; } catch { return ''; } };
+  /* Ausweich-Kette: zuerst dein gemerktes Modell, dann aktuelle schnelle Modelle (jedes hat ein eigenes Gratis-Limit) */
+  const G_CHAIN = ['gemini-3.5-flash-lite', 'gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-3.5-flash', 'gemini-3.1-flash-lite'];
   async function gemini(msgs, o) {
   const a = JV.ai();
   const body = { contents: msgs.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })), generationConfig: { temperature: .5 } };
     if (o.images?.length) body.contents[body.contents.length - 1].parts.push(...o.images.map(im => ({ inline_data: { mime_type: im.mime, data: im.b64 } })));
   if (o.json) body.generationConfig.responseMimeType = 'application/json';
   else if (o.search && a.search) body.tools = [{ google_search: {} }];
-  const call = async (b) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(a.gmodel || 'gemini-2.5-flash')}:generateContent?key=${encodeURIComponent(a.gemini)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b), signal: o.signal });
-  let r = await call(body);
-  if (!r.ok && body.tools) { delete body.tools; r = await call(body); }
-  /* Modell abgeschaltet oder unbekannt (404 bzw. 400 „not found/not supported“)? Dann automatisch neuere Modelle probieren und das funktionierende merken */
-  const gone = async (res) => { if (res.status === 404) return true; if (res.status !== 400) return false; try { const m = (await res.clone().json()).error?.message || ''; return /not found|not supported|deprecated|no longer/i.test(m); } catch { return false; } };
-  if (await gone(r)) {
-    for (const m of ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.0-flash'].filter(x => x !== a.gmodel)) {
-      const r2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(a.gemini)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: o.signal });
-      if (r2.ok || !(await gone(r2))) { r = r2; if (r2.ok) { a.gmodel = m; JV.saveAi(a); } break; }
+  const call = (m, b) => fetchT(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(m)}:generateContent?key=${encodeURIComponent(a.gemini)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) }, o.signal);
+  const models = [...new Set([a.gmodel || G_CHAIN[0], ...G_CHAIN])];
+  let last = null;
+  for (const m of models) {
+    let r;
+    try {
+      r = await call(m, body);
+      if (!r.ok && body.tools && r.status !== 429) { delete body.tools; r = await call(m, body); }   /* Websuche fällt als Erstes weg */
+    } catch (e) { if (e?.code === 'timeout') { last = e; delete body.tools; continue; } throw e; }
+    if (r.ok) {
+      const j = await r.json(); const cand = j.candidates?.[0];
+      let text = (cand?.content?.parts || []).map(p => p.text || '').join('');
+      if (!text.trim()) { last = { code: 'empty' }; continue; }   /* leere Antwort (z. B. Denk-Budget aufgebraucht) → nächstes Modell */
+      if (m !== a.gmodel) { a.gmodel = m; JV.saveAi(a); }
+      JV.lastModel = m;
+      const src = (cand?.groundingMetadata?.groundingChunks || []).map(c => c.web).filter(Boolean);
+      if (src.length && !o.json) text += '\n\n### Quellen der Websuche\n' + src.slice(0, 6).map(w => `- [${(w.title || w.uri).replace(/[\[\]]/g, '')}](${w.uri})`).join('\n');
+      return text;
     }
+    const msg = await errMsg(r);
+    if (r.status === 404 || (r.status === 400 && /not found|not supported|deprecated|no longer/i.test(msg))) { last = { code: r.status, message: 'Modell nicht verfügbar' }; continue; }
+    if (r.status === 429) { last = { code: 429 }; continue; }
+    if (r.status >= 500) { last = { code: r.status, message: 'Gemini überlastet (' + r.status + ')' }; continue; }
+    if (r.status === 400 || r.status === 403) throw /key/i.test(msg) ? { code: 'key' } : { code: r.status, message: msg };
+    last = { code: r.status, message: 'Gemini-Fehler ' + r.status + (msg ? ' – ' + msg : '') };
   }
-  if (r.status === 400 || r.status === 403) { let m = ''; try { m = (await r.json()).error?.message || ''; } catch { } throw /key/i.test(m) ? { code: 'key' } : { code: r.status, message: m }; }
-  if (r.status === 429) throw { code: 429 };
-  if (!r.ok) { let m = ''; try { m = (await r.json()).error?.message || ''; } catch { } throw { code: r.status, message: 'Gemini-Fehler ' + r.status + (m ? ' – ' + m : '') }; }
-  const j = await r.json(); const cand = j.candidates?.[0];
-  let text = (cand?.content?.parts || []).map(p => p.text || '').join('');
-  const src = (cand?.groundingMetadata?.groundingChunks || []).map(c => c.web).filter(Boolean);
-  if (src.length && !o.json) text += '\n\n### Quellen der Websuche\n' + src.slice(0, 6).map(w => `- [${(w.title || w.uri).replace(/[\[\]]/g, '')}](${w.uri})`).join('\n');
-  return text;
+  throw last || { code: 'empty' };
 }
   async function openrouter(msgs, o) {
   const a = JV.ai();
-  const r = await fetch('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.openrouter, 'X-Title': 'Jarvis Terminal' }, body: JSON.stringify({ model: a.omodel, messages: msgs.map(m => ({ role: m.role, content: m.content })), temperature: .5 }), signal: o.signal });
+  const r = await fetchT('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.openrouter, 'X-Title': 'Jarvis Terminal' }, body: JSON.stringify({ model: a.omodel, messages: msgs.map(m => ({ role: m.role, content: m.content })), temperature: .5 }) }, o.signal);
   if (r.status === 401) throw { code: 'key' }; if (r.status === 429) throw { code: 429 };
-  if (!r.ok) { let m = ''; try { m = (await r.json()).error?.message || ''; } catch { } throw { code: r.status, message: m || 'OpenRouter-Fehler ' + r.status }; }
-  const j = await r.json(); return j.choices?.[0]?.message?.content || '';
+  if (!r.ok) { const m = await errMsg(r); throw { code: r.status, message: m || 'OpenRouter-Fehler ' + r.status }; }
+  const j = await r.json(); const text = j.choices?.[0]?.message?.content || '';
+  if (!text.trim()) throw { code: 'empty' };
+  JV.lastModel = a.omodel; return text;
 }
 /* input: string oder messages; opts: tools (nur Claude), onText, signal, json, search (Websuche bei Gemini), tier */
 JV.think = async (input, opts = {}) => {
@@ -139,7 +186,11 @@ JV.think = async (input, opts = {}) => {
     }
     const msgs = toMsgs(input);
     if (opts.json) msgs[msgs.length - 1] = { role: 'user', content: msgs[msgs.length - 1].content + '\n\nAntworte ausschließlich mit gültigem JSON.' };
-    const text = b === 'gemini' ? await gemini(msgs, opts) : await openrouter(msgs, opts);
+    /* Fällt der eine Anbieter ganz aus (Limit, Timeout, leer, Störung), probiert Jarvis den anderen, falls ein Key da ist */
+    const a = JV.ai(), first = b === 'gemini' ? gemini : openrouter, other = b === 'gemini' ? (a.openrouter ? openrouter : null) : (a.gemini ? gemini : null);
+    let text;
+    try { text = await first(msgs, opts); }
+    catch (e) { if (!other || e?.code === 'key' || e?.name === 'AbortError' || opts.signal?.aborted || opts.images?.length) throw e; text = await other(msgs, opts); }
     if (opts.json) return extractJSON(text);
     opts.onText && opts.onText({ text });
     return text;

@@ -2064,6 +2064,149 @@ html.mode-anim, html.mode-anim * { transition: background-color .35s ease, borde
 .jx-key-row { display: flex; gap: 8px; flex-wrap: wrap; }
 .jx-key-in { flex: 1 1 240px; height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); color: var(--text); font: 14px var(--f-ui); }
 .jx-key-msg { color: var(--muted); }
+
+/* ==========================================================================
+   Clean-Glas (23.11.2026, Claude) – nur Optik im hellen Modus (:root[data-light]).
+   Ruhigerer Hintergrund, einheitliches Milchglas, Hover ohne Springen:
+   Karten bekommen nur einen feinen Rand, etwas mehr Schatten und einen weichen weißen Lichtpunkt.
+   Dunkler Modus und Shop-Designs bleiben unverändert. Wird von build.py als letztes eingebunden.
+   ========================================================================== */
+:root[data-light] {
+  --cg-card: rgba(255,255,255,.64);
+  --cg-card-hover: rgba(255,255,255,.74);
+  --cg-hair: 0 0 0 .5px rgba(0,0,0,.06);
+  --cg-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 0 0 .5px rgba(0,0,0,.05), 0 1px 2px rgba(0,0,0,.03), 0 10px 30px -16px rgba(31,38,80,.16);
+  --cg-shadow-hover: inset 0 1px 0 rgba(255,255,255,1), 0 0 0 .5px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.03), 0 18px 42px -18px rgba(31,38,80,.24);
+  --cg-ease: cubic-bezier(.25,.8,.25,1);
+}
+
+/* Ruhiger Hintergrund: fast weiß, nur zwei sehr zarte Farbschleier statt vier bunter Flecken */
+:root[data-light] body {
+  background-color: #f3f4f8;
+  background-image:
+    radial-gradient(60% 55% at 0% 0%, rgba(10,132,255,.13), transparent 70%),
+    radial-gradient(55% 50% at 100% 0%, rgba(175,82,222,.09), transparent 70%),
+    radial-gradient(70% 60% at 50% 110%, rgba(255,255,255,.9), transparent 70%),
+    linear-gradient(180deg, #f6f7fa 0%, #eef0f5 100%);
+  background-attachment: fixed;
+}
+
+/* Einheitliches Milchglas */
+:root[data-light] body :is(.card, .strat-card, .welcome, .sess, .jt .card, .jt .tile, .pass-hero, .an-hero, .empty-state, .hero, .dz-tile) {
+  background-color: var(--cg-card);
+  border-color: rgba(255,255,255,.8);
+  box-shadow: var(--cg-shadow);
+  -webkit-backdrop-filter: blur(28px) saturate(170%); backdrop-filter: blur(28px) saturate(170%);
+  transition: background-color .3s var(--cg-ease), border-color .3s var(--cg-ease), box-shadow .3s var(--cg-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /* Hover: nichts springt mehr – nur Rand, Fläche und Schatten werden einen Hauch kräftiger */
+  :root[data-light] body :is(.card, .strat-card, .welcome, .sess, .jt .card, .jt .tile, .pass-hero, .kpis, .si, .steps > *, .jt .news article, .shop-grid > *, .dz-tile, .jx-c.has):hover {
+    transform: none;
+    background-color: var(--cg-card-hover);
+    border-color: rgba(255,255,255,.95);
+    box-shadow: var(--cg-shadow-hover);
+  }
+  :root[data-light] body :is(.jt .kpi, .sr-item, .jt .pos):hover { transform: none; }
+  /* Lichtpunkt: weiß und weich statt blau */
+  :root[data-light] .a-spot::before {
+    background: radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,.65), transparent 55%);
+    transition: opacity .35s var(--cg-ease);
+  }
+  /* Knöpfe: kein Hochspringen, klarer Hover- und Druck-Zustand */
+  :root[data-light] body :is(.page .btn, .jt .btn):hover:not(:disabled) { transform: none; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 6px 14px -10px rgba(0,0,0,.25); }
+  :root[data-light] body :is(.btn, .jt .btn):active:not(:disabled) { transform: scale(.98); transition-duration: .08s; }
+  :root[data-light] header.top #mainNav a:hover svg { transform: none; }
+  /* Listen und Tabellen: weiche Hervorhebung */
+  :root[data-light] body :is(.dz-row, .jx-row, .jx-li, .dz-e):hover { background: rgba(0,0,0,.035); }
+  :root[data-light] .jt tr.jrow:hover td, :root[data-light] .jt tr.click:hover td, :root[data-light] .tbl tbody tr:hover { background: rgba(0,113,227,.045); }
+  :root[data-light] .srow:hover { background: rgba(0,0,0,.03); }
+  /* Diagramm-Balken nicht aufblitzen lassen */
+  :root[data-light] .dz-cols i:hover { filter: brightness(1.06); }
+}
+
+/* Kopfleiste, Tabs und Seitenleiste auf dasselbe Glas */
+@media (min-width: 861px) and (min-height: 501px) {
+  :root[data-light] header.top { background: rgba(255,255,255,.5); border-color: rgba(0,0,0,.05); }
+}
+:root[data-light] body.jv-tabs #jvTabs { background: rgba(255,255,255,.6); border-bottom-color: rgba(0,0,0,.05); }
+:root[data-light] .jvt-tabs a { transition: background-color .2s var(--cg-ease), color .2s var(--cg-ease); }
+
+/* Hinweis-Leiste und Jarvis-Insight sauberer */
+:root[data-light] .jt.jt-bar { background: linear-gradient(100deg, rgba(255,248,230,.9), rgba(255,255,255,.7) 60%); border-color: rgba(201,138,18,.22); }
+
+/* Dashboard-Kacheln: Zahlen etwas ruhiger, Icons mit weichem Schatten */
+:root[data-light] .dz-tile .dz-ic { box-shadow: 0 6px 14px -8px rgba(0,0,0,.35); }
+:root[data-light] .dz-tile { transition: background-color .3s var(--cg-ease), box-shadow .3s var(--cg-ease), border-color .3s var(--cg-ease); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-light] * { transition-duration: .01s !important; }
+}
+
+/* ==========================================================================
+   Dashboard v2 (23.11.2026): Aktionsleiste, „Wie läuft's“, Level & Wochenziele – gilt in allen Modi.
+   Im Second Brain (.bs-dash) dunkles Glas über dem schwarzen Loch.
+   ========================================================================== */
+.dz-actions { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr)); gap: 12px; }
+.dz-act-btn { display: flex; align-items: center; gap: 12px; text-align: left; padding: 14px 16px; border-radius: 18px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font: inherit; cursor: pointer; min-width: 0;
+  transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease, filter .2s ease; }
+.dz-act-btn:active { transform: scale(.985); }
+.dz-ab-ic { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; flex: none; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+.dz-ab-ic svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.dz-ab-t { display: grid; gap: 2px; min-width: 0; }
+.dz-ab-t b { font-size: 15px; font-weight: 650; letter-spacing: -.01em; }
+.dz-ab-t small { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dz-act-btn.pri { background: linear-gradient(135deg, #0a84ff, #0060df); border-color: transparent; color: #fff; box-shadow: 0 10px 28px -12px rgba(10,132,255,.7); }
+.dz-act-btn.pri .dz-ab-ic { background: rgba(255,255,255,.2); color: #fff; }
+.dz-act-btn.pri .dz-ab-ic svg { fill: currentColor; stroke: none; }
+.dz-act-btn.pri small { color: rgba(255,255,255,.82); }
+.dz-act-btn.gold .dz-ab-ic { background: rgba(242,193,78,.18); color: #c98a12; }
+@media (hover: hover) and (pointer: fine) {
+  .dz-act-btn:hover { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); box-shadow: 0 8px 22px -14px rgba(0,0,0,.35); }
+  .dz-act-btn.pri:hover { filter: brightness(1.08); box-shadow: 0 14px 34px -12px rgba(10,132,255,.8); }
+}
+.dz-two-a { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+.dz-m2s { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.dz-m2 { display: grid; gap: 2px; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--text) 4%, transparent); min-width: 0; }
+.dz-m2 span { font-size: 12px; color: var(--muted); }
+.dz-m2 b { font-size: 22px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.dz-m2 b.up { color: var(--bull); } .dz-m2 b.dn { color: var(--bear); }
+.dz-dl { font-style: normal; font-size: 12px; font-weight: 600; color: var(--faint); font-variant-numeric: tabular-nums; }
+.dz-dl.up { color: var(--bull); } .dz-dl.dn { color: var(--bear); }
+.dz-streak { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, #ff9f0a 9%, transparent); }
+.dz-streak .fl { background: rgba(255,159,10,.18); color: #ff9f0a; }
+.dz-streak b { display: block; font-size: 14px; } .dz-streak small { color: var(--muted); font-size: 12px; }
+.dz-lv { display: grid; gap: 4px; margin-bottom: 14px; }
+.dz-lv b { font-size: 20px; font-weight: 700; letter-spacing: -.02em; } .dz-lv small { color: var(--muted); font-size: 12px; }
+.dz-bar { display: block; height: 8px; border-radius: 99px; background: color-mix(in srgb, var(--text) 8%, transparent); overflow: hidden; margin-top: 4px; }
+.dz-bar.sm { height: 5px; grid-column: 2; margin-top: 2px; }
+.dz-bar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #5e5ce6, #0a84ff); transition: width .8s cubic-bezier(.2,.8,.2,1); }
+.dz-gl { display: grid; gap: 10px; }
+.dz-g { display: grid; grid-template-columns: 26px minmax(0, 1fr); column-gap: 10px; align-items: center; }
+.dz-chk { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 12px; font-weight: 700; grid-row: 1 / 3; }
+.dz-g.done .dz-chk { background: var(--bull); border-color: var(--bull); color: #fff; }
+.dz-g.done .dz-bar i { background: var(--bull); }
+.dz-gt { display: flex; justify-content: space-between; gap: 8px; min-width: 0; }
+.dz-gt b { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .dz-gt small { color: var(--muted); font-size: 12px; white-space: nowrap; }
+@media (max-width: 1100px) { .dz-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); } .dz-two-a { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 560px) { .dz-actions { grid-template-columns: minmax(0, 1fr); } .dz-m2s { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Hell: Aktionsknöpfe als Milchglas */
+:root[data-light] body .dz-act-btn:not(.pri) { background: rgba(255,255,255,.64); border-color: rgba(255,255,255,.8); box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 0 0 .5px rgba(0,0,0,.05), 0 10px 30px -16px rgba(31,38,80,.16); -webkit-backdrop-filter: blur(28px) saturate(170%); backdrop-filter: blur(28px) saturate(170%); }
+@media (hover: hover) and (pointer: fine) { :root[data-light] body .dz-act-btn:not(.pri):hover { background: rgba(255,255,255,.78); box-shadow: inset 0 1px 0 #fff, 0 0 0 .5px rgba(0,0,0,.08), 0 18px 42px -18px rgba(31,38,80,.24); } }
+
+/* Second Brain: Home-Panel breiter, Dashboard in dunklem Glas über dem schwarzen Loch */
+.bs-panel[data-k="home"] { width: min(1240px, calc(100vw - 32px)); }
+.bs-dash { --text: #f2f2f7; --muted: rgba(235,235,245,.6); --faint: rgba(235,235,245,.35); --line: rgba(255,255,255,.1); --panel: rgba(255,255,255,.04); --accent: #0a84ff; --a-hl: rgba(255,255,255,.06); color: #f2f2f7; margin-top: 14px; }
+.bs-dash .dz { display: grid; gap: 14px; }
+:root .bs-dash :is(.card, .dz-tile, .dz-act-btn:not(.pri)) { background: rgba(255,255,255,.045) !important; border: 1px solid rgba(255,255,255,.09) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.06) !important; color: #f2f2f7; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+@media (hover: hover) and (pointer: fine) { :root .bs-dash :is(.card, .dz-tile, .dz-act-btn:not(.pri)):hover { background: rgba(255,255,255,.075) !important; border-color: rgba(255,255,255,.16) !important; transform: none !important; } }
+.bs-dash .card { padding: 16px; border-radius: 16px; }
+.bs-dash .card-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.bs-dash .card-h h3 { margin: 0; font-size: 15px; }
+.bs-dash .card-h a, .bs-dash a.hint { color: #64d2ff; }
+.bs-dash .hint { color: rgba(235,235,245,.55); font-size: 12px; }
 </style>
 </head>
 <body>
@@ -6487,7 +6630,10 @@ const App = {
 /* Toasts ausblenden, solange ein Dialog offen ist */
 function syncModalState() { document.body.classList.toggle('modal-open', $$('.modal').some((m) => !m.hidden)); }
 
-/* Edge Lab Replay — Wichtige US-Wirtschaftstermine (statisch, 2020-01 bis 2026-10).
+/* Edge Lab Replay — Wichtige US-Wirtschaftstermine (statisch, 2020-01 bis 2027-12).
+   Nachtrag 23.11.2026 (Abruf am selben Tag): CPI/NFP ab Nov 2026 aus den BLS-Zeitplänen
+   https://www.bls.gov/schedule/news_release/cpi.htm und .../empsit.htm, FOMC Dez 2026 + 2027 aus
+   https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm (2027 laut Fed vorläufig, Bestätigung jeweils in der Sitzung davor).
    Quellen (offizielle Veröffentlichungsarchive, Abruf 29.10.2026):
    - CPI:  https://www.bls.gov/bls/news-release/cpi.htm     (Archiv-Dateien cpi_MMDDYYYY = Veröffentlichungstag)
    - NFP:  https://www.bls.gov/bls/news-release/empsit.htm  (Employment Situation, empsit_MMDDYYYY)
@@ -6509,7 +6655,8 @@ function syncModalState() { document.body.classList.toggle('modal-open', $$('.mo
       2023: '0112 0214 0314 0412 0510 0613 0712 0810 0913 1012 1114 1212',
       2024: '0111 0213 0312 0410 0515 0612 0711 0814 0911 1010 1113 1211',
       2025: '0115 0212 0312 0410 0513 0611 0715 0812 0911 1024 1218',
-      2026: '0113 0213 0311 0410 0512 0610 0714 0812 0911 1014'
+      2026: '0113 0213 0311 0410 0512 0610 0714 0812 0911 1014 1110 1210',
+      2027: '0113 0211 0310 0413 0512 0610 0714 0811 0914 1014 1110 1210'
     },
     NFP: {
       2020: '0110 0207 0306 0403 0508 0605 0702 0807 0904 1002 1106 1204',
@@ -6518,7 +6665,8 @@ function syncModalState() { document.body.classList.toggle('modal-open', $$('.mo
       2023: '0106 0203 0310 0407 0505 0602 0707 0804 0901 1006 1103 1208',
       2024: '0105 0202 0308 0405 0503 0607 0705 0802 0906 1004 1101 1206',
       2025: '0110 0207 0307 0404 0502 0606 0703 0801 0905 1120 1216',
-      2026: '0109 0211 0306 0403 0508 0605 0702 0807 0904 1002'
+      2026: '0109 0211 0306 0403 0508 0605 0702 0807 0904 1002 1106 1204',
+      2027: '0108 0205 0305 0402 0507 0604 0702 0806 0903 1008 1105 1203'
     },
     FOMC: {
       2020: '0129 0303@1000 0315@1700 0323@0800 0429 0610 0729 0916 1105 1216',
@@ -6527,7 +6675,8 @@ function syncModalState() { document.body.classList.toggle('modal-open', $$('.mo
       2023: '0201 0322 0503 0614 0726 0920 1101 1213',
       2024: '0131 0320 0501 0612 0731 0918 1107 1218',
       2025: '0129 0319 0507 0618 0730 0917 1029 1210',
-      2026: '0128 0318 0429 0617 0729 0916 1028'
+      2026: '0128 0318 0429 0617 0729 0916 1028 1209',
+      2027: '0127 0317 0428 0609 0728 0915 1027 1117'
     }
   };
   const KINDS = {
@@ -6542,7 +6691,7 @@ function syncModalState() { document.body.classList.toggle('modal-open', $$('.mo
 
   const E = {
     KINDS, ET, RAW,
-    FIRST: '2020-01', LAST: '2026-10',
+    FIRST: '2020-01', LAST: '2027-12',
     /* Alle Termine, aufsteigend: { t (UTC-Sekunden), kind, y, m, d, hh, mm } */
     events() {
       if (LIST) return LIST;
@@ -10627,8 +10776,28 @@ window.LineChart = (host, series, opt = {}) => {
 {
   const JV = window.Jarvis = { state: 'idle', sample: null, tts: null, mcp: null };
   const AI_KEY = 'jt.ai';
-JV.ai = () => { try { return Object.assign({ provider: 'gemini', gemini: '', gmodel: 'gemini-2.5-flash', openrouter: '', omodel: 'nvidia/nemotron-3.5-super-vl:free', search: true }, JSON.parse(localStorage.getItem(AI_KEY) || '{}')); } catch { return { provider: 'gemini', gemini: '', gmodel: 'gemini-2.5-flash', openrouter: '', omodel: 'nvidia/nemotron-3.5-super-vl:free', search: true }; } };
-JV.saveAi = a => { try { localStorage.setItem(AI_KEY, JSON.stringify(a)); } catch { } };
+  /* 23.11.2026: gemini-2.5-flash ist abgeschaltet → Standard ist ein aktuelles, schnelles Modell mit großem Gratis-Limit */
+  const AI_DEF = () => ({ provider: 'gemini', gemini: '', gmodel: 'gemini-3.5-flash-lite', openrouter: '', omodel: 'nvidia/nemotron-3.5-super-vl:free', search: true, sync: false });
+  /* Key auf allen Geräten: liegt (nur wenn gewünscht) zusätzlich in App.settings.jt.settings.aiSync → Supabase, nur für dein Konto lesbar (RLS) */
+  const synced = () => { try { return (typeof App !== 'undefined' && App.settings?.jt?.settings?.aiSync) || null; } catch { return null; } };
+JV.ai = () => {
+  let a; try { a = Object.assign(AI_DEF(), JSON.parse(localStorage.getItem(AI_KEY) || '{}')); } catch { a = AI_DEF(); }
+  if (!a.gemini && !a.openrouter) { const s = synced(); if (s && (s.gemini || s.openrouter)) { a.gemini = s.gemini || ''; a.openrouter = s.openrouter || ''; a.sync = true; if (!a.gemini && a.openrouter) a.provider = 'openrouter'; } }
+  return a;
+};
+JV.saveAi = a => {
+  try { localStorage.setItem(AI_KEY, JSON.stringify(a)); } catch { }
+  try {
+    if (typeof J === 'undefined' || !J.S?.settings) return;
+    const cur = J.S.settings.aiSync;
+    if (a.sync && (a.gemini || a.openrouter)) {
+      if (cur && cur.gemini === (a.gemini || '') && cur.openrouter === (a.openrouter || '')) return;
+      J.S.settings.aiSync = { gemini: a.gemini || '', openrouter: a.openrouter || '' };
+    } else if (a.sync && cur) delete J.S.settings.aiSync;   /* Key wurde abgelehnt/gelöscht → auch auf den anderen Geräten weg */
+    else return;
+    J.store.save('settings');
+  } catch { }
+};
 JV.ready = (async () => {
   if (!window.claude?.use) return;
   try { JV.sample = await claude.use('sample'); } catch { }
@@ -10638,7 +10807,7 @@ JV.ready = (async () => {
 JV.setState = s => { JV.state = s; J.emit('orb', s); };
 /* Welches Gehirn denkt gerade? */
 JV.brain = () => { if (JV.sample) return 'claude'; const a = JV.ai(); if (a.provider === 'gemini' && a.gemini) return 'gemini'; if (a.provider === 'openrouter' && a.openrouter) return 'openrouter'; if (a.gemini) return 'gemini'; if (a.openrouter) return 'openrouter'; return null; };
-JV.brainLabel = () => ({ claude: 'Claude', gemini: 'Gemini (dein Key)', openrouter: 'OpenRouter (dein Key)' })[JV.brain()] || 'nicht verbunden';
+JV.brainLabel = () => { const b = JV.brain(), l = ({ claude: 'Claude', gemini: 'Gemini (dein Key)', openrouter: 'OpenRouter (dein Key)' })[b]; if (!l) return 'nicht verbunden'; const m = JV.lastModel || (b === 'gemini' ? JV.ai().gmodel : b === 'openrouter' ? JV.ai().omodel : ''); return m && b !== 'claude' ? l + ' · ' + m : l; };
 JV.canTools = () => JV.brain() === 'claude';
 
 /* ---------- Goldener Orb ---------- */
@@ -10710,44 +10879,71 @@ JV.err = e => {
   const c = e?.code;
   if (c === 'nobrain') return 'Jarvis hat noch kein Gehirn: Trage im Copilot unter „Jarvis verbinden“ deinen kostenlosen Gemini-Key (Google AI Studio) oder OpenRouter-Key ein.';
   if (c === 'not_granted') return 'Jarvis darf auf dieser Seite noch nicht denken – erlaube „Claude fragen“.';
-  if (c === 'rate_limited' || c === 429) return 'Das kostenlose Limit ist gerade erreicht. Versuch es in einer Minute erneut.';
+  if (c === 'rate_limited' || c === 429) return 'Alle kostenlosen Modelle sind gerade am Limit. Meist geht es nach einer Minute wieder; das Tageslimit von Google setzt sich um 9 Uhr (deutsche Zeit) zurück.';
+  if (c === 'timeout') return 'Jarvis hat zu lange gebraucht (über 40 Sekunden) – auch die Ausweich-Modelle. Prüf kurz dein Internet und versuch es nochmal.';
+  if (c === 'empty') return 'Das Modell hat eine leere Antwort geschickt – auch nach dem Wechsel auf andere Modelle. Versuch es gleich nochmal.';
   if (c === 'key') return 'Der API-Key wurde abgelehnt – bitte im Copilot prüfen.';
   return 'Jarvis konnte nicht antworten' + (e?.message ? ': ' + String(e.message).slice(0, 160) : c ? ` (${c})` : '') + '.';
 };
   const toMsgs = input => Array.isArray(input) ? input : [{ role: 'user', content: String(input) }];
   const extractJSON = t => { const s = String(t || ''); const a = s.indexOf('{'), b = s.lastIndexOf('}'); if (a < 0 || b < a) throw { code: 'json', message: 'Keine JSON-Antwort' }; return JSON.parse(s.slice(a, b + 1)); };
+  /* fetch mit Zeitlimit (23.11.2026): hängt eine Anfrage, wird sie nach TIMEOUT abgebrochen statt ewig zu laden.
+     Bricht der Aufrufer selbst ab (o.signal), geht dieser Abbruch unverändert weiter. */
+  const TIMEOUT = 40000;
+  async function fetchT(url, init, outer) {
+    const c = new AbortController(); let timedOut = false;
+    const t = setTimeout(() => { timedOut = true; c.abort(); }, TIMEOUT);
+    const fwd = () => c.abort();
+    if (outer) { if (outer.aborted) c.abort(); else outer.addEventListener('abort', fwd, { once: true }); }
+    try { return await fetch(url, Object.assign({}, init, { signal: c.signal })); }
+    catch (e) { if (timedOut) throw { code: 'timeout' }; throw e; }
+    finally { clearTimeout(t); if (outer) outer.removeEventListener('abort', fwd); }
+  }
+  const errMsg = async (r) => { try { return (await r.clone().json()).error?.message || ''; } catch { return ''; } };
+  /* Ausweich-Kette: zuerst dein gemerktes Modell, dann aktuelle schnelle Modelle (jedes hat ein eigenes Gratis-Limit) */
+  const G_CHAIN = ['gemini-3.5-flash-lite', 'gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-3.5-flash', 'gemini-3.1-flash-lite'];
   async function gemini(msgs, o) {
   const a = JV.ai();
   const body = { contents: msgs.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })), generationConfig: { temperature: .5 } };
     if (o.images?.length) body.contents[body.contents.length - 1].parts.push(...o.images.map(im => ({ inline_data: { mime_type: im.mime, data: im.b64 } })));
   if (o.json) body.generationConfig.responseMimeType = 'application/json';
   else if (o.search && a.search) body.tools = [{ google_search: {} }];
-  const call = async (b) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(a.gmodel || 'gemini-2.5-flash')}:generateContent?key=${encodeURIComponent(a.gemini)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b), signal: o.signal });
-  let r = await call(body);
-  if (!r.ok && body.tools) { delete body.tools; r = await call(body); }
-  /* Modell abgeschaltet oder unbekannt (404 bzw. 400 „not found/not supported“)? Dann automatisch neuere Modelle probieren und das funktionierende merken */
-  const gone = async (res) => { if (res.status === 404) return true; if (res.status !== 400) return false; try { const m = (await res.clone().json()).error?.message || ''; return /not found|not supported|deprecated|no longer/i.test(m); } catch { return false; } };
-  if (await gone(r)) {
-    for (const m of ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.0-flash'].filter(x => x !== a.gmodel)) {
-      const r2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(a.gemini)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: o.signal });
-      if (r2.ok || !(await gone(r2))) { r = r2; if (r2.ok) { a.gmodel = m; JV.saveAi(a); } break; }
+  const call = (m, b) => fetchT(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(m)}:generateContent?key=${encodeURIComponent(a.gemini)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) }, o.signal);
+  const models = [...new Set([a.gmodel || G_CHAIN[0], ...G_CHAIN])];
+  let last = null;
+  for (const m of models) {
+    let r;
+    try {
+      r = await call(m, body);
+      if (!r.ok && body.tools && r.status !== 429) { delete body.tools; r = await call(m, body); }   /* Websuche fällt als Erstes weg */
+    } catch (e) { if (e?.code === 'timeout') { last = e; delete body.tools; continue; } throw e; }
+    if (r.ok) {
+      const j = await r.json(); const cand = j.candidates?.[0];
+      let text = (cand?.content?.parts || []).map(p => p.text || '').join('');
+      if (!text.trim()) { last = { code: 'empty' }; continue; }   /* leere Antwort (z. B. Denk-Budget aufgebraucht) → nächstes Modell */
+      if (m !== a.gmodel) { a.gmodel = m; JV.saveAi(a); }
+      JV.lastModel = m;
+      const src = (cand?.groundingMetadata?.groundingChunks || []).map(c => c.web).filter(Boolean);
+      if (src.length && !o.json) text += '\n\n### Quellen der Websuche\n' + src.slice(0, 6).map(w => `- [${(w.title || w.uri).replace(/[\[\]]/g, '')}](${w.uri})`).join('\n');
+      return text;
     }
+    const msg = await errMsg(r);
+    if (r.status === 404 || (r.status === 400 && /not found|not supported|deprecated|no longer/i.test(msg))) { last = { code: r.status, message: 'Modell nicht verfügbar' }; continue; }
+    if (r.status === 429) { last = { code: 429 }; continue; }
+    if (r.status >= 500) { last = { code: r.status, message: 'Gemini überlastet (' + r.status + ')' }; continue; }
+    if (r.status === 400 || r.status === 403) throw /key/i.test(msg) ? { code: 'key' } : { code: r.status, message: msg };
+    last = { code: r.status, message: 'Gemini-Fehler ' + r.status + (msg ? ' – ' + msg : '') };
   }
-  if (r.status === 400 || r.status === 403) { let m = ''; try { m = (await r.json()).error?.message || ''; } catch { } throw /key/i.test(m) ? { code: 'key' } : { code: r.status, message: m }; }
-  if (r.status === 429) throw { code: 429 };
-  if (!r.ok) { let m = ''; try { m = (await r.json()).error?.message || ''; } catch { } throw { code: r.status, message: 'Gemini-Fehler ' + r.status + (m ? ' – ' + m : '') }; }
-  const j = await r.json(); const cand = j.candidates?.[0];
-  let text = (cand?.content?.parts || []).map(p => p.text || '').join('');
-  const src = (cand?.groundingMetadata?.groundingChunks || []).map(c => c.web).filter(Boolean);
-  if (src.length && !o.json) text += '\n\n### Quellen der Websuche\n' + src.slice(0, 6).map(w => `- [${(w.title || w.uri).replace(/[\[\]]/g, '')}](${w.uri})`).join('\n');
-  return text;
+  throw last || { code: 'empty' };
 }
   async function openrouter(msgs, o) {
   const a = JV.ai();
-  const r = await fetch('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.openrouter, 'X-Title': 'Jarvis Terminal' }, body: JSON.stringify({ model: a.omodel, messages: msgs.map(m => ({ role: m.role, content: m.content })), temperature: .5 }), signal: o.signal });
+  const r = await fetchT('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.openrouter, 'X-Title': 'Jarvis Terminal' }, body: JSON.stringify({ model: a.omodel, messages: msgs.map(m => ({ role: m.role, content: m.content })), temperature: .5 }) }, o.signal);
   if (r.status === 401) throw { code: 'key' }; if (r.status === 429) throw { code: 429 };
-  if (!r.ok) { let m = ''; try { m = (await r.json()).error?.message || ''; } catch { } throw { code: r.status, message: m || 'OpenRouter-Fehler ' + r.status }; }
-  const j = await r.json(); return j.choices?.[0]?.message?.content || '';
+  if (!r.ok) { const m = await errMsg(r); throw { code: r.status, message: m || 'OpenRouter-Fehler ' + r.status }; }
+  const j = await r.json(); const text = j.choices?.[0]?.message?.content || '';
+  if (!text.trim()) throw { code: 'empty' };
+  JV.lastModel = a.omodel; return text;
 }
 /* input: string oder messages; opts: tools (nur Claude), onText, signal, json, search (Websuche bei Gemini), tier */
 JV.think = async (input, opts = {}) => {
@@ -10763,7 +10959,11 @@ JV.think = async (input, opts = {}) => {
     }
     const msgs = toMsgs(input);
     if (opts.json) msgs[msgs.length - 1] = { role: 'user', content: msgs[msgs.length - 1].content + '\n\nAntworte ausschließlich mit gültigem JSON.' };
-    const text = b === 'gemini' ? await gemini(msgs, opts) : await openrouter(msgs, opts);
+    /* Fällt der eine Anbieter ganz aus (Limit, Timeout, leer, Störung), probiert Jarvis den anderen, falls ein Key da ist */
+    const a = JV.ai(), first = b === 'gemini' ? gemini : openrouter, other = b === 'gemini' ? (a.openrouter ? openrouter : null) : (a.gemini ? gemini : null);
+    let text;
+    try { text = await first(msgs, opts); }
+    catch (e) { if (!other || e?.code === 'key' || e?.name === 'AbortError' || opts.signal?.aborted || opts.images?.length) throw e; text = await other(msgs, opts); }
     if (opts.json) return extractJSON(text);
     opts.onText && opts.onText({ text });
     return text;
@@ -11604,6 +11804,12 @@ V.copilot = el => {
     /* Helles Apple-Design ist Standard (elr.light = '0' schaltet zurück auf dunkel/Glas); Start = Dashboard, das Universum ist nur noch ein Tab */
     if (J.lightOn()) { document.documentElement.setAttribute('data-light', ''); try { readColors(); App.requestRender(); } catch { } }
     if (typeof Space !== 'undefined') { if (Space.glassOn() && !J.lightOn()) Space.setGlass(true); if (!location.hash || location.hash === '#') history.replaceState(null, '', '#start'); }
+    /* 23.11.2026: Als App installiert (PWA) öffnet ein frischer Start immer das Dashboard – nicht die zuletzt offene Seite */
+    try {
+      const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+      const nav = performance.getEntriesByType('navigation')[0];
+      if (standalone && nav && nav.type === 'navigate' && location.hash !== '#start' && !location.hash.startsWith('#brainimport')) history.replaceState(null, '', '#start');
+    } catch { }
     document.querySelector('header.top .brand')?.addEventListener('click', () => { location.hash = '#start'; });
     const f = document.querySelector('#tradeModal .dlg-f');
     if (f && !document.getElementById('tdJarvis')) { const b = document.createElement('button'); b.className = 'btn jt-gold'; b.id = 'tdJarvis'; b.type = 'button'; b.textContent = 'Jarvis bewerten'; b.onclick = () => reviewTrade(UI._trade); const show = document.getElementById('tdShow'); show ? f.insertBefore(b, show) : f.append(b); }
@@ -11895,25 +12101,13 @@ V.copilot = el => {
     } else if (which === 'pages') {
       p.innerHTML = `<div class="bs-ph"><b>Pages</b><span class="sp"></span><button class="bs-x" aria-label="Schließen">✕</button></div><div class="bs-pages">${((J.S.brain && J.S.brain.areas) || []).length ? `<div><h6>Dein Leben</h6>${J.S.brain.areas.map((a, i) => `<button data-area="${i}">${esc(a.name)}</button>`).join('')}</div>` : ''}${AREAS().map(([g2, items]) => `<div><h6>${g2}</h6>${items.map(([v, l]) => `<button data-go="${v}">${l}</button>`).join('')}</div>`).join('')}</div>`;
     } else {
-      const T = J.journal(), rec = recorded(), sess = App.sessions || [], strat = App.strategies || [], notes = J.S.notes || [], br = J.S.briefings || [];
-      const tTimes = T.map(rec), wk = Date.now() / 1000 - 604800;
-      const stratCount = {}; T.forEach(t => { const k = t.setup || 'ohne Strategie'; stratCount[k] = (stratCount[k] || 0) + 1; });
-      const sc = Object.entries(stratCount).sort((a, b) => b[1] - a[1]).slice(0, 6);
-      const mk = {}; T.forEach(t => { mk[t.sym] = (mk[t.sym] || 0) + (t.pnl || 0); }); const mks = Object.entries(mk).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).slice(0, 6); const mmax = Math.max(1, ...mks.map(x => Math.abs(x[1])));
-      const days = new Array(30).fill(0); const now = Date.now() / 1000; [...sess.map(s => s.created), ...T.filter(t => t.src === 'desk').map(t => t.exitT)].forEach(t => { if (!t) return; const k = Math.floor((now - t) / 86400); if (k >= 0 && k < 30) days[29 - k]++; });
-      const dmax = Math.max(1, ...days);
-      const recent = [...sess.map(s => ({ t: s.created, txt: `Backtest-Session ${s.sym || ''}`, sub: s.running ? 'läuft' : (s.result && s.result !== 'auto' ? s.result : 'beendet'), go: 'backtests' })), ...T.filter(t => t.src === 'desk').map(t => ({ t: t.exitT, txt: `Desk-Trade ${tradeLabel(t)}`, sub: 'Handels-Desk', go: 'journal' }))].filter(x => x.t).sort((a, b) => b.t - a.t).slice(0, 5);
-      const fresh = [...notes.map(n => ({ t: n.t / 1000, txt: n.title || 'Notiz', sub: 'Research Desk', go: 'research' })), ...br.map(b => ({ t: b.t / 1000, txt: 'Morning Briefing', sub: J.dt(b.t), go: 'briefing' }))].sort((a, b) => b.t - a.t).slice(0, 5);
-      const card = (cls, val, lbl, sub, tag, bars) => `<div class="bs-stat ${cls}"><div class="row nw"><b>${val}</b><span class="sp"></span>${tag ? `<span class="bs-tag">${tag}</span>` : ''}</div><span>${lbl}</span><small>${sub}</small>${bars}</div>`;
+      /* 23.11.2026: Home zeigt dasselbe Dashboard wie die Startseite (Dash.mount), als Glas über dem schwarzen Loch */
+      const strat = App.strategies || [], notes = J.S.notes || [];
       p.innerHTML = `<div class="bs-ph"><b>Home</b><span class="sp"></span><button class="bs-x" aria-label="Schließen">✕</button></div>
         <div class="bs-search"><input id="bsQ" placeholder="Alles durchsuchen – Bereiche, Strategien, Notizen, Märkte …" autocomplete="off"><div id="bsRes"></div></div>
         ${((J.S.brain && J.S.brain.areas) || []).length ? `<div class="bs-box" style="margin:12px 0"><h5>Dein Leben</h5><div class="bs-areas">${J.S.brain.areas.map((a, i) => `<button data-area="${i}"><b>${esc(a.name)}</b><small>${esc(a.sub || '')}</small>${a.next && a.next[0] ? `<em>${esc(a.next[0])}</em>` : ''}</button>`).join('')}</div></div>` : ''}
-        <div class="bs-stats">${card('o', T.length, 'Trades', 'im Journal', `+${tTimes.filter(t => t && t > wk).length} neu`, spark(weeks(tTimes), '#f08a3c'))}${card('g', sess.length, 'Sessions', 'Backtests gesamt', `+${sess.filter(s => s.created > wk).length} Woche`, spark(weeks(sess.map(s => s.created)), '#2fcf9f'))}${card('b', strat.length, 'Strategien', `${strat.filter(s => (s.rules || '').trim()).length} mit Regeln`, '', spark(sc.map(x => x[1]), '#4f8cff'))}${card('p', notes.length + br.length, 'Notizen & Briefings', 'Research Desk', `${notes.filter(n => n.t / 1000 > wk).length + br.filter(b => b.t / 1000 > wk).length} Woche`, spark(weeks([...notes.map(n => n.t / 1000), ...br.map(b => b.t / 1000)]), '#a26bff'))}</div>
-        <div class="bs-grid3"><div class="bs-box"><h4><i style="background:#a26bff"></i>Aktivität</h4><small>Sessions & Desk-Trades pro Tag, letzte 30 Tage</small><div class="bs-col">${days.map(v => `<i style="height:${v ? Math.max(4, v / dmax * 100) : 0}%"></i>`).join('')}</div></div>
-        <div class="bs-box"><h4><i style="background:#2fcf9f"></i>Trades nach Strategie</h4><small>Antippen öffnet das Journal</small>${sc.length ? sc.map(([k, v]) => `<button class="bs-row" data-go="journal"><span>${esc(k)}</span><b>${v}</b><em style="width:${v / sc[0][1] * 100}%;background:#2fcf9f"></em></button>`).join('') : '<p class="bs-empty">Noch keine Trades.</p>'}</div>
-        <div class="bs-box"><h4><i style="background:#4f8cff"></i>Märkte nach Netto</h4><small>Ergebnis je Markt</small>${mks.length ? mks.map(([k, v]) => `<button class="bs-row" data-go="stats"><span>${esc(k)}</span><b class="${v >= 0 ? 'up' : 'dn'}">${J.money(v, 0)}</b><em style="width:${Math.abs(v) / mmax * 100}%;background:${v >= 0 ? '#2fcf9f' : '#ef5d78'}"></em></button>`).join('') : '<p class="bs-empty">Noch keine Trades.</p>'}</div></div>
-        <div class="bs-grid2"><div class="bs-box"><h5>Letzte Aktivität</h5>${recent.length ? recent.map(r => `<button class="bs-li" data-go="${r.go}"><b>${esc(r.txt)}</b><small>${J.dt(r.t * 1000)} · ${esc(r.sub)}</small></button>`).join('') : '<p class="bs-empty">Noch nichts passiert.</p>'}</div>
-        <div class="bs-box"><h5>Neueste Notizen & Briefings</h5>${fresh.length ? fresh.map(r => `<button class="bs-li" data-go="${r.go}"><b>${esc(r.txt)}</b><small>${esc(r.sub)}</small></button>`).join('') : '<p class="bs-empty">Lass Jarvis im Research Desk recherchieren oder ein Briefing schreiben.</p>'}</div></div>`;
+        <div class="bs-dash"></div>`;
+      try { Dash.mount(p.querySelector('.bs-dash'), (go) => S.enter(go === 'start' ? 'start' : go)); } catch (e) { console.warn('Home-Dashboard', e); }
       const q = p.querySelector('#bsQ'), res = p.querySelector('#bsRes');
       const idx = [...AREAS().flatMap(([g2, it]) => it.map(([v, l]) => ({ l, s: 'Bereich · ' + g2, go: v }))), ...strat.map(s => ({ l: s.name, s: 'Strategie', go: 'strategien' })), ...notes.map(n => ({ l: n.title || 'Notiz', s: 'Notiz', go: 'research' })), ...J.SYM.map(s => ({ l: s[1], s: 'Markt · ' + s[2], go: 'markt', sym: s[0] })), ...((J.S.brain && J.S.brain.areas) || []).flatMap((a, i) => [{ l: a.name, s: 'Lebensbereich', area: i }, ...[...(a.facts || []), ...(a.next || [])].map(f => ({ l: f, s: a.name, area: i }))])];
       q.oninput = () => { const v = q.value.trim().toLowerCase(); res.innerHTML = v ? idx.filter(x => (x.l + ' ' + x.s).toLowerCase().includes(v)).slice(0, 8).map(x => (x.area != null ? `<button class="bs-li" data-area="${x.area}"><b>${esc(String(x.l).slice(0, 90))}</b><small>${esc(x.s)}</small></button>` : `<button class="bs-li" data-go="${x.go}" ${x.sym ? `data-sym="${esc(x.sym)}"` : ''}><b>${esc(x.l)}</b><small>${esc(x.s)}</small></button>`)).join('') || '<p class="bs-empty">Nichts gefunden.</p>' : ''; bindGo(); };
@@ -11924,7 +12118,10 @@ V.copilot = el => {
   };
 }
 
-/* Dashboard (Startseite): alles, was du gemacht hast, auf einen Blick – über den bisherigen Kennzahlen der Übersicht. */
+/* Dashboard (Startseite): alles, was du gemacht hast, auf einen Blick – über den bisherigen Kennzahlen der Übersicht.
+   23.11.2026 (Claude): größer und effizienter – Aktionsleiste (Backtest-Session starten, fortsetzen, Journal, Jarvis),
+   „Wie läuft's“ (diese Woche vs. letzte Woche, Serie, Disziplin), Level + Wochenziele. Dasselbe Dashboard erscheint
+   im Second Brain unter „Home“ (Dash.mount), dort über dem schwarzen Loch. */
 'use strict';
 const Dash = (() => {
   const DAY = 86400, WEEK = 7 * DAY;
@@ -11945,7 +12142,13 @@ const Dash = (() => {
     strat: '<circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/>',
     note: '<path d="M5 2.5h6.5l4 4v11H5z"/><path d="M7.5 10h6M7.5 13.5h6"/>',
     pass: '<path d="M10 2.5l6.5 3.75v7.5L10 17.5l-6.5-3.75v-7.5z"/>',
-    fund: '<circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="1.4"/><circle cx="10" cy="10" r="4"/>'
+    fund: '<circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="1.4"/><circle cx="10" cy="10" r="4"/>',
+    play: '<path d="M6 3.5v13l10.5-6.5z"/>',
+    resume: '<path d="M4 10a6 6 0 1 0 2-4.5"/><path d="M3.5 3v3.5H7"/>',
+    book: '<path d="M4 3.5h9.5a2 2 0 0 1 2 2v11H6a2 2 0 0 1-2-2z"/><path d="M4 14.5a2 2 0 0 1 2-2h9.5"/>',
+    chart: '<path d="M3 16.5h14"/><path d="M6 13V8M10 13V5M14 13v-3"/>',
+    bot: '<circle cx="10" cy="10" r="6.5"/><circle cx="10" cy="10" r="2.2"/>',
+    flame: '<path d="M10 2.5c1 3 4.5 4.6 4.5 8.6a4.5 4.5 0 0 1-9 0c0-2 1-3.2 2-4 .2 1.6 1 2.4 1.8 2.6C9 7.5 9 5 10 2.5z"/>'
   };
   const ic = (k) => '<svg viewBox="0 0 20 20" aria-hidden="true">' + ICON[k] + '</svg>';
 
@@ -11959,6 +12162,59 @@ const Dash = (() => {
     return { sess, strat, journal, when, notes, briefs, funded };
   }
 
+  /* ---------- Aktionsleiste: der wichtigste Knopf ganz oben ---------- */
+  function actions() {
+    let st = null; try { st = App.pendingResume(); } catch { }
+    const b = (act, k, lbl, sub, cls) => '<button type="button" class="dz-act-btn ' + (cls || '') + '" data-act="' + act + '"><span class="dz-ab-ic">' + ic(k) + '</span><span class="dz-ab-t"><b>' + lbl + '</b><small>' + sub + '</small></span></button>';
+    return '<section class="dz-actions" aria-label="Schnellstart">' +
+      b('new', 'play', 'Backtest-Session starten', 'Zufälliger historischer Tag · ohne Blick in die Zukunft', 'pri') +
+      (st ? b('resume', 'resume', 'Weitermachen', esc(st.sym || 'Laufende Session') + ' · da, wo du aufgehört hast', '') : b('charts', 'chart', 'Charts & Replay', 'Chart öffnen und frei üben', '')) +
+      b('journal', 'book', 'Journal', 'Trades, Fotos, Tagebuch', '') +
+      b('copilot', 'bot', 'Jarvis fragen', 'Coach, Analyse, Recherche', 'gold') +
+      '</section>';
+  }
+
+  /* ---------- Wie läuft's: diese Woche vs. letzte Woche ---------- */
+  function progress(d) {
+    const t0 = now(), w0 = t0 - WEEK, w1 = t0 - 2 * WEEK;
+    const inW = (t, a, b) => t && t > a && t <= b;
+    const tr = d.journal.map((t) => ({ t: d.when(t), r: isFinite(t.r) ? +t.r : null, pnl: +t.pnl, sl: t.sl != null }));
+    const wk = (a, b) => {
+      const T = tr.filter((x) => inW(x.t, a, b)), S = d.sess.filter((s) => inW(s.created, a, b));
+      const wins = T.filter((x) => x.pnl > 0).length, R = T.reduce((s, x) => s + (x.r || 0), 0);
+      const disc = S.filter((s) => s.discipline).map((s) => s.discipline);
+      return { n: T.length, s: S.length, win: T.length ? wins / T.length : null, R, disc: disc.length ? disc.reduce((a2, b2) => a2 + b2, 0) / disc.length : null, sl: T.length ? T.filter((x) => x.sl).length / T.length : null };
+    };
+    const cur = wk(w0, t0), prev = wk(w1, w0);
+    /* Serie: aufeinanderfolgende Tage mit Aktivität bis heute (oder gestern) */
+    const dayKey = (t) => Math.floor((t + new Date().getTimezoneOffset() * -60) / DAY);
+    const act = new Set([...d.sess.map((s) => s.created), ...tr.map((x) => x.t), ...d.notes.map((n) => n.t / 1000)].filter(Boolean).map(dayKey));
+    let streak = 0, k = dayKey(t0); if (!act.has(k)) k--; while (act.has(k)) { streak++; k--; }
+    const delta = (a, b, fmt, inv) => { if (a == null || b == null) return ''; const df = a - b; if (Math.abs(df) < 1e-9) return '<em class="dz-dl">±0</em>'; const good = inv ? df < 0 : df > 0; return '<em class="dz-dl ' + (good ? 'up' : 'dn') + '">' + (df > 0 ? '+' : '−') + fmt(Math.abs(df)) + '</em>'; };
+    const pct = (v) => v == null ? '–' : Math.round(v * 100) + ' %';
+    const rr = (v) => (v >= 0 ? '+' : '−') + Math.abs(v).toLocaleString('de-DE', { maximumFractionDigits: 1 }) + 'R';
+    const m = (lbl, val, dl, cls) => '<div class="dz-m2"><span>' + lbl + '</span><b class="' + (cls || '') + '">' + val + '</b>' + dl + '</div>';
+    const prog = '<section class="card dz-prog2"><div class="card-h"><h3>Wie läuft\'s?</h3><span class="hint">letzte 7 Tage · Vergleich zur Woche davor</span></div><div class="dz-m2s">' +
+      m('Sessions', fmtN(cur.s), delta(cur.s, prev.s, fmtN)) +
+      m('Trades', fmtN(cur.n), delta(cur.n, prev.n, fmtN)) +
+      m('Ergebnis', cur.n ? rr(cur.R) : '–', cur.n && prev.n ? delta(cur.R, prev.R, (v) => v.toLocaleString('de-DE', { maximumFractionDigits: 1 }) + 'R') : '', cur.R > 0 ? 'up' : cur.R < 0 ? 'dn' : '') +
+      m('Trefferquote', pct(cur.win), delta(cur.win, prev.win, (v) => Math.round(v * 100) + ' %')) +
+      m('Disziplin', cur.disc == null ? '–' : cur.disc.toLocaleString('de-DE', { maximumFractionDigits: 1 }) + '/5', delta(cur.disc, prev.disc, (v) => v.toLocaleString('de-DE', { maximumFractionDigits: 1 }))) +
+      m('Mit Stop-Loss', pct(cur.sl), '') +
+      '</div><div class="dz-streak"><span class="dz-ab-ic fl">' + ic('flame') + '</span><div><b>' + (streak ? streak + (streak === 1 ? ' Tag' : ' Tage') + ' in Folge aktiv' : 'Heute noch nichts gemacht') + '</b><small>' + (streak ? 'Bleib dran – eine kurze Session reicht, um die Serie zu halten.' : 'Eine kurze Backtest-Session startet deine Serie.') + '</small></div></div></section>';
+    /* Level + Wochenziele (aus dem Pass) */
+    let lv = null; try { lv = (typeof Pass !== 'undefined') ? (Pass.last || Pass.refresh()) : null; } catch { }
+    let goals = '<section class="card dz-goals"><div class="card-h"><h3>Level & Wochenziele</h3><a href="#pass">Pass</a></div>';
+    if (lv) {
+      const span = lv.to == null ? 1 : Math.max(1, lv.to - lv.from), done = lv.to == null ? 1 : (lv.total - lv.from) / span;
+      goals += '<div class="dz-lv"><b>Level ' + lv.level + '</b><small>' + (lv.to == null ? 'Höchstes Level erreicht' : fmtN(lv.to - lv.total) + ' XP bis Level ' + (lv.level + 1)) + '</small><span class="dz-bar"><i style="width:' + Math.round(Math.max(0, Math.min(1, done)) * 100) + '%"></i></span></div>';
+      const G = (lv.week && lv.week.goals) || [];
+      goals += G.length ? '<div class="dz-gl">' + G.map((g) => '<div class="dz-g' + (g.done ? ' done' : '') + '"><span class="dz-chk">' + (g.done ? '✓' : '') + '</span><span class="dz-gt"><b>' + esc(g.label) + '</b><small>' + (g.done ? 'geschafft' : g.cur + ' / ' + g.target) + '</small></span><span class="dz-bar sm"><i style="width:' + Math.round(g.cur / g.target * 100) + '%"></i></span></div>').join('') + '</div>' : '<p class="hint">Wochenziele erscheinen, sobald du loslegst.</p>';
+    } else goals += '<p class="hint">Level und Wochenziele erscheinen nach deiner ersten Session.</p>';
+    goals += '</section>';
+    return '<div class="dz-two dz-two-a">' + prog + goals + '</div>';
+  }
+
   function html() {
     const d = data(), t0 = now(), wk = t0 - WEEK;
     const tTimes = d.journal.map(d.when).filter(Boolean), sTimes = d.sess.map((s) => s.created).filter(Boolean);
@@ -11970,7 +12226,7 @@ const Dash = (() => {
         '<span class="dz-v"><b>' + val + '</b><span class="dz-l">' + lbl + '</span></span><small>' + sub + (times ? ' · <em class="' + (fresh ? 'up' : '') + '">+' + fresh + ' diese Woche</em>' : '') + '</small>' + (times ? spark(weeks(times)) : '') + '</button>';
     };
     const ruled = d.strat.filter((s) => (s.rules || '').trim()).length;
-    let h = '<section class="dz" aria-label="Was du gemacht hast"><div class="dz-tiles">' +
+    let h = '<section class="dz" aria-label="Was du gemacht hast">' + actions() + progress(d) + '<div class="dz-tiles">' +
       tile('journal', 'trade', fmtN(d.journal.length), 'Trades', 'im Journal', tTimes) +
       tile('backtests', 'sess', fmtN(d.sess.length), 'Backtest-Sessions', 'gesamt', sTimes) +
       tile('strategien', 'strat', fmtN(d.strat.length), 'Strategien', ruled + ' mit Regeln', null) +
@@ -11997,10 +12253,10 @@ const Dash = (() => {
       ...d.notes.map((n) => ({ t: n.t / 1000, k: 'note', txt: n.title || 'Notiz', sub: 'Research Desk', go: 'research' })),
       ...d.briefs.map((b) => ({ t: b.t / 1000, k: 'note', txt: 'Morning Briefing', sub: 'Briefing', go: 'briefing' }))
     ].filter((x) => x.t).sort((a, b) => b.t - a.t).slice(0, 7);
-    const tl = '<section class="card dz-feed"><div class="card-h"><h3>Zuletzt gemacht</h3><a href="#journal">Journal</a></div>' +
+    const tl = '<section class="card dz-feed"><div class="card-h"><h3>Zuletzt gemacht</h3><a href="#journal" data-go="journal">Journal</a></div>' +
       (feed.length ? '<div class="dz-list">' + feed.map((x) => '<button type="button" class="dz-row" data-go="' + x.go + '"><span class="dz-ic dz-' + x.k + '">' + ic(x.k) + '</span><span class="dz-m"><b>' + esc(x.txt) + '</b><small class="' + (x.cls || '') + '">' + esc(x.sub) + '</small></span><time>' + ago(x.t) + '</time></button>').join('') + '</div>'
         : '<p class="hint">Noch nichts passiert – starte eine Backtest-Session oder einen Trade im Handels-Desk. Alles, was du machst, erscheint hier.</p>') + '</section>';
-    return h + '<section class="card dz-today" id="dzToday"></section><div class="dz-two">' + act + tl + '</div></section>';
+    return h + '<section class="card dz-today"></section><div class="dz-two">' + act + tl + '</div></section>';
   }
 
   /* ---------- Heute: Börsenzeiten mit Countdown + wichtige Termine ---------- */
@@ -12020,36 +12276,55 @@ const Dash = (() => {
     for (let d = 0; d < 4; d++) { const off = d * 1440 + o - L.m, wd = (wi + d) % 7; if (off > 0 && wd !== 0 && wd !== 6) { wait = off; break; } }
     return { open: false, txt: 'geschlossen · öffnet in ' + dur(wait), pct: 0 };
   }
-  async function today() {
-    const box = document.getElementById('dzToday'); if (!box) return;
+  async function today(root) {
+    const box = root && root.querySelector('.dz-today'); if (!box) return;
     const ses = SESS.map((s) => { const st = sessState(s); return '<div class="dz-ses ' + (st.open ? 'open' : '') + '"><span class="dz-dot"></span><div><b>' + s.n + '</b><small>' + st.txt + '</small></div>' + (st.open ? '<span class="dz-prog"><i style="width:' + Math.round(st.pct * 100) + '%"></i></span>' : '') + '</div>'; }).join('');
     let ev = '<p class="hint">Termine werden geladen …</p>';
-    box.innerHTML = '<div class="card-h"><h3>Heute</h3><span class="hint">' + new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' }) + '</span></div><div class="dz-today-in"><div class="dz-mkts">' + ses + '</div><div class="dz-ev" id="dzEv">' + ev + '</div></div>';
+    box.innerHTML = '<div class="card-h"><h3>Heute</h3><span class="hint">' + new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' }) + '</span></div><div class="dz-today-in"><div class="dz-mkts">' + ses + '</div><div class="dz-ev">' + ev + '</div></div>';
     try {
       const c = await J.getJSON('calendar.json'); const td = J.today();
       const L = (c.events || []).filter((e) => (e.impact === 'High' || e.impact === 'Medium') && J.dayOf(Date.parse(e.date) / 1000) === td).sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
       const t0 = Date.now();
-      ev = L.length ? '<div class="dz-evl">' + L.slice(0, 6).map((e) => { const t = Date.parse(e.date), past = t < t0; return '<div class="dz-e' + (past ? ' past' : '') + '"><time>' + new Date(t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' }) + '</time><span class="dz-imp ' + (e.impact === 'High' ? 'hi' : 'md') + '" title="' + (e.impact === 'High' ? 'Hohe' : 'Mittlere') + ' Wirkung"></span><span class="dz-cc">' + esc(e.country) + '</span><span class="dz-et">' + esc(e.title) + '</span><small>' + (e.forecast ? 'Prognose ' + esc(e.forecast) : '') + (e.previous ? ' · vorher ' + esc(e.previous) : '') + '</small></div>'; }).join('') + '</div>' + (L.length > 6 ? '<a class="hint" href="#makro">+' + (L.length - 6) + ' weitere in Makroökonomie</a>' : '')
+      ev = L.length ? '<div class="dz-evl">' + L.slice(0, 6).map((e) => { const t = Date.parse(e.date), past = t < t0; return '<div class="dz-e' + (past ? ' past' : '') + '"><time>' + new Date(t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' }) + '</time><span class="dz-imp ' + (e.impact === 'High' ? 'hi' : 'md') + '" title="' + (e.impact === 'High' ? 'Hohe' : 'Mittlere') + ' Wirkung"></span><span class="dz-cc">' + esc(e.country) + '</span><span class="dz-et">' + esc(e.title) + '</span><small>' + (e.forecast ? 'Prognose ' + esc(e.forecast) : '') + (e.previous ? ' · vorher ' + esc(e.previous) : '') + '</small></div>'; }).join('') + '</div>' + (L.length > 6 ? '<a class="hint" href="#makro" data-go="makro">+' + (L.length - 6) + ' weitere in Makroökonomie</a>' : '')
         : '<p class="hint">Heute keine wichtigen Wirtschaftstermine. Ruhiger Tag für Backtesting.</p>';
     } catch { ev = '<p class="hint">Wirtschaftstermine sind gerade nicht erreichbar.</p>'; }
-    const evb = document.getElementById('dzEv'); if (evb) evb.innerHTML = ev;
+    const evb = box.querySelector('.dz-ev'); if (evb) evb.innerHTML = ev;
   }
-  setInterval(() => { if (typeof App !== 'undefined' && App.view === 'start' && document.getElementById('dzToday')) today(); }, 60000);
+  setInterval(() => { document.querySelectorAll('.dz-today').forEach((b) => { if (b.offsetParent) today(b.parentElement); }); }, 60000);
+
+  /* Klicks: go = Bereich öffnen, act = Aktion. nav(go) bestimmt, wie navigiert wird (Terminal: Hash, Second Brain: eintauchen). */
+  function bind(root, nav) {
+    root.querySelectorAll('.dz [data-go]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); nav(b.dataset.go); }));
+    root.querySelectorAll('.dz [data-act]').forEach((b) => b.addEventListener('click', () => {
+      const a = b.dataset.act;
+      if (a === 'new') { if (nav.space) { nav('backtests'); setTimeout(() => NewSess.open(), 900); } else NewSess.open(); }
+      else if (a === 'resume') { if (nav.space) { nav('charts'); setTimeout(() => Start.resume(), 900); } else Start.resume(); }
+      else nav(a);
+    }));
+  }
 
   function render() {
     const body = document.getElementById('stBody'); if (!body) return;
     const old = body.querySelector('.dz'); if (old) old.remove();
     body.insertAdjacentHTML('afterbegin', html());
-    today();
-    body.querySelectorAll('.dz [data-go]').forEach((b) => b.addEventListener('click', () => { location.hash = '#' + b.dataset.go; }));
+    today(body.querySelector('.dz'));
+    bind(body, (go) => { location.hash = '#' + go; });
     const name = (typeof J !== 'undefined' && J.S && J.S.settings && J.S.settings.name) || '';
     const h = new Date().getHours(), greet = h < 11 ? 'Guten Morgen' : h < 18 ? 'Hallo' : 'Guten Abend';
     const t = document.querySelector('#view-start .st-head h1');
     if (t) t.textContent = name ? greet + ', ' + name : 'Dashboard';
   }
+  /* Für das Second Brain: Dashboard in ein beliebiges Element setzen. go(target) taucht dort ins Terminal ein. */
+  function mount(el, go) {
+    if (!el) return;
+    el.innerHTML = html();
+    const nav = (target) => go(target); nav.space = true;
+    today(el.querySelector('.dz'));
+    bind(el, nav);
+  }
   const orig = App.renderStart;
   App.renderStart = function () { const r = orig.apply(this, arguments); try { render(); } catch (e) { console.warn('Dashboard', e); } return r; };
-  return { render };
+  return { render, mount, html };
 })();
 
 /* Edge Lab Replay — Bedienung, Bereiche, Routing */
@@ -13241,14 +13516,17 @@ const JAI = (() => {
     const D = (App.settings && App.settings.diary) || {};
     return Object.keys(D).sort().reverse().slice(0, n).map((k) => { const e = D[k] || {}; return { tag: k, bias: e.bias || null, verfassung: e.mood ? +e.mood : null, plan: (e.plan || '').slice(0, 300), level: (e.levels || '').slice(0, 160), regelnEingehalten: e.rules || null, tagesnote: e.grade ? +e.grade : null, rueckblick: (e.review || '').slice(0, 300), lektion: (e.lesson || '').slice(0, 200) }; }).filter((x) => x.plan || x.rueckblick || x.lektion || x.bias);
   };
-  const noBrain = '<div class="jx-key"><p><b>Jarvis braucht noch ein Gehirn auf diesem Gerät.</b> Hol dir kostenlos einen Gemini-Key bei <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> (mit Google-Konto anmelden → „API-Schlüssel erstellen“) und füge ihn hier ein. Er bleibt nur auf diesem Gerät.</p><div class="jx-key-row"><input type="password" class="jx-key-in" placeholder="Gemini-Key einfügen (beginnt meist mit AIza…)" autocomplete="off"><button type="button" class="btn sm jt-gold jx-key-save">Verbinden</button></div><small class="jx-key-msg"></small></div>';
+  const noBrain = '<div class="jx-key"><p><b>Jarvis braucht noch ein Gehirn auf diesem Gerät.</b> Hol dir kostenlos einen Gemini-Key bei <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> (mit Google-Konto anmelden → „API-Schlüssel erstellen“) und füge ihn hier ein.</p><div class="jx-key-row"><input type="password" class="jx-key-in" placeholder="Gemini-Key einfügen (beginnt meist mit AIza…)" autocomplete="off"><button type="button" class="btn sm jt-gold jx-key-save">Verbinden</button></div><label class="jx-key-sync-l" style="display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12.5px;color:var(--muted)"><input type="checkbox" class="jx-key-sync" checked> Auf allen meinen Geräten nutzen (liegt dann in deinem Edge-Lab-Konto, nur du kannst ihn lesen – klappt, sobald du unter Konto &amp; Sync angemeldet bist)</label><small class="jx-key-msg"></small></div>';
   J.keyForm = noBrain;
   /* Key direkt in der Karte speichern und kurz testen */
   document.addEventListener('click', async (e) => {
     const b = e.target.closest && e.target.closest('.jx-key-save'); if (!b) return;
     const box = b.closest('.jx-key'), inp = box.querySelector('.jx-key-in'), msg = box.querySelector('.jx-key-msg');
     const k = (inp.value || '').trim(); if (k.length < 20) { msg.textContent = 'Das sieht nicht nach einem vollständigen Key aus.'; return; }
-    const a = Object.assign(Jarvis.ai(), { provider: 'gemini', gemini: k }); Jarvis.saveAi(a);
+    const sy = box.querySelector('.jx-key-sync');
+    const a = Object.assign(Jarvis.ai(), { provider: 'gemini', gemini: k, sync: !!(sy && sy.checked) }); Jarvis.saveAi(a);
+    /* Häkchen abgewählt → ein früher synchronisierter Key wird aus dem Konto entfernt (bleibt nur auf diesem Gerät) */
+    if (!a.sync) { try { if (J.S.settings.aiSync) { delete J.S.settings.aiSync; J.store.save('settings'); } } catch { } }
     msg.textContent = 'Teste Verbindung …'; b.disabled = true;
     try { await Jarvis.think('Antworte nur mit: OK'); msg.textContent = 'Verbunden ✓'; J.toast('Jarvis ist verbunden', 'good');
       setTimeout(() => { if (App.view === 'start') { localStorage.removeItem('jx.insight'); const c = document.getElementById('jxIns'); if (c) c.remove(); App.renderStart(); } else if (App.view === 'journal') UI.renderJournal(); }, 400);

@@ -16,14 +16,17 @@ const JAI = (() => {
     const D = (App.settings && App.settings.diary) || {};
     return Object.keys(D).sort().reverse().slice(0, n).map((k) => { const e = D[k] || {}; return { tag: k, bias: e.bias || null, verfassung: e.mood ? +e.mood : null, plan: (e.plan || '').slice(0, 300), level: (e.levels || '').slice(0, 160), regelnEingehalten: e.rules || null, tagesnote: e.grade ? +e.grade : null, rueckblick: (e.review || '').slice(0, 300), lektion: (e.lesson || '').slice(0, 200) }; }).filter((x) => x.plan || x.rueckblick || x.lektion || x.bias);
   };
-  const noBrain = '<div class="jx-key"><p><b>Jarvis braucht noch ein Gehirn auf diesem Gerät.</b> Hol dir kostenlos einen Gemini-Key bei <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> (mit Google-Konto anmelden → „API-Schlüssel erstellen“) und füge ihn hier ein. Er bleibt nur auf diesem Gerät.</p><div class="jx-key-row"><input type="password" class="jx-key-in" placeholder="Gemini-Key einfügen (beginnt meist mit AIza…)" autocomplete="off"><button type="button" class="btn sm jt-gold jx-key-save">Verbinden</button></div><small class="jx-key-msg"></small></div>';
+  const noBrain = '<div class="jx-key"><p><b>Jarvis braucht noch ein Gehirn auf diesem Gerät.</b> Hol dir kostenlos einen Gemini-Key bei <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> (mit Google-Konto anmelden → „API-Schlüssel erstellen“) und füge ihn hier ein.</p><div class="jx-key-row"><input type="password" class="jx-key-in" placeholder="Gemini-Key einfügen (beginnt meist mit AIza…)" autocomplete="off"><button type="button" class="btn sm jt-gold jx-key-save">Verbinden</button></div><label class="jx-key-sync-l" style="display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12.5px;color:var(--muted)"><input type="checkbox" class="jx-key-sync" checked> Auf allen meinen Geräten nutzen (liegt dann in deinem Edge-Lab-Konto, nur du kannst ihn lesen – klappt, sobald du unter Konto &amp; Sync angemeldet bist)</label><small class="jx-key-msg"></small></div>';
   J.keyForm = noBrain;
   /* Key direkt in der Karte speichern und kurz testen */
   document.addEventListener('click', async (e) => {
     const b = e.target.closest && e.target.closest('.jx-key-save'); if (!b) return;
     const box = b.closest('.jx-key'), inp = box.querySelector('.jx-key-in'), msg = box.querySelector('.jx-key-msg');
     const k = (inp.value || '').trim(); if (k.length < 20) { msg.textContent = 'Das sieht nicht nach einem vollständigen Key aus.'; return; }
-    const a = Object.assign(Jarvis.ai(), { provider: 'gemini', gemini: k }); Jarvis.saveAi(a);
+    const sy = box.querySelector('.jx-key-sync');
+    const a = Object.assign(Jarvis.ai(), { provider: 'gemini', gemini: k, sync: !!(sy && sy.checked) }); Jarvis.saveAi(a);
+    /* Häkchen abgewählt → ein früher synchronisierter Key wird aus dem Konto entfernt (bleibt nur auf diesem Gerät) */
+    if (!a.sync) { try { if (J.S.settings.aiSync) { delete J.S.settings.aiSync; J.store.save('settings'); } } catch { } }
     msg.textContent = 'Teste Verbindung …'; b.disabled = true;
     try { await Jarvis.think('Antworte nur mit: OK'); msg.textContent = 'Verbunden ✓'; J.toast('Jarvis ist verbunden', 'good');
       setTimeout(() => { if (App.view === 'start') { localStorage.removeItem('jx.insight'); const c = document.getElementById('jxIns'); if (c) c.remove(); App.renderStart(); } else if (App.view === 'journal') UI.renderJournal(); }, 400);

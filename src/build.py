@@ -1,7 +1,7 @@
 import os, json
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 tpl = open('template.html').read()
-_i = tpl.index('</style>'); tpl = tpl[:_i] + open('jt.css').read() + open('apple.css').read() + open('light.css').read() + open('plus.css').read() + tpl[_i:]
+_i = tpl.index('</style>'); tpl = tpl[:_i] + open('jt.css').read() + open('apple.css').read() + open('light.css').read() + open('plus.css').read() + open('clean.css').read() + tpl[_i:]
 js = ''.join(open(f).read() + '\n' for f in ['core.js','chart.js','app.js','econ.js','storage.js','photos.js','sync.js','notes.js','data.js','start.js','analysis.js','handbook.js','pass.js','shop.js','jt-core.js','jt-ta.js','jt-chart.js','jt-brain.js','jt-views.js','jt-views2.js','jt-hooks.js','jt-space.js','dash.js','ui.js','journal-plus.js','jt-ai.js','apple.js'])
 assert '</script' not in js
 import re
