@@ -13758,13 +13758,18 @@ const JarvisBridge = (() => {
     };
   }
 
-  async function push() {
-    if (!enabled() || busy) return;
-    let s; try { s = summary(); } catch (e) { console.warn('Jarvis-Brücke', e); return; }
-    /* nur ASCII schicken (der Jarvis-Server liest Bytes 1:1) und unter 8 KB bleiben */
+  /* nur ASCII schicken (der Jarvis-Server liest Bytes 1:1) und unter 8 KB bleiben */
+  function payload() {
+    const s = summary();
     const enc = (o) => JSON.stringify(o).replace(/[\u0080-￿]/g, (c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'));
     let body = enc(s);
-    while (body.length > 7800 && s.sessions.length > 3) { s.sessions.pop(); body = enc(s); }
+    while (body.length > 7000 && s.sessions.length > 3) { s.sessions.pop(); body = enc(s); }
+    return body;
+  }
+
+  async function push() {
+    if (!enabled() || busy) return;
+    let body; try { body = payload(); } catch (e) { console.warn('Jarvis-Brücke', e); return; }
     const sig = body.replace(/"t":\d+,/, '');
     if (sig === lastSig) return;
     busy = true;
@@ -13782,7 +13787,20 @@ const JarvisBridge = (() => {
   setInterval(() => schedule(0), 5 * 60 * 1000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) schedule(500); });
   schedule(6000);
-  return { summary, push, schedule };
+
+  /* Weg 2 (ohne Netzwerk-Erlaubnis des Browsers): Jarvis öffnet Edge Lab als Fenster und fragt per
+     postMessage „jarvis-hello“. Geantwortet wird nur einem Jarvis-Fenster (127.0.0.1/localhost:8650 oder
+     das eigene Tailscale-Gerät *.ts.net) – und erst, wenn die Daten geladen sind. */
+  const JARVIS_ORIGIN = /^(http:\/\/(127\.0\.0\.1|localhost):8650|https:\/\/[a-z0-9-]+(\.[a-z0-9-]+)*\.ts\.net(:\d+)?)$/;
+  window.addEventListener('message', (ev) => {
+    const d = ev.data;
+    if (!d || d.type !== 'jarvis-hello' || !JARVIS_ORIGIN.test(ev.origin) || !ev.source) return;
+    if (typeof UI === 'undefined' || !UI._routed) return;   // noch am Laden – Jarvis fragt gleich nochmal
+    try { if (localStorage.getItem('elr.jarvis') === '0') return; } catch { }
+    let body; try { body = payload(); } catch (e) { console.warn('Jarvis-Brücke', e); return; }
+    try { ev.source.postMessage({ type: 'edgelab-summary', body }, ev.origin); } catch { }
+  });
+  return { summary, payload, push, schedule };
 })();
 
 
