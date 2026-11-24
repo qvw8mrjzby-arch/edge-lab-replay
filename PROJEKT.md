@@ -95,3 +95,8 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - 23.11.2026: Apple-Look, heller Glas-Modus als Standard, Hell/Dunkel-Schalter, Dashboard als Start live auf index.html; sw.js Cache v12.
 - 23.11.2026: Journal+, Heute-Karte und KI-Auswertung live; sw.js Cache v13.
 - 23.11.2026: KI-Fix: Gemini-Key direkt in den KI-Karten eintragbar (J.keyForm), automatischer Modell-Wechsel bei abgeschaltetem Modell (gemini-flash-latest u. a.), klarere Fehler; Cache v14.
+
+## Jarvis-Bruecke (24.11.2026 - live, Cache v17)
+- `src/jarvis-bridge.js` (letzte Datei im Build): schickt am Desktop eine Zusammenfassung (Woche/Vorwoche, Gesamt, Level/Wochenziele, 12 neueste Sessions; keine Notizen/Fotos/Keys) per POST text/plain an `http://127.0.0.1:8650/edgelab` (Jarvis-HUD-Server, prueft Origin, speichert `jarvis/tools/edgelab-daten.json`). Ausloeser: renderStart, saveSessions, saveJournal, alle 5 Min, Tab sichtbar. Aus: localStorage `elr.jarvis`=`0`.
+- Deep-Link `#session-<id>` (ui.js route) oeffnet die Session im Backtests-Bereich.
+- Build unter Windows: `PYTHONUTF8=1 python build.py`.
