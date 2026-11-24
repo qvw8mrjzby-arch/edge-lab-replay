@@ -94,6 +94,17 @@ const UI = {
     /* Deep-Link ins Handbuch: #handbuch-<kapitel oder abschnitt> (nur Buchstaben, Ziffern, Bindestrich) */
     const m = v.match(/^handbuch-([A-Za-z0-9-]{1,60})$/);
     if (m) { v = 'handbuch'; sub = m[1].toLowerCase(); }
+    /* Deep-Link aus Jarvis: #session-<id> öffnet diese Backtest-Session */
+    const ms = v.match(/^session-([A-Za-z0-9_-]{1,40})$/);
+    if (ms) {
+      this._routed = true;
+      if (typeof Space !== 'undefined' && Space.open && !Space.leaving) Space.close();
+      this.showView('backtests');
+      const id = ms[1];
+      setTimeout(() => { if ((App.sessions || []).some((s) => s.id === id)) App.openSession({ id }); else App.toast('Diese Session gibt es hier nicht (anderes Gerät?).'); }, 300);
+      history.replaceState(null, '', '#backtests');
+      return;
+    }
     if (v === 'brain' && typeof Space !== 'undefined') { if (!this._routed) this.showView('markt'); this._routed = true; Space.show(App.view || 'markt'); if (J.updateTabs) J.updateTabs('brain'); return; }
     this._routed = true;
     if (typeof Space !== 'undefined' && Space.open && !Space.leaving) Space.close();
