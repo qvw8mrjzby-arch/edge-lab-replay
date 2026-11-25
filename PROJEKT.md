@@ -113,3 +113,4 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Quellen: Nasdaq (Gewinn- und Verlustrechnung quartalsweise + jährlich für Geschäftsjahresende → Q/GJ-Label, bereinigter EPS vs. Konsens, Termine, Earnings-Kalender 14 Tage ab 20 Mrd. $), Yahoo (Kursreaktion Aktie und ^NDX: Schluss Vortag → Schluss Folgetag). SEC (data.sec.gov) liefert von GitHub aus 403 – bleibt als erster Versuch im Skript.
 - Firmen: NVDA MSFT AAPL AMZN GOOGL META AVGO TSLA NFLX COST AMD PLTR JPM. Karte je Firma, Detail-Tabelle, Jarvis-Analyse je Firma und „Saison & NAS100“.
 - Jarvis-Werkzeuge `quartalszahlen` (J.earnCtx) und `live_trades` (J.liveCtx) in jt-brain.js, plus automatischer Kontext bei passenden Fragen.
+- 25.11.2026 Clean-Glas für Live-Trades/Live-Statistik/Quartalszahlen: `src/demo.css` nur mit Theme-Variablen (--up/--dn/--acc/--ink/--line) und color-mix-Transparenz, Canvas-Kurven lesen --bull/--bear (Pass-Designs wirken mit); Cache v23.

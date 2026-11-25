@@ -2212,61 +2212,83 @@ html.mode-anim, html.mode-anim * { transition: background-color .35s ease, borde
 .badge.badge-auto { cursor: pointer; background: color-mix(in srgb, var(--accent) 12%, transparent); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); color: var(--accent); font-family: inherit; font-weight: 600; line-height: 16px; }
 .badge.badge-auto:hover { background: color-mix(in srgb, var(--accent) 20%, transparent); }
 
-/* Demo-Trades (src/demo.js) */
-.jt .dm-tbl{width:100%;border-collapse:collapse;font-size:13px}
-.jt .dm-tbl th{font-weight:600;color:var(--mut);text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
-.jt .dm-tbl td{padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}
+/* Live-Trades, Live-Statistik, Quartalszahlen (src/demo.js, src/earnings.js)
+   Nur Theme-Variablen (--up/--dn/--acc/--line/--ink/--mut kommen aus deinem Pass-Design) und halbtransparente Flächen → Glas bleibt, Designs wirken mit. */
+
+/* Tabellen: luftig, ohne harte Linien, Zahlen bündig */
+.jt .dm-tbl{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+.jt .dm-tbl th{font-weight:500;font-size:11.5px;letter-spacing:.02em;color:var(--mut);text-align:left;padding:6px 10px;border:0;background:none!important;white-space:nowrap}
+.jt .dm-tbl td{padding:9px 10px;border:0;border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent);white-space:nowrap}
+.jt .dm-tbl tbody tr:first-child td{border-top-color:transparent}
 .jt .dm-tbl .r{text-align:right}
-.jt .dm-tbl tbody tr[data-tr]{cursor:pointer}
-.jt .dm-tbl tbody tr[data-tr]:hover td{background:var(--hover)}
-.jt .dm-tbl .dm-note{white-space:normal;min-width:180px;max-width:340px}
-.jt .dm-steps{text-align:left;margin:10px auto;max-width:620px;line-height:1.6;padding-left:22px}
-.jt .dm-ins{margin:0;padding-left:20px;line-height:1.7}
-.jt .dm-box{border:1px solid var(--line);border-radius:12px;padding:12px 14px;line-height:1.6}
-.jt .dm-cal{display:grid;grid-template-columns:repeat(7,1fr) 1.1fr;gap:4px}
-.jt .dm-wd{font-size:11.5px;color:var(--mut);text-align:center;padding:2px 0;font-weight:600}
-.jt .dm-cal>div:not(.dm-wd){min-height:54px;border-radius:9px}
-.jt .dm-day{border:1px solid var(--line);padding:4px 5px;display:flex;flex-direction:column;gap:1px;font-size:11px;overflow:hidden}
+.jt .dm-tbl tbody tr[data-tr]{cursor:pointer;transition:background .15s}
+.jt .dm-tbl tbody tr[data-tr]:hover td{background:color-mix(in srgb,var(--acc) 7%,transparent)}
+.jt .dm-tbl .dm-note{white-space:normal;min-width:180px;max-width:340px;color:var(--mut)}
+.jt .dm-tbl b{font-weight:600}
+
+/* Karten-Inhalte */
+.jt .dm-steps{text-align:left;margin:10px auto;max-width:620px;line-height:1.7;padding-left:22px}
+.jt .dm-ins{margin:0;padding-left:18px;line-height:1.8}
+.jt .dm-ins li::marker{color:var(--acc)}
+.jt .dm-box{border-radius:14px;padding:12px 14px;line-height:1.6;background:color-mix(in srgb,var(--acc) 7%,transparent);border:1px solid color-mix(in srgb,var(--acc) 18%,transparent)}
+.jt .dm-link{display:flex;flex-direction:column;gap:3px;text-decoration:none;color:inherit;position:relative;padding-right:150px}
+.jt .dm-link .dm-go{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-weight:600;color:var(--acc)}
+
+/* Kalender */
+.jt .dm-cal{display:grid;grid-template-columns:repeat(7,1fr) 1.1fr;gap:5px}
+.jt .dm-wd{font-size:11px;color:var(--mut);text-align:center;padding:2px 0 4px;font-weight:500;letter-spacing:.03em}
+.jt .dm-cal>div:not(.dm-wd){min-height:56px;border-radius:12px}
+.jt .dm-day{padding:5px 6px;display:flex;flex-direction:column;gap:1px;font-size:11px;overflow:hidden;background:color-mix(in srgb,var(--ink) 3.5%,transparent)}
 .jt .dm-day i{font-style:normal;color:var(--mut);font-size:10.5px}
-.jt .dm-day b{font-size:11.5px;white-space:nowrap}
+.jt .dm-day b{font-size:11.5px;white-space:nowrap;font-weight:600}
 .jt .dm-day small{color:var(--mut);font-size:10px}
-.jt .dm-day.win{background:rgba(47,207,159,var(--a));border-color:transparent;cursor:pointer}
-.jt .dm-day.loss{background:rgba(239,93,120,var(--a));border-color:transparent;cursor:pointer}
+.jt .dm-day.win{background:color-mix(in srgb,var(--up) calc(var(--a) * 55%),transparent);cursor:pointer}
+.jt .dm-day.loss{background:color-mix(in srgb,var(--dn) calc(var(--a) * 55%),transparent);cursor:pointer}
 .jt .dm-day.win b,.jt .dm-day.loss b{color:var(--ink)}
-.jt .dm-wk{display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;background:var(--side)}
-.jt .dm-stars{display:flex;gap:4px;margin-top:4px}
-.jt .dm-stars button{border:0;background:none;font-size:22px;color:var(--line2);cursor:pointer;padding:0 2px}
-.jt .dm-stars button.on{color:#f0b429}
-.jt .dm-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.jt .dm-tags .chip{cursor:pointer;border:1px solid var(--line)}
-@media (max-width:640px){.jt .dm-day b{font-size:10px}.jt .dm-cal>div:not(.dm-wd){min-height:46px}}
-.jt .dm-link{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:inherit;position:relative}
-.jt .dm-link .dm-go{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-weight:600;color:var(--acc,#6f8dff)}
-.jt .dm-bars{display:flex;gap:3px;height:170px;align-items:stretch}
+.jt .dm-wk{display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;background:color-mix(in srgb,var(--ink) 3%,transparent)}
+
+/* Trade-Fenster */
+#jtmodal .dm-stars{display:flex;gap:4px;margin-top:4px}
+#jtmodal .dm-stars button{border:0;background:none;font-size:22px;color:color-mix(in srgb,var(--mut) 45%,transparent);cursor:pointer;padding:0 2px;transition:color .15s,transform .15s}
+#jtmodal .dm-stars button.on{color:var(--gold)}
+#jtmodal .dm-stars button:active{transform:scale(.9)}
+#jtmodal .dm-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+#jtmodal .dm-tags .chip{cursor:pointer;border:1px solid color-mix(in srgb,var(--line) 70%,transparent);background:transparent;transition:background .15s,border-color .15s}
+#jtmodal .dm-tags .chip.acc{background:color-mix(in srgb,var(--acc) 16%,transparent);border-color:color-mix(in srgb,var(--acc) 40%,transparent)}
+
+/* Balken: Tages-P&L und Verteilung */
+.jt .dm-bars{display:flex;gap:3px;height:170px;align-items:stretch;position:relative;overflow:hidden}
+.jt .dm-bars::after{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px solid color-mix(in srgb,var(--line) 80%,transparent)}
 .jt .dm-bar{flex:1;position:relative;min-width:4px}
-.jt .dm-bar i{position:absolute;left:0;right:0;border-radius:3px}
-.jt .dm-bar i.up,.jt .dm-hist i.up{background:#2fcf9f}.jt .dm-bar i.dn,.jt .dm-hist i.dn{background:#ef5d78}
+.jt .dm-bar i{position:absolute;left:0;right:0;border-radius:4px}
 .jt .dm-hist{display:flex;gap:4px;height:170px;align-items:flex-end}
 .jt .dm-hist>div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:3px}
-.jt .dm-hist i{display:block;width:100%;border-radius:4px 4px 0 0;min-height:2px}
+.jt .dm-hist i{display:block;width:100%;border-radius:6px 6px 2px 2px;min-height:2px}
 .jt .dm-hist span{font-size:11px;color:var(--mut)}
-.jt .dm-heat{border-collapse:separate;border-spacing:3px;font-size:11.5px}
-.jt .dm-heat th{color:var(--mut);font-weight:600;padding:2px 4px}
-.jt .dm-heat td{min-width:44px;height:30px;text-align:center;border-radius:6px;color:var(--ink);background:var(--side)}
-@media (max-width:640px){.jt .dm-link .dm-go{position:static;transform:none}}
-.jt .dm-bars{position:relative;overflow:hidden}.jt .dm-bars::after{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px solid var(--line2)}
-/* Quartalszahlen (src/earnings.js) */
-.jt .er-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.jt :is(.dm-bar, .dm-hist) i.up{background:color-mix(in srgb,var(--up) 78%,transparent)}
+.jt :is(.dm-bar, .dm-hist) i.dn{background:color-mix(in srgb,var(--dn) 78%,transparent)}
+
+/* Heatmap Wochentag × Uhrzeit */
+.jt .dm-heat{border-collapse:separate;border-spacing:4px;font-size:11.5px;font-variant-numeric:tabular-nums}
+.jt .dm-heat th{color:var(--mut);font-weight:500;padding:2px 4px;background:none!important;border:0}
+.jt .dm-heat td{min-width:46px;height:32px;text-align:center;border-radius:9px;color:var(--ink);border:0;background:color-mix(in srgb,var(--ink) 3.5%,transparent)}
+.jt .dm-heat td.up{background:color-mix(in srgb,var(--up) calc(var(--a) * 60%),transparent)}
+.jt .dm-heat td.dn{background:color-mix(in srgb,var(--dn) calc(var(--a) * 60%),transparent)}
+
+/* Quartalszahlen */
+.jt .er-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
 .jt .er-card{cursor:pointer}
-.jt .er-sym{font-size:20px;letter-spacing:.3px}
-.jt .er-kv{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:12px}
-.jt .er-kv span{display:block;font-size:12px;color:var(--mut)}
-.jt .er-kv b{display:block;font-size:16px;margin-top:2px;white-space:nowrap}
-.jt .er-kv small{display:block;font-size:11.5px;color:var(--mut);margin-top:1px}
-.jt .er-bars{display:flex;align-items:flex-end;gap:5px;height:44px;margin-top:12px}
-.jt .er-bars i{flex:1;background:var(--acc,#6f8dff);opacity:.55;border-radius:4px 4px 0 0;min-height:3px}
-.jt .er-bars i:last-child{opacity:1}
+.jt .er-sym{font-size:19px;font-weight:700;letter-spacing:.01em}
+.jt .er-kv{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;margin-top:14px}
+.jt .er-kv span{display:block;font-size:11.5px;color:var(--mut)}
+.jt .er-kv b{display:block;font-size:16px;font-weight:600;margin-top:2px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .jt .er-kv b b,.jt .er-kv b span{display:inline;font-size:inherit;margin:0}
+.jt .er-kv small{display:block;font-size:11.5px;color:var(--mut);margin-top:2px}
+.jt .er-bars{display:flex;align-items:flex-end;gap:6px;height:40px;margin-top:14px}
+.jt .er-bars i{flex:1;background:color-mix(in srgb,var(--acc) 30%,transparent);border-radius:6px 6px 2px 2px;min-height:3px}
+.jt .er-bars i:last-child{background:color-mix(in srgb,var(--acc) 85%,transparent)}
+
+@media (max-width:640px){.jt .dm-day b{font-size:10px}.jt .dm-cal>div:not(.dm-wd){min-height:46px}.jt .dm-link{padding-right:16px}.jt .dm-link .dm-go{position:static;transform:none}.jt .er-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -11942,6 +11964,9 @@ V.copilot = el => {
     const Rs = T.map(rOf).filter(x => x != null), hold = T.filter(t => t.entryT && t.exitT).map(t => t.exitT - t.entryT);
     return { n: T.length, w: W.length, l: L.length, wr: T.length ? W.length / T.length * 100 : null, net, gw, gl, pf: gl ? gw / gl : (gw ? Infinity : null), aw: W.length ? gw / W.length : null, al: L.length ? -gl / L.length : null, exp: T.length ? net / T.length : null, dd, mw, ml, best: T.length ? Math.max(...T.map(t => t.pnl)) : null, worst: T.length ? Math.min(...T.map(t => t.pnl)) : null, avgR: Rs.length ? Rs.reduce((a, b) => a + b, 0) / Rs.length : null, nR: Rs.length, hold: hold.length ? hold.reduce((a, b) => a + b, 0) / hold.length : null, fees: T.reduce((s, t) => s + (t.fees || 0), 0) };
   };
+  /* Farben aus dem aktiven Pass-Design (für die Canvas-Kurven) */
+  const tc = (v, fb) => { try { const c = getComputedStyle(document.documentElement).getPropertyValue(v).trim(); return /^#[0-9a-f]{6}$/i.test(c) ? c : fb; } catch { return fb; } };
+  const UP = () => tc('--bull', '#2fcf9f'), DN = () => tc('--bear', '#ef5d78');
   const pfTxt = pf => pf == null ? '–' : pf === Infinity ? '∞' : J.num(pf, 2);
   const groupRows = (T, keyFn, order) => { const m = new Map(); T.forEach(t => { const k = keyFn(t); if (k == null || k === '') return; [].concat(k).forEach(kk => { if (!m.has(kk)) m.set(kk, []); m.get(kk).push(t); }); }); let e = [...m.entries()].map(([k, L]) => [k, stats(L)]); e = order ? e.sort((a, b) => order(a[0], b[0])) : e.sort((a, b) => b[1].net - a[1].net); return e; };
 
@@ -11958,7 +11983,7 @@ V.copilot = el => {
       if (S.wr != null && S.aw && S.al) { const be = -S.al / (S.aw - S.al) * 100; L.push(`Mit deinem Gewinn/Verlust-Verhältnis brauchst du mindestens <b>${J.num(be, 0)} %</b> Treffer – du hast ${J.num(S.wr, 0)} %.`); }
       const tg = g(t => t.tags && t.tags.length ? t.tags : null).filter(([, s]) => s.net < 0); if (tg.length) L.push(`Teuerstes Merkmal: <b>${esc(tg[tg.length - 1][0])}</b> (${J.money(tg[tg.length - 1][1].net, 0)}).`);
       const noSl = T.filter(t => t.sl == null).length; if (noSl) L.push(`${noSl} von ${T.length} Trades ohne eingetragenen Stop – trag ihn im Trade nach, dann siehst du dein R.`);
-      return L.length ? `<div class="card" style="margin-bottom:14px"><h3>Was deine Zahlen sagen</h3><ul class="dm-ins">${L.map(x => `<li>${x}</li>`).join('')}</ul></div>` : '';
+      return L.length ? `<div class="card" style="margin-bottom:16px"><h3>Was deine Zahlen sagen</h3><ul class="dm-ins">${L.map(x => `<li>${x}</li>`).join('')}</ul></div>` : '';
     };
     const ai = (T, S) => {
       const persona = () => { try { return Jarvis.persona(); } catch { return 'Du bist Jarvis, mein Trading-Coach. Antworte auf Deutsch, klar und knapp.'; } };
@@ -11987,13 +12012,13 @@ V.copilot = el => {
       const seg = (name, opts, cur) => `<div class="seg" data-seg="${name}">${opts.map(([v, l]) => `<button data-v="${v}" class="${String(cur) === String(v) ? 'on' : ''}">${l}</button>`).join('')}</div>`;
       const kpi = (l, v, c, s) => `<div class="kpi"><span>${l}</span><b class="${c || ''}">${v}</b>${s ? `<small>${s}</small>` : ''}</div>`;
       el.innerHTML = `<div class="page-hd"><div><h1>Live-Trades</h1><p class="mut">Deine Demo-/Paper-Trades auf Live-Charts aus TradingView – importieren, notieren, auswerten</p></div></div>
-      <div class="row" style="margin-bottom:14px;gap:8px"><button class="btn pri" id="dmImp">${J.icon('upload')}TradingView importieren</button><button class="btn" id="dmAdd">${J.icon('plus')}Trade eintragen</button><div class="sp"></div>${A.length ? `<button class="btn" id="dmAi">Jarvis auswerten</button>` : ''}<button class="btn ghost" id="dmSet">Konto & Punktwerte</button></div>
+      <div class="row" style="margin-bottom:16px;gap:8px"><button class="btn pri" id="dmImp">${J.icon('upload')}TradingView importieren</button><button class="btn" id="dmAdd">${J.icon('plus')}Trade eintragen</button><div class="sp"></div>${A.length ? `<button class="btn" id="dmAi">Jarvis auswerten</button>` : ''}<button class="btn ghost" id="dmSet">Konto & Punktwerte</button></div>
       ${!A.length ? empty() : `
-      <div class="card" style="margin-bottom:14px"><div class="row" style="gap:8px">${seg('per', [['all', 'Alles'], ['day', 'Heute'], ['w', '7 Tage'], ['m30', '30 Tage'], ['mon', 'Monat'], ['y', 'Jahr']], st.per)}${seg('side', [[0, 'Beide'], [1, 'Long'], [-1, 'Short']], st.side)}
+      <div class="card" style="margin-bottom:16px"><div class="row" style="gap:8px">${seg('per', [['all', 'Alles'], ['day', 'Heute'], ['w', '7 Tage'], ['m30', '30 Tage'], ['mon', 'Monat'], ['y', 'Jahr']], st.per)}${seg('side', [[0, 'Beide'], [1, 'Long'], [-1, 'Short']], st.side)}
         <select id="dmSym" style="width:auto"><option value="">Alle Symbole</option>${syms.map(s => `<option ${s === st.sym ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>
         ${strats.length ? `<select id="dmStrat" style="width:auto"><option value="">Alle Strategien</option>${strats.map(s => `<option ${s === st.strat ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>` : ''}
         ${tags.length ? `<select id="dmTag" style="width:auto"><option value="">Alle Merkmale</option>${tags.map(s => `<option ${s === st.tag ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>` : ''}</div></div>
-      <div class="kpis" style="margin-bottom:14px">
+      <div class="kpis" style="margin-bottom:16px">
         ${kpi('Netto P&amp;L', J.money(S.net), J.cls(S.net), `${S.n} Trades · Gebühren ${J.cash(S.fees)}`)}
         ${kpi('Kontostand', J.cash(bal), '', `Start ${J.cash(+d.start || 0, 0)} · ${J.pct(d.start ? SA.net / d.start * 100 : null)}`)}
         ${kpi('Trefferquote', S.wr == null ? '–' : J.num(S.wr, 1) + ' %', '', `${S.w} Gewinner · ${S.l} Verlierer`)}
@@ -12003,9 +12028,9 @@ V.copilot = el => {
         ${kpi('Max. Drawdown', J.cash(S.dd), S.dd ? 'dn' : '', `Serien: ${S.mw} Gewinne · ${S.ml} Verluste`)}
         ${kpi('Ø Haltedauer', dur(S.hold), '', `Bester ${J.money(S.best, 0)} · Schlechtester ${J.money(S.worst, 0)}`)}
       </div>
-      <div class="grid g2" style="margin-bottom:14px"><div class="card"><h3>Kontokurve</h3><div id="dmEq" style="height:230px"></div></div><div class="card"><h3>Kalender<span class="sp"></span><button class="btn sm ghost" data-mon="-1">‹</button><span class="note" id="dmMon"></span><button class="btn sm ghost" data-mon="1">›</button></h3><div id="dmCal"></div></div></div>
+      <div class="grid g2" style="margin-bottom:16px"><div class="card"><h3>Kontokurve</h3><div id="dmEq" style="height:230px"></div></div><div class="card"><h3>Kalender<span class="sp"></span><button class="btn sm ghost" data-mon="-1">‹</button><span class="note" id="dmMon"></span><button class="btn sm ghost" data-mon="1">›</button></h3><div id="dmCal"></div></div></div>
       ${insights(T, S)}
-      <a class="card dm-link" href="#livestats" style="margin-bottom:14px"><b>Alle Statistiken zu deinen Live-Trades</b><span class="mut">Symbole, Uhrzeiten, Sessions, Haltedauer, Verteilung, Monate und der Vergleich mit deinem Backtest</span><span class="dm-go">Live-Statistik →</span></a>
+      <a class="card dm-link" href="#livestats" style="margin-bottom:16px"><b>Alle Statistiken zu deinen Live-Trades</b><span class="mut">Symbole, Uhrzeiten, Sessions, Haltedauer, Verteilung, Monate und der Vergleich mit deinem Backtest</span><span class="dm-go">Live-Statistik →</span></a>
       <div class="card"><h3>Trades (${T.length})<span class="sp"></span><button class="btn sm ghost" id="dmCsv">Als CSV sichern</button></h3>
         <div class="scroll"><table class="dm-tbl"><thead><tr><th>Ausstieg</th><th>Symbol</th><th>Seite</th><th class="r">Menge</th><th class="r">Einstieg</th><th class="r">Ausstieg</th><th class="r">Dauer</th><th class="r">R</th><th class="r">P&amp;L</th><th>Strategie / Notiz</th></tr></thead><tbody>
         ${T.slice(0, st.show).map(t => { const r = rOf(t); return `<tr data-tr="${t.id}"><td>${J.dt(t.exitT)}</td><td><b>${esc(short(t.sym))}</b></td><td><span class="chip ${t.side > 0 ? 'up' : 'dn'}">${t.side > 0 ? 'Long' : 'Short'}</span></td><td class="r">${J.num(t.qty, t.qty % 1 ? 2 : 0)}</td><td class="r">${J.price(t.entry)}</td><td class="r">${J.price(t.exit)}</td><td class="r">${t.entryT ? dur(t.exitT - t.entryT) : '–'}</td><td class="r">${r == null ? '–' : J.num(r, 2)}</td><td class="r ${J.cls(t.pnl)}"><b>${J.money(t.pnl)}</b></td><td class="dm-note">${t.grade ? '<span class="gold">' + '★'.repeat(t.grade) + '</span> ' : ''}${esc(t.strat || '')}${t.note ? ' · <span class="mut">' + esc(t.note.slice(0, 60)) + '</span>' : ''}${t.shot ? ' 📷' : ''}</td></tr>`; }).join('')}
@@ -12027,7 +12052,7 @@ V.copilot = el => {
       for (let i = 0; i < first; i++) { h += '<div></div>'; cell++; }
       for (let dd = 1; dd <= nd; dd++) {
         const k = `${mon}-${String(dd).padStart(2, '0')}`, x = days[k];
-        const a = x ? (.18 + .62 * Math.abs(x.p) / max).toFixed(2) : 0;
+        const a = x ? (.3 + .7 * Math.abs(x.p) / max).toFixed(2) : 0;
         h += `<div class="dm-day ${x ? (x.p >= 0 ? 'win' : 'loss') : ''}" style="${x ? `--a:${a}` : ''}" ${x ? `data-day="${k}"` : ''}><i>${dd}</i>${x ? `<b>${J.money(x.p, 0)}</b><small>${x.n} T.</small>` : ''}</div>`;
         if (x) wk += x.p; cell++; if (cell % 7 === 0) pushWeek();
       }
@@ -12043,7 +12068,7 @@ V.copilot = el => {
       [['#dmSym', 'sym'], ['#dmStrat', 'strat'], ['#dmTag', 'tag']].forEach(([id, k]) => { const s = $(id); if (s) s.onchange = () => { st[k] = s.value; render(); }; });
       if (!T.length && !$('#dmEq')) return;
       const eqEl = $('#dmEq');
-      if (eqEl) { const asc = [...T].reverse(); let c = 0; const v = [0, ...asc.map(t => (c += t.pnl))]; cleans.push(LineChart(eqEl, [{ v, color: c >= 0 ? '#2fcf9f' : '#ef5d78', w: 2, fill: c >= 0 ? '#2fcf9f38' : '#ef5d7838' }], { zero: true, labels: ['', ...asc.map(t => J.date(t.exitT).slice(0, 6))], empty: 'Keine Trades in dieser Auswahl' })); }
+      if (eqEl) { const asc = [...T].reverse(); let c = 0; const v = [0, ...asc.map(t => (c += t.pnl))]; cleans.push(LineChart(eqEl, [{ v, color: c >= 0 ? UP() : DN(), w: 2, fill: (c >= 0 ? UP() : DN()) + '33' }], { zero: true, labels: ['', ...asc.map(t => J.date(t.exitT).slice(0, 6))], empty: 'Keine Trades in dieser Auswahl' })); }
       calendar(T);
       J.$$('[data-mon]', el).forEach(b => b.onclick = () => { const [y, m] = st.mon.split('-').map(Number); const d = new Date(Date.UTC(y, m - 1 + +b.dataset.mon, 1)); st.mon = d.toISOString().slice(0, 7); calendar(T); });
       J.$$('[data-tr]', el).forEach(r => r.onclick = () => editDlg(D().trades.find(t => t.id === r.dataset.tr)));
@@ -12168,9 +12193,9 @@ V.copilot = el => {
       const start = +d.start || 0; let eq = start, pk = start, ddPct = 0; asc.forEach(t => { eq += t.pnl; pk = Math.max(pk, eq); if (pk > 0) ddPct = Math.max(ddPct, (pk - eq) / pk * 100); });
       const B = btStats();
       el.innerHTML = `<div class="page-hd"><div><h1>Live-Statistik</h1><p class="mut">Nur deine Live-/Demo-Trades aus TradingView – getrennt von deinen Backtests</p></div></div>
-      <div class="row" style="margin-bottom:14px;gap:8px">${seg('per', [['all', 'Alles'], ['w', '7 Tage'], ['m30', '30 Tage'], ['mon', 'Monat'], ['y', 'Jahr']], st.per)}${seg('side', [[0, 'Beide'], [1, 'Long'], [-1, 'Short']], st.side)}<select id="lsSym" style="width:auto"><option value="">Alle Symbole</option>${syms.map(x => `<option ${x === st.sym ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select><div class="sp"></div><button class="btn" id="lsAi">Jarvis auswerten</button><a class="btn ghost" href="#demo">Trades & Import</a></div>
+      <div class="row" style="margin-bottom:16px;gap:8px">${seg('per', [['all', 'Alles'], ['w', '7 Tage'], ['m30', '30 Tage'], ['mon', 'Monat'], ['y', 'Jahr']], st.per)}${seg('side', [[0, 'Beide'], [1, 'Long'], [-1, 'Short']], st.side)}<select id="lsSym" style="width:auto"><option value="">Alle Symbole</option>${syms.map(x => `<option ${x === st.sym ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select><div class="sp"></div><button class="btn" id="lsAi">Jarvis auswerten</button><a class="btn ghost" href="#demo">Trades & Import</a></div>
       ${!T.length ? '<div class="card empty"><b>Keine Trades in dieser Auswahl</b></div>' : `
-      <div class="kpis" style="margin-bottom:14px">
+      <div class="kpis" style="margin-bottom:16px">
         ${kpi('Netto P&amp;L', J.money(S.net), J.cls(S.net), `${S.n} Trades an ${dv.length} Tagen`)}
         ${kpi('Trefferquote', J.num(S.wr, 1) + ' %', '', `${S.w} Gewinner · ${S.l} Verlierer`)}
         ${kpi('Profit-Faktor', pfTxt(S.pf), S.pf >= 1 ? 'up' : 'dn', `Gewinne ${J.cash(S.gw, 0)} · Verluste ${J.cash(S.gl, 0)}`)}
@@ -12184,16 +12209,16 @@ V.copilot = el => {
         ${kpi('Serien', `${S.mw} / ${S.ml}`, '', 'längste Gewinn- / Verlustserie')}
         ${kpi('Gebühren', J.cash(S.fees), '', `${S.gw ? J.num(S.fees / S.gw * 100, 1) : 0} % der Gewinne`)}
       </div>
-      <div class="grid g2" style="margin-bottom:14px">
+      <div class="grid g2" style="margin-bottom:16px">
         <div class="card"><h3>Kontokurve</h3><div id="lsEq" style="height:220px"></div></div>
         <div class="card"><h3>Drawdown</h3><div id="lsDd" style="height:220px"></div></div>
         <div class="card"><h3>Tages-P&amp;L</h3>${dayBars(days)}</div>
         <div class="card"><h3>Verteilung der Trades (P&amp;L)</h3>${histo(T)}</div>
       </div>
       ${B ? compare(S, B) : ''}
-      <div class="card" style="margin-bottom:14px"><h3>Wochentag × Uhrzeit (Einstieg, Berlin)</h3>${heat(T)}</div>
+      <div class="card" style="margin-bottom:16px"><h3>Wochentag × Uhrzeit (Einstieg, Berlin)</h3>${heat(T)}</div>
       ${insights(T, S)}
-      <div class="grid g2" style="margin-bottom:14px">
+      <div class="grid g2" style="margin-bottom:16px">
         ${table('Nach Session', groupRows(T.filter(t => t.entryT), t => SESS(t.entryT), (a, b) => ['Asien (01–09 Uhr)', 'London (09–15:30)', 'New York (15:30–22)', 'Nacht (22–01 Uhr)'].indexOf(a) - ['Asien (01–09 Uhr)', 'London (09–15:30)', 'New York (15:30–22)', 'Nacht (22–01 Uhr)'].indexOf(b)))}
         ${table('Nach Symbol', groupRows(T, t => short(t.sym)))}
         ${table('Long / Short', groupRows(T, t => t.side > 0 ? 'Long' : 'Short'))}
@@ -12212,14 +12237,14 @@ V.copilot = el => {
       if (!T.length) return;
       let c = 0, p = 0; const v = [0, ...asc.map(t => (c += t.pnl))], dd = [0, ...asc.map((t, i) => { p = Math.max(p, v[i + 1]); return v[i + 1] - p; })];
       const labs = ['', ...asc.map(t => J.date(t.exitT).slice(0, 6))];
-      cleans.push(LineChart(J.$('#lsEq', el), [{ v, color: c >= 0 ? '#2fcf9f' : '#ef5d78', w: 2, fill: c >= 0 ? '#2fcf9f38' : '#ef5d7838' }], { zero: true, labels: labs }));
-      cleans.push(LineChart(J.$('#lsDd', el), [{ v: dd, color: '#ef5d78', w: 1.8, fill: '#ef5d7830' }], { zero: true, labels: labs }));
+      cleans.push(LineChart(J.$('#lsEq', el), [{ v, color: c >= 0 ? UP() : DN(), w: 2, fill: (c >= 0 ? UP() : DN()) + '33' }], { zero: true, labels: labs }));
+      cleans.push(LineChart(J.$('#lsDd', el), [{ v: dd, color: DN(), w: 1.8, fill: DN() + '2b' }], { zero: true, labels: labs }));
       J.$$('[data-tr]', el).forEach(r => r.onclick = () => { location.hash = '#demo'; });
     };
     const dayBars = days => { const E = Object.entries(days).slice(-30); if (!E.length) return '<p class="note">Keine Daten</p>'; const mx = Math.max(...E.map(e => Math.abs(e[1])), 1); return `<div class="dm-bars">${E.map(([k, x]) => `<div class="dm-bar" title="${J.date(k)}: ${J.money(x)}"><i class="${x >= 0 ? 'up' : 'dn'}" style="height:${(Math.abs(x) / mx * 50).toFixed(1)}%;${x >= 0 ? 'bottom:50%' : 'top:50%'}"></i></div>`).join('')}</div><div class="row nw note"><span>${J.date(E[0][0])}</span><div class="sp"></div><span>${J.date(E[E.length - 1][0])}</span></div>`; };
     const histo = T => { const v = T.map(t => t.pnl); const lo = Math.min(...v), hi = Math.max(...v); if (lo === hi) return '<p class="note">Zu wenig Streuung</p>'; const nb = Math.min(12, Math.max(5, Math.round(Math.sqrt(v.length)))); const w = (hi - lo) / nb; const B = Array.from({ length: nb }, (_, i) => ({ a: lo + i * w, n: 0 })); v.forEach(x => B[Math.min(nb - 1, Math.floor((x - lo) / w))].n++); const mx = Math.max(...B.map(b => b.n)); return `<div class="dm-hist">${B.map(b => `<div title="${J.num(b.a, 0)} bis ${J.num(b.a + w, 0)}: ${b.n} Trades"><span>${b.n || ''}</span><i class="${b.a + w / 2 >= 0 ? 'up' : 'dn'}" style="height:${(b.n / mx * 100).toFixed(1)}%"></i></div>`).join('')}</div><div class="row nw note"><span>${J.money(lo, 0)}</span><div class="sp"></div><span>${J.money(hi, 0)}</span></div>`; };
-    const heat = T => { const hs = [...new Set(T.filter(t => t.entryT).map(t => hourOf(t.entryT)))].sort((a, b) => a - b); if (!hs.length) return '<p class="note">Keine Einstiegszeiten</p>'; const M = {}; T.forEach(t => { if (!t.entryT) return; const k = wdOf(t.entryT) + '|' + hourOf(t.entryT); (M[k] = M[k] || { n: 0, p: 0 }); M[k].n++; M[k].p += t.pnl; }); const mx = Math.max(...Object.values(M).map(x => Math.abs(x.p)), 1); const days = [0, 1, 2, 3, 4, 5, 6].filter(d => hs.some(h => M[d + '|' + h])); return `<div class="scroll"><table class="dm-heat"><thead><tr><th></th>${hs.map(h => `<th>${String(h).padStart(2, '0')}</th>`).join('')}</tr></thead><tbody>${days.map(d => `<tr><th>${WD[d]}</th>${hs.map(h => { const x = M[d + '|' + h]; return x ? `<td style="background:${x.p >= 0 ? 'rgba(47,207,159,' : 'rgba(239,93,120,'}${(.2 + .7 * Math.abs(x.p) / mx).toFixed(2)})" title="${WD[d]} ${h}:00 · ${x.n} Trades · ${J.money(x.p)}">${J.num(x.p, 0)}</td>` : '<td></td>'; }).join('')}</tr>`).join('')}</tbody></table></div>`; };
-    const compare = (S, B) => { const row = (l, a, b, f) => `<tr><td>${l}</td><td class="r"><b>${f(a)}</b></td><td class="r">${f(b)}</td></tr>`; const p1 = x => x == null ? '–' : J.num(x, 1) + ' %', m0 = x => J.money(x, 0), n2 = x => x == null ? '–' : x === Infinity ? '∞' : J.num(x, 2); return `<div class="card" style="margin-bottom:14px"><h3>Live vs. Backtest</h3><p class="note">Hält dein Edge aus dem Backtest auch auf Live-Charts? Backtest = dein Journal aus dem Replay.</p><table class="dm-tbl"><thead><tr><th></th><th class="r">Live</th><th class="r">Backtest</th></tr></thead><tbody>${row('Trades', S.n, B.n, x => x)}${row('Trefferquote', S.wr, B.wr, p1)}${row('Profit-Faktor', S.pf, B.pf, n2)}${row('Ø Gewinn', S.aw, B.aw, m0)}${row('Ø Verlust', S.al, B.al, m0)}${row('Erwartung je Trade', S.exp, B.exp, m0)}${row('Ø R', S.avgR, B.avgR, n2)}${row('Ø Haltedauer', S.hold, B.hold, dur)}</tbody></table></div>`; };
+    const heat = T => { const hs = [...new Set(T.filter(t => t.entryT).map(t => hourOf(t.entryT)))].sort((a, b) => a - b); if (!hs.length) return '<p class="note">Keine Einstiegszeiten</p>'; const M = {}; T.forEach(t => { if (!t.entryT) return; const k = wdOf(t.entryT) + '|' + hourOf(t.entryT); (M[k] = M[k] || { n: 0, p: 0 }); M[k].n++; M[k].p += t.pnl; }); const mx = Math.max(...Object.values(M).map(x => Math.abs(x.p)), 1); const days = [0, 1, 2, 3, 4, 5, 6].filter(d => hs.some(h => M[d + '|' + h])); return `<div class="scroll"><table class="dm-heat"><thead><tr><th></th>${hs.map(h => `<th>${String(h).padStart(2, '0')}</th>`).join('')}</tr></thead><tbody>${days.map(d => `<tr><th>${WD[d]}</th>${hs.map(h => { const x = M[d + '|' + h]; return x ? `<td class="${x.p >= 0 ? 'up' : 'dn'}" style="--a:${(.25 + .75 * Math.abs(x.p) / mx).toFixed(2)}" title="${WD[d]} ${h}:00 · ${x.n} Trades · ${J.money(x.p)}">${J.num(x.p, 0)}</td>` : '<td></td>'; }).join('')}</tr>`).join('')}</tbody></table></div>`; };
+    const compare = (S, B) => { const row = (l, a, b, f) => `<tr><td>${l}</td><td class="r"><b>${f(a)}</b></td><td class="r">${f(b)}</td></tr>`; const p1 = x => x == null ? '–' : J.num(x, 1) + ' %', m0 = x => J.money(x, 0), n2 = x => x == null ? '–' : x === Infinity ? '∞' : J.num(x, 2); return `<div class="card" style="margin-bottom:16px"><h3>Live vs. Backtest</h3><p class="note">Hält dein Edge aus dem Backtest auch auf Live-Charts? Backtest = dein Journal aus dem Replay.</p><table class="dm-tbl"><thead><tr><th></th><th class="r">Live</th><th class="r">Backtest</th></tr></thead><tbody>${row('Trades', S.n, B.n, x => x)}${row('Trefferquote', S.wr, B.wr, p1)}${row('Profit-Faktor', S.pf, B.pf, n2)}${row('Ø Gewinn', S.aw, B.aw, m0)}${row('Ø Verlust', S.al, B.al, m0)}${row('Erwartung je Trade', S.exp, B.exp, m0)}${row('Ø R', S.avgR, B.avgR, n2)}${row('Ø Haltedauer', S.hold, B.hold, dur)}</tbody></table></div>`; };
     const topList = (title, L) => `<div class="card"><h3>${title}</h3><table class="dm-tbl"><tbody>${L.map(t => `<tr><td>${J.dt(t.exitT)}</td><td><b>${esc(short(t.sym))}</b></td><td>${t.side > 0 ? 'Long' : 'Short'}</td><td class="r">${J.num(t.qty, t.qty % 1 ? 1 : 0)}</td><td class="r ${J.cls(t.pnl)}"><b>${J.money(t.pnl)}</b></td></tr>`).join('')}</tbody></table></div>`;
     render();
     return () => { cleans.forEach(f => { try { f(); } catch { } }); };
@@ -12267,15 +12292,15 @@ V.copilot = el => {
       const upcoming = cos.filter(c => c.next?.date && c.next.date >= today).sort((a, b) => a.next.date.localeCompare(b.next.date));
       const byDay = {}; cal.forEach(e => (byDay[e.date] = byDay[e.date] || []).push(e));
       el.innerHTML = `<div class="page-hd"><div><h1>Quartalszahlen</h1><p class="mut">Earnings der Nasdaq-Schwergewichte – Umsatz, Gewinn, Erwartung, Marktreaktion · Stand ${J.dt(Date.parse(d.updated))}</p></div></div>
-      <div class="row" style="margin-bottom:14px;gap:8px"><button class="btn pri" id="erAi">Jarvis: Saison & NAS100</button><button class="btn ghost" id="erRe">${J.icon('refresh')}Neu laden</button></div>
-      <div class="kpis" style="margin-bottom:14px">
+      <div class="row" style="margin-bottom:16px;gap:8px"><button class="btn pri" id="erAi">Jarvis: Saison & NAS100</button><button class="btn ghost" id="erRe">${J.icon('refresh')}Neu laden</button></div>
+      <div class="kpis" style="margin-bottom:16px">
         <div class="kpi"><span>Erwartung geschlagen</span><b>${rep.length ? `${beats} von ${rep.length}` : '–'}</b><small>letztes Quartal je Firma (bereinigter EPS)</small></div>
         <div class="kpi"><span>Ø Überraschung</span><b class="${J.cls(aS)}">${aS == null ? '–' : J.pct(aS, 1)}</b><small>EPS über/unter Konsens</small></div>
         <div class="kpi"><span>Ø Kursreaktion Aktie</span><b class="${J.cls(aR)}">${aR == null ? '–' : J.pct(aR, 1)}</b><small>Vortag → Folgetag</small></div>
         <div class="kpi"><span>Ø Reaktion Nasdaq 100</span><b class="${J.cls(aN)}">${aN == null ? '–' : J.pct(aN, 2)}</b><small>gleicher Zeitraum</small></div>
         <div class="kpi"><span>Nächster großer Termin</span><b>${upcoming[0] ? esc(upcoming[0].sym) : '–'}</b><small>${upcoming[0] ? J.date(upcoming[0].next.date) + (upcoming[0].next.time ? ' · ' + upcoming[0].next.time : '') : 'noch kein Termin bekannt'}</small></div>
       </div>
-      <div class="grid g2" style="margin-bottom:14px">
+      <div class="grid g2" style="margin-bottom:16px">
         <div class="card"><h3>Termine nächste 14 Tage <small class="mut">(ab 20 Mrd. $ Börsenwert)</small></h3>${Object.keys(byDay).length ? `<div class="scroll" style="max-height:340px"><table class="dm-tbl"><tbody>${Object.entries(byDay).map(([dt, E]) => `<tr><th colspan="4" style="padding-top:10px">${dt === today ? '<span class="chip acc">Heute</span> ' : ''}${new Date(dt + 'T12:00:00Z').toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit', timeZone: 'UTC' })}</th></tr>${E.map(e => `<tr><td><b>${esc(e.sym)}</b> <span class="mut">${esc(e.name || '')}</span></td><td>${esc(e.time || '')}</td><td class="r">${e.est != null ? 'EPS-Erw. ' + J.num(e.est, 2) : ''}</td><td class="r mut">${e.mcap ? big(e.mcap) : ''}</td></tr>`).join('')}`).join('')}</tbody></table></div>` : '<p class="note">Keine Termine großer Firmen in den nächsten 14 Tagen gefunden.</p>'}</div>
         <div class="card"><h3>Nächste Termine deiner Schwergewichte</h3>${upcoming.length ? `<table class="dm-tbl"><tbody>${upcoming.map(c => `<tr><td><b>${esc(c.sym)}</b> <span class="mut">${esc(c.name)}</span></td><td class="r">${J.date(c.next.date)}</td><td>${esc(c.next.time || '')}</td></tr>`).join('')}</tbody></table>` : ''}<p class="note">Für Firmen ohne Eintrag hat Nasdaq noch keinen Termin veröffentlicht.</p></div>
       </div>

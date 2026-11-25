@@ -37,15 +37,15 @@
       const upcoming = cos.filter(c => c.next?.date && c.next.date >= today).sort((a, b) => a.next.date.localeCompare(b.next.date));
       const byDay = {}; cal.forEach(e => (byDay[e.date] = byDay[e.date] || []).push(e));
       el.innerHTML = `<div class="page-hd"><div><h1>Quartalszahlen</h1><p class="mut">Earnings der Nasdaq-Schwergewichte – Umsatz, Gewinn, Erwartung, Marktreaktion · Stand ${J.dt(Date.parse(d.updated))}</p></div></div>
-      <div class="row" style="margin-bottom:14px;gap:8px"><button class="btn pri" id="erAi">Jarvis: Saison & NAS100</button><button class="btn ghost" id="erRe">${J.icon('refresh')}Neu laden</button></div>
-      <div class="kpis" style="margin-bottom:14px">
+      <div class="row" style="margin-bottom:16px;gap:8px"><button class="btn pri" id="erAi">Jarvis: Saison & NAS100</button><button class="btn ghost" id="erRe">${J.icon('refresh')}Neu laden</button></div>
+      <div class="kpis" style="margin-bottom:16px">
         <div class="kpi"><span>Erwartung geschlagen</span><b>${rep.length ? `${beats} von ${rep.length}` : '–'}</b><small>letztes Quartal je Firma (bereinigter EPS)</small></div>
         <div class="kpi"><span>Ø Überraschung</span><b class="${J.cls(aS)}">${aS == null ? '–' : J.pct(aS, 1)}</b><small>EPS über/unter Konsens</small></div>
         <div class="kpi"><span>Ø Kursreaktion Aktie</span><b class="${J.cls(aR)}">${aR == null ? '–' : J.pct(aR, 1)}</b><small>Vortag → Folgetag</small></div>
         <div class="kpi"><span>Ø Reaktion Nasdaq 100</span><b class="${J.cls(aN)}">${aN == null ? '–' : J.pct(aN, 2)}</b><small>gleicher Zeitraum</small></div>
         <div class="kpi"><span>Nächster großer Termin</span><b>${upcoming[0] ? esc(upcoming[0].sym) : '–'}</b><small>${upcoming[0] ? J.date(upcoming[0].next.date) + (upcoming[0].next.time ? ' · ' + upcoming[0].next.time : '') : 'noch kein Termin bekannt'}</small></div>
       </div>
-      <div class="grid g2" style="margin-bottom:14px">
+      <div class="grid g2" style="margin-bottom:16px">
         <div class="card"><h3>Termine nächste 14 Tage <small class="mut">(ab 20 Mrd. $ Börsenwert)</small></h3>${Object.keys(byDay).length ? `<div class="scroll" style="max-height:340px"><table class="dm-tbl"><tbody>${Object.entries(byDay).map(([dt, E]) => `<tr><th colspan="4" style="padding-top:10px">${dt === today ? '<span class="chip acc">Heute</span> ' : ''}${new Date(dt + 'T12:00:00Z').toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit', timeZone: 'UTC' })}</th></tr>${E.map(e => `<tr><td><b>${esc(e.sym)}</b> <span class="mut">${esc(e.name || '')}</span></td><td>${esc(e.time || '')}</td><td class="r">${e.est != null ? 'EPS-Erw. ' + J.num(e.est, 2) : ''}</td><td class="r mut">${e.mcap ? big(e.mcap) : ''}</td></tr>`).join('')}`).join('')}</tbody></table></div>` : '<p class="note">Keine Termine großer Firmen in den nächsten 14 Tagen gefunden.</p>'}</div>
         <div class="card"><h3>Nächste Termine deiner Schwergewichte</h3>${upcoming.length ? `<table class="dm-tbl"><tbody>${upcoming.map(c => `<tr><td><b>${esc(c.sym)}</b> <span class="mut">${esc(c.name)}</span></td><td class="r">${J.date(c.next.date)}</td><td>${esc(c.next.time || '')}</td></tr>`).join('')}</tbody></table>` : ''}<p class="note">Für Firmen ohne Eintrag hat Nasdaq noch keinen Termin veröffentlicht.</p></div>
       </div>

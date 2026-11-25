@@ -193,6 +193,9 @@
     const Rs = T.map(rOf).filter(x => x != null), hold = T.filter(t => t.entryT && t.exitT).map(t => t.exitT - t.entryT);
     return { n: T.length, w: W.length, l: L.length, wr: T.length ? W.length / T.length * 100 : null, net, gw, gl, pf: gl ? gw / gl : (gw ? Infinity : null), aw: W.length ? gw / W.length : null, al: L.length ? -gl / L.length : null, exp: T.length ? net / T.length : null, dd, mw, ml, best: T.length ? Math.max(...T.map(t => t.pnl)) : null, worst: T.length ? Math.min(...T.map(t => t.pnl)) : null, avgR: Rs.length ? Rs.reduce((a, b) => a + b, 0) / Rs.length : null, nR: Rs.length, hold: hold.length ? hold.reduce((a, b) => a + b, 0) / hold.length : null, fees: T.reduce((s, t) => s + (t.fees || 0), 0) };
   };
+  /* Farben aus dem aktiven Pass-Design (für die Canvas-Kurven) */
+  const tc = (v, fb) => { try { const c = getComputedStyle(document.documentElement).getPropertyValue(v).trim(); return /^#[0-9a-f]{6}$/i.test(c) ? c : fb; } catch { return fb; } };
+  const UP = () => tc('--bull', '#2fcf9f'), DN = () => tc('--bear', '#ef5d78');
   const pfTxt = pf => pf == null ? '–' : pf === Infinity ? '∞' : J.num(pf, 2);
   const groupRows = (T, keyFn, order) => { const m = new Map(); T.forEach(t => { const k = keyFn(t); if (k == null || k === '') return; [].concat(k).forEach(kk => { if (!m.has(kk)) m.set(kk, []); m.get(kk).push(t); }); }); let e = [...m.entries()].map(([k, L]) => [k, stats(L)]); e = order ? e.sort((a, b) => order(a[0], b[0])) : e.sort((a, b) => b[1].net - a[1].net); return e; };
 
@@ -209,7 +212,7 @@
       if (S.wr != null && S.aw && S.al) { const be = -S.al / (S.aw - S.al) * 100; L.push(`Mit deinem Gewinn/Verlust-Verhältnis brauchst du mindestens <b>${J.num(be, 0)} %</b> Treffer – du hast ${J.num(S.wr, 0)} %.`); }
       const tg = g(t => t.tags && t.tags.length ? t.tags : null).filter(([, s]) => s.net < 0); if (tg.length) L.push(`Teuerstes Merkmal: <b>${esc(tg[tg.length - 1][0])}</b> (${J.money(tg[tg.length - 1][1].net, 0)}).`);
       const noSl = T.filter(t => t.sl == null).length; if (noSl) L.push(`${noSl} von ${T.length} Trades ohne eingetragenen Stop – trag ihn im Trade nach, dann siehst du dein R.`);
-      return L.length ? `<div class="card" style="margin-bottom:14px"><h3>Was deine Zahlen sagen</h3><ul class="dm-ins">${L.map(x => `<li>${x}</li>`).join('')}</ul></div>` : '';
+      return L.length ? `<div class="card" style="margin-bottom:16px"><h3>Was deine Zahlen sagen</h3><ul class="dm-ins">${L.map(x => `<li>${x}</li>`).join('')}</ul></div>` : '';
     };
     const ai = (T, S) => {
       const persona = () => { try { return Jarvis.persona(); } catch { return 'Du bist Jarvis, mein Trading-Coach. Antworte auf Deutsch, klar und knapp.'; } };
@@ -238,13 +241,13 @@
       const seg = (name, opts, cur) => `<div class="seg" data-seg="${name}">${opts.map(([v, l]) => `<button data-v="${v}" class="${String(cur) === String(v) ? 'on' : ''}">${l}</button>`).join('')}</div>`;
       const kpi = (l, v, c, s) => `<div class="kpi"><span>${l}</span><b class="${c || ''}">${v}</b>${s ? `<small>${s}</small>` : ''}</div>`;
       el.innerHTML = `<div class="page-hd"><div><h1>Live-Trades</h1><p class="mut">Deine Demo-/Paper-Trades auf Live-Charts aus TradingView – importieren, notieren, auswerten</p></div></div>
-      <div class="row" style="margin-bottom:14px;gap:8px"><button class="btn pri" id="dmImp">${J.icon('upload')}TradingView importieren</button><button class="btn" id="dmAdd">${J.icon('plus')}Trade eintragen</button><div class="sp"></div>${A.length ? `<button class="btn" id="dmAi">Jarvis auswerten</button>` : ''}<button class="btn ghost" id="dmSet">Konto & Punktwerte</button></div>
+      <div class="row" style="margin-bottom:16px;gap:8px"><button class="btn pri" id="dmImp">${J.icon('upload')}TradingView importieren</button><button class="btn" id="dmAdd">${J.icon('plus')}Trade eintragen</button><div class="sp"></div>${A.length ? `<button class="btn" id="dmAi">Jarvis auswerten</button>` : ''}<button class="btn ghost" id="dmSet">Konto & Punktwerte</button></div>
       ${!A.length ? empty() : `
-      <div class="card" style="margin-bottom:14px"><div class="row" style="gap:8px">${seg('per', [['all', 'Alles'], ['day', 'Heute'], ['w', '7 Tage'], ['m30', '30 Tage'], ['mon', 'Monat'], ['y', 'Jahr']], st.per)}${seg('side', [[0, 'Beide'], [1, 'Long'], [-1, 'Short']], st.side)}
+      <div class="card" style="margin-bottom:16px"><div class="row" style="gap:8px">${seg('per', [['all', 'Alles'], ['day', 'Heute'], ['w', '7 Tage'], ['m30', '30 Tage'], ['mon', 'Monat'], ['y', 'Jahr']], st.per)}${seg('side', [[0, 'Beide'], [1, 'Long'], [-1, 'Short']], st.side)}
         <select id="dmSym" style="width:auto"><option value="">Alle Symbole</option>${syms.map(s => `<option ${s === st.sym ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>
         ${strats.length ? `<select id="dmStrat" style="width:auto"><option value="">Alle Strategien</option>${strats.map(s => `<option ${s === st.strat ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>` : ''}
         ${tags.length ? `<select id="dmTag" style="width:auto"><option value="">Alle Merkmale</option>${tags.map(s => `<option ${s === st.tag ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>` : ''}</div></div>
-      <div class="kpis" style="margin-bottom:14px">
+      <div class="kpis" style="margin-bottom:16px">
         ${kpi('Netto P&amp;L', J.money(S.net), J.cls(S.net), `${S.n} Trades · Gebühren ${J.cash(S.fees)}`)}
         ${kpi('Kontostand', J.cash(bal), '', `Start ${J.cash(+d.start || 0, 0)} · ${J.pct(d.start ? SA.net / d.start * 100 : null)}`)}
         ${kpi('Trefferquote', S.wr == null ? '–' : J.num(S.wr, 1) + ' %', '', `${S.w} Gewinner · ${S.l} Verlierer`)}
@@ -254,9 +257,9 @@
         ${kpi('Max. Drawdown', J.cash(S.dd), S.dd ? 'dn' : '', `Serien: ${S.mw} Gewinne · ${S.ml} Verluste`)}
         ${kpi('Ø Haltedauer', dur(S.hold), '', `Bester ${J.money(S.best, 0)} · Schlechtester ${J.money(S.worst, 0)}`)}
       </div>
-      <div class="grid g2" style="margin-bottom:14px"><div class="card"><h3>Kontokurve</h3><div id="dmEq" style="height:230px"></div></div><div class="card"><h3>Kalender<span class="sp"></span><button class="btn sm ghost" data-mon="-1">‹</button><span class="note" id="dmMon"></span><button class="btn sm ghost" data-mon="1">›</button></h3><div id="dmCal"></div></div></div>
+      <div class="grid g2" style="margin-bottom:16px"><div class="card"><h3>Kontokurve</h3><div id="dmEq" style="height:230px"></div></div><div class="card"><h3>Kalender<span class="sp"></span><button class="btn sm ghost" data-mon="-1">‹</button><span class="note" id="dmMon"></span><button class="btn sm ghost" data-mon="1">›</button></h3><div id="dmCal"></div></div></div>
       ${insights(T, S)}
-      <a class="card dm-link" href="#livestats" style="margin-bottom:14px"><b>Alle Statistiken zu deinen Live-Trades</b><span class="mut">Symbole, Uhrzeiten, Sessions, Haltedauer, Verteilung, Monate und der Vergleich mit deinem Backtest</span><span class="dm-go">Live-Statistik →</span></a>
+      <a class="card dm-link" href="#livestats" style="margin-bottom:16px"><b>Alle Statistiken zu deinen Live-Trades</b><span class="mut">Symbole, Uhrzeiten, Sessions, Haltedauer, Verteilung, Monate und der Vergleich mit deinem Backtest</span><span class="dm-go">Live-Statistik →</span></a>
       <div class="card"><h3>Trades (${T.length})<span class="sp"></span><button class="btn sm ghost" id="dmCsv">Als CSV sichern</button></h3>
         <div class="scroll"><table class="dm-tbl"><thead><tr><th>Ausstieg</th><th>Symbol</th><th>Seite</th><th class="r">Menge</th><th class="r">Einstieg</th><th class="r">Ausstieg</th><th class="r">Dauer</th><th class="r">R</th><th class="r">P&amp;L</th><th>Strategie / Notiz</th></tr></thead><tbody>
         ${T.slice(0, st.show).map(t => { const r = rOf(t); return `<tr data-tr="${t.id}"><td>${J.dt(t.exitT)}</td><td><b>${esc(short(t.sym))}</b></td><td><span class="chip ${t.side > 0 ? 'up' : 'dn'}">${t.side > 0 ? 'Long' : 'Short'}</span></td><td class="r">${J.num(t.qty, t.qty % 1 ? 2 : 0)}</td><td class="r">${J.price(t.entry)}</td><td class="r">${J.price(t.exit)}</td><td class="r">${t.entryT ? dur(t.exitT - t.entryT) : '–'}</td><td class="r">${r == null ? '–' : J.num(r, 2)}</td><td class="r ${J.cls(t.pnl)}"><b>${J.money(t.pnl)}</b></td><td class="dm-note">${t.grade ? '<span class="gold">' + '★'.repeat(t.grade) + '</span> ' : ''}${esc(t.strat || '')}${t.note ? ' · <span class="mut">' + esc(t.note.slice(0, 60)) + '</span>' : ''}${t.shot ? ' 📷' : ''}</td></tr>`; }).join('')}
@@ -278,7 +281,7 @@
       for (let i = 0; i < first; i++) { h += '<div></div>'; cell++; }
       for (let dd = 1; dd <= nd; dd++) {
         const k = `${mon}-${String(dd).padStart(2, '0')}`, x = days[k];
-        const a = x ? (.18 + .62 * Math.abs(x.p) / max).toFixed(2) : 0;
+        const a = x ? (.3 + .7 * Math.abs(x.p) / max).toFixed(2) : 0;
         h += `<div class="dm-day ${x ? (x.p >= 0 ? 'win' : 'loss') : ''}" style="${x ? `--a:${a}` : ''}" ${x ? `data-day="${k}"` : ''}><i>${dd}</i>${x ? `<b>${J.money(x.p, 0)}</b><small>${x.n} T.</small>` : ''}</div>`;
         if (x) wk += x.p; cell++; if (cell % 7 === 0) pushWeek();
       }
@@ -294,7 +297,7 @@
       [['#dmSym', 'sym'], ['#dmStrat', 'strat'], ['#dmTag', 'tag']].forEach(([id, k]) => { const s = $(id); if (s) s.onchange = () => { st[k] = s.value; render(); }; });
       if (!T.length && !$('#dmEq')) return;
       const eqEl = $('#dmEq');
-      if (eqEl) { const asc = [...T].reverse(); let c = 0; const v = [0, ...asc.map(t => (c += t.pnl))]; cleans.push(LineChart(eqEl, [{ v, color: c >= 0 ? '#2fcf9f' : '#ef5d78', w: 2, fill: c >= 0 ? '#2fcf9f38' : '#ef5d7838' }], { zero: true, labels: ['', ...asc.map(t => J.date(t.exitT).slice(0, 6))], empty: 'Keine Trades in dieser Auswahl' })); }
+      if (eqEl) { const asc = [...T].reverse(); let c = 0; const v = [0, ...asc.map(t => (c += t.pnl))]; cleans.push(LineChart(eqEl, [{ v, color: c >= 0 ? UP() : DN(), w: 2, fill: (c >= 0 ? UP() : DN()) + '33' }], { zero: true, labels: ['', ...asc.map(t => J.date(t.exitT).slice(0, 6))], empty: 'Keine Trades in dieser Auswahl' })); }
       calendar(T);
       J.$$('[data-mon]', el).forEach(b => b.onclick = () => { const [y, m] = st.mon.split('-').map(Number); const d = new Date(Date.UTC(y, m - 1 + +b.dataset.mon, 1)); st.mon = d.toISOString().slice(0, 7); calendar(T); });
       J.$$('[data-tr]', el).forEach(r => r.onclick = () => editDlg(D().trades.find(t => t.id === r.dataset.tr)));
@@ -419,9 +422,9 @@
       const start = +d.start || 0; let eq = start, pk = start, ddPct = 0; asc.forEach(t => { eq += t.pnl; pk = Math.max(pk, eq); if (pk > 0) ddPct = Math.max(ddPct, (pk - eq) / pk * 100); });
       const B = btStats();
       el.innerHTML = `<div class="page-hd"><div><h1>Live-Statistik</h1><p class="mut">Nur deine Live-/Demo-Trades aus TradingView – getrennt von deinen Backtests</p></div></div>
-      <div class="row" style="margin-bottom:14px;gap:8px">${seg('per', [['all', 'Alles'], ['w', '7 Tage'], ['m30', '30 Tage'], ['mon', 'Monat'], ['y', 'Jahr']], st.per)}${seg('side', [[0, 'Beide'], [1, 'Long'], [-1, 'Short']], st.side)}<select id="lsSym" style="width:auto"><option value="">Alle Symbole</option>${syms.map(x => `<option ${x === st.sym ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select><div class="sp"></div><button class="btn" id="lsAi">Jarvis auswerten</button><a class="btn ghost" href="#demo">Trades & Import</a></div>
+      <div class="row" style="margin-bottom:16px;gap:8px">${seg('per', [['all', 'Alles'], ['w', '7 Tage'], ['m30', '30 Tage'], ['mon', 'Monat'], ['y', 'Jahr']], st.per)}${seg('side', [[0, 'Beide'], [1, 'Long'], [-1, 'Short']], st.side)}<select id="lsSym" style="width:auto"><option value="">Alle Symbole</option>${syms.map(x => `<option ${x === st.sym ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select><div class="sp"></div><button class="btn" id="lsAi">Jarvis auswerten</button><a class="btn ghost" href="#demo">Trades & Import</a></div>
       ${!T.length ? '<div class="card empty"><b>Keine Trades in dieser Auswahl</b></div>' : `
-      <div class="kpis" style="margin-bottom:14px">
+      <div class="kpis" style="margin-bottom:16px">
         ${kpi('Netto P&amp;L', J.money(S.net), J.cls(S.net), `${S.n} Trades an ${dv.length} Tagen`)}
         ${kpi('Trefferquote', J.num(S.wr, 1) + ' %', '', `${S.w} Gewinner · ${S.l} Verlierer`)}
         ${kpi('Profit-Faktor', pfTxt(S.pf), S.pf >= 1 ? 'up' : 'dn', `Gewinne ${J.cash(S.gw, 0)} · Verluste ${J.cash(S.gl, 0)}`)}
@@ -435,16 +438,16 @@
         ${kpi('Serien', `${S.mw} / ${S.ml}`, '', 'längste Gewinn- / Verlustserie')}
         ${kpi('Gebühren', J.cash(S.fees), '', `${S.gw ? J.num(S.fees / S.gw * 100, 1) : 0} % der Gewinne`)}
       </div>
-      <div class="grid g2" style="margin-bottom:14px">
+      <div class="grid g2" style="margin-bottom:16px">
         <div class="card"><h3>Kontokurve</h3><div id="lsEq" style="height:220px"></div></div>
         <div class="card"><h3>Drawdown</h3><div id="lsDd" style="height:220px"></div></div>
         <div class="card"><h3>Tages-P&amp;L</h3>${dayBars(days)}</div>
         <div class="card"><h3>Verteilung der Trades (P&amp;L)</h3>${histo(T)}</div>
       </div>
       ${B ? compare(S, B) : ''}
-      <div class="card" style="margin-bottom:14px"><h3>Wochentag × Uhrzeit (Einstieg, Berlin)</h3>${heat(T)}</div>
+      <div class="card" style="margin-bottom:16px"><h3>Wochentag × Uhrzeit (Einstieg, Berlin)</h3>${heat(T)}</div>
       ${insights(T, S)}
-      <div class="grid g2" style="margin-bottom:14px">
+      <div class="grid g2" style="margin-bottom:16px">
         ${table('Nach Session', groupRows(T.filter(t => t.entryT), t => SESS(t.entryT), (a, b) => ['Asien (01–09 Uhr)', 'London (09–15:30)', 'New York (15:30–22)', 'Nacht (22–01 Uhr)'].indexOf(a) - ['Asien (01–09 Uhr)', 'London (09–15:30)', 'New York (15:30–22)', 'Nacht (22–01 Uhr)'].indexOf(b)))}
         ${table('Nach Symbol', groupRows(T, t => short(t.sym)))}
         ${table('Long / Short', groupRows(T, t => t.side > 0 ? 'Long' : 'Short'))}
@@ -463,14 +466,14 @@
       if (!T.length) return;
       let c = 0, p = 0; const v = [0, ...asc.map(t => (c += t.pnl))], dd = [0, ...asc.map((t, i) => { p = Math.max(p, v[i + 1]); return v[i + 1] - p; })];
       const labs = ['', ...asc.map(t => J.date(t.exitT).slice(0, 6))];
-      cleans.push(LineChart(J.$('#lsEq', el), [{ v, color: c >= 0 ? '#2fcf9f' : '#ef5d78', w: 2, fill: c >= 0 ? '#2fcf9f38' : '#ef5d7838' }], { zero: true, labels: labs }));
-      cleans.push(LineChart(J.$('#lsDd', el), [{ v: dd, color: '#ef5d78', w: 1.8, fill: '#ef5d7830' }], { zero: true, labels: labs }));
+      cleans.push(LineChart(J.$('#lsEq', el), [{ v, color: c >= 0 ? UP() : DN(), w: 2, fill: (c >= 0 ? UP() : DN()) + '33' }], { zero: true, labels: labs }));
+      cleans.push(LineChart(J.$('#lsDd', el), [{ v: dd, color: DN(), w: 1.8, fill: DN() + '2b' }], { zero: true, labels: labs }));
       J.$$('[data-tr]', el).forEach(r => r.onclick = () => { location.hash = '#demo'; });
     };
     const dayBars = days => { const E = Object.entries(days).slice(-30); if (!E.length) return '<p class="note">Keine Daten</p>'; const mx = Math.max(...E.map(e => Math.abs(e[1])), 1); return `<div class="dm-bars">${E.map(([k, x]) => `<div class="dm-bar" title="${J.date(k)}: ${J.money(x)}"><i class="${x >= 0 ? 'up' : 'dn'}" style="height:${(Math.abs(x) / mx * 50).toFixed(1)}%;${x >= 0 ? 'bottom:50%' : 'top:50%'}"></i></div>`).join('')}</div><div class="row nw note"><span>${J.date(E[0][0])}</span><div class="sp"></div><span>${J.date(E[E.length - 1][0])}</span></div>`; };
     const histo = T => { const v = T.map(t => t.pnl); const lo = Math.min(...v), hi = Math.max(...v); if (lo === hi) return '<p class="note">Zu wenig Streuung</p>'; const nb = Math.min(12, Math.max(5, Math.round(Math.sqrt(v.length)))); const w = (hi - lo) / nb; const B = Array.from({ length: nb }, (_, i) => ({ a: lo + i * w, n: 0 })); v.forEach(x => B[Math.min(nb - 1, Math.floor((x - lo) / w))].n++); const mx = Math.max(...B.map(b => b.n)); return `<div class="dm-hist">${B.map(b => `<div title="${J.num(b.a, 0)} bis ${J.num(b.a + w, 0)}: ${b.n} Trades"><span>${b.n || ''}</span><i class="${b.a + w / 2 >= 0 ? 'up' : 'dn'}" style="height:${(b.n / mx * 100).toFixed(1)}%"></i></div>`).join('')}</div><div class="row nw note"><span>${J.money(lo, 0)}</span><div class="sp"></div><span>${J.money(hi, 0)}</span></div>`; };
-    const heat = T => { const hs = [...new Set(T.filter(t => t.entryT).map(t => hourOf(t.entryT)))].sort((a, b) => a - b); if (!hs.length) return '<p class="note">Keine Einstiegszeiten</p>'; const M = {}; T.forEach(t => { if (!t.entryT) return; const k = wdOf(t.entryT) + '|' + hourOf(t.entryT); (M[k] = M[k] || { n: 0, p: 0 }); M[k].n++; M[k].p += t.pnl; }); const mx = Math.max(...Object.values(M).map(x => Math.abs(x.p)), 1); const days = [0, 1, 2, 3, 4, 5, 6].filter(d => hs.some(h => M[d + '|' + h])); return `<div class="scroll"><table class="dm-heat"><thead><tr><th></th>${hs.map(h => `<th>${String(h).padStart(2, '0')}</th>`).join('')}</tr></thead><tbody>${days.map(d => `<tr><th>${WD[d]}</th>${hs.map(h => { const x = M[d + '|' + h]; return x ? `<td style="background:${x.p >= 0 ? 'rgba(47,207,159,' : 'rgba(239,93,120,'}${(.2 + .7 * Math.abs(x.p) / mx).toFixed(2)})" title="${WD[d]} ${h}:00 · ${x.n} Trades · ${J.money(x.p)}">${J.num(x.p, 0)}</td>` : '<td></td>'; }).join('')}</tr>`).join('')}</tbody></table></div>`; };
-    const compare = (S, B) => { const row = (l, a, b, f) => `<tr><td>${l}</td><td class="r"><b>${f(a)}</b></td><td class="r">${f(b)}</td></tr>`; const p1 = x => x == null ? '–' : J.num(x, 1) + ' %', m0 = x => J.money(x, 0), n2 = x => x == null ? '–' : x === Infinity ? '∞' : J.num(x, 2); return `<div class="card" style="margin-bottom:14px"><h3>Live vs. Backtest</h3><p class="note">Hält dein Edge aus dem Backtest auch auf Live-Charts? Backtest = dein Journal aus dem Replay.</p><table class="dm-tbl"><thead><tr><th></th><th class="r">Live</th><th class="r">Backtest</th></tr></thead><tbody>${row('Trades', S.n, B.n, x => x)}${row('Trefferquote', S.wr, B.wr, p1)}${row('Profit-Faktor', S.pf, B.pf, n2)}${row('Ø Gewinn', S.aw, B.aw, m0)}${row('Ø Verlust', S.al, B.al, m0)}${row('Erwartung je Trade', S.exp, B.exp, m0)}${row('Ø R', S.avgR, B.avgR, n2)}${row('Ø Haltedauer', S.hold, B.hold, dur)}</tbody></table></div>`; };
+    const heat = T => { const hs = [...new Set(T.filter(t => t.entryT).map(t => hourOf(t.entryT)))].sort((a, b) => a - b); if (!hs.length) return '<p class="note">Keine Einstiegszeiten</p>'; const M = {}; T.forEach(t => { if (!t.entryT) return; const k = wdOf(t.entryT) + '|' + hourOf(t.entryT); (M[k] = M[k] || { n: 0, p: 0 }); M[k].n++; M[k].p += t.pnl; }); const mx = Math.max(...Object.values(M).map(x => Math.abs(x.p)), 1); const days = [0, 1, 2, 3, 4, 5, 6].filter(d => hs.some(h => M[d + '|' + h])); return `<div class="scroll"><table class="dm-heat"><thead><tr><th></th>${hs.map(h => `<th>${String(h).padStart(2, '0')}</th>`).join('')}</tr></thead><tbody>${days.map(d => `<tr><th>${WD[d]}</th>${hs.map(h => { const x = M[d + '|' + h]; return x ? `<td class="${x.p >= 0 ? 'up' : 'dn'}" style="--a:${(.25 + .75 * Math.abs(x.p) / mx).toFixed(2)}" title="${WD[d]} ${h}:00 · ${x.n} Trades · ${J.money(x.p)}">${J.num(x.p, 0)}</td>` : '<td></td>'; }).join('')}</tr>`).join('')}</tbody></table></div>`; };
+    const compare = (S, B) => { const row = (l, a, b, f) => `<tr><td>${l}</td><td class="r"><b>${f(a)}</b></td><td class="r">${f(b)}</td></tr>`; const p1 = x => x == null ? '–' : J.num(x, 1) + ' %', m0 = x => J.money(x, 0), n2 = x => x == null ? '–' : x === Infinity ? '∞' : J.num(x, 2); return `<div class="card" style="margin-bottom:16px"><h3>Live vs. Backtest</h3><p class="note">Hält dein Edge aus dem Backtest auch auf Live-Charts? Backtest = dein Journal aus dem Replay.</p><table class="dm-tbl"><thead><tr><th></th><th class="r">Live</th><th class="r">Backtest</th></tr></thead><tbody>${row('Trades', S.n, B.n, x => x)}${row('Trefferquote', S.wr, B.wr, p1)}${row('Profit-Faktor', S.pf, B.pf, n2)}${row('Ø Gewinn', S.aw, B.aw, m0)}${row('Ø Verlust', S.al, B.al, m0)}${row('Erwartung je Trade', S.exp, B.exp, m0)}${row('Ø R', S.avgR, B.avgR, n2)}${row('Ø Haltedauer', S.hold, B.hold, dur)}</tbody></table></div>`; };
     const topList = (title, L) => `<div class="card"><h3>${title}</h3><table class="dm-tbl"><tbody>${L.map(t => `<tr><td>${J.dt(t.exitT)}</td><td><b>${esc(short(t.sym))}</b></td><td>${t.side > 0 ? 'Long' : 'Short'}</td><td class="r">${J.num(t.qty, t.qty % 1 ? 1 : 0)}</td><td class="r ${J.cls(t.pnl)}"><b>${J.money(t.pnl)}</b></td></tr>`).join('')}</tbody></table></div>`;
     render();
     return () => { cleans.forEach(f => { try { f(); } catch { } }); };
