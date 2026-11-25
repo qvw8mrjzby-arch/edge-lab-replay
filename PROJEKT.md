@@ -102,7 +102,7 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Deep-Link `#session-<id>` (ui.js route) oeffnet die Session im Backtests-Bereich.
 - Build unter Windows: `PYTHONUTF8=1 python build.py`.
 
-## Demo-Trades (25.11.2026 - live, Cache v19)
+## Demo-Trades (25.11.2026 - live, Cache v20)
 - `src/demo.js` + `src/demo.css`, Bereich #demo (Handel → Demo-Trades). Daten in `J.S.demo` = App.settings.jt.demo (trades, start, pv, tz), synchronisiert, getrennt von Journal/Pass.
 - Import: TradingView Paper Trading „History“/„Order History“ (Fills → Trades flach→flach, Wende wird geteilt, Gebühren anteilig), „Balance History“ (Action-Text), einfache Trade-Listen. Doppelte per ID erkannt. Zeitzone wählbar.
 - Punktwerte für Futures (NQ 20, MNQ 2, ES 50 …) überschreibbar unter „Konto & Punktwerte“, P&L wird aus den Fills neu berechnet.

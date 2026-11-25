@@ -11858,13 +11858,14 @@ V.copilot = el => {
     const cEn = col(hd, 'entry price', 'einstieg', 'entry', 'open price'), cEx = col(hd, 'exit price', 'ausstieg', 'exit', 'close price'), cPn = col(hd, 'p&l', 'pnl', 'profit', 'gewinn', 'net');
     if (cSym >= 0 && (cPn >= 0 || (cEn >= 0 && cEx >= 0))) {
       const cQ = col(hd, 'qty', 'quantity', 'menge', 'size', 'kontrakte'), cT1 = col(hd, 'entry time', 'einstiegszeit', 'open time', 'opened'), cT2 = col(hd, 'exit time', 'ausstiegszeit', 'close time', 'closed', 'datum', 'date', 'time');
+      const cSl = col(hd, 'stop loss', 'stop', 'sl'), cTp = col(hd, 'take profit', 'ziel', 'tp'), cSt = col(hd, 'strategie', 'strategy', 'setup'), cNo = col(hd, 'notiz', 'note', 'kommentar');
       const trades = []; let skip = 0;
       body.forEach(r => {
         const sd = String(r[cSide] || '').toLowerCase(); const side = /sell|short|verkauf/.test(sd) ? -1 : 1;
         const qty = Math.abs(n(r[cQ]) || 1), en = n(r[cEn]), ex = n(r[cEx]), t2 = parseTime(r[cT2], tz), t1 = parseTime(r[cT1], tz) || null;
         let pnl = n(r[cPn]); if (pnl == null && en != null && ex != null) pnl = (ex - en) * side * qty * pvOf(r[cSym]);
         if (pnl == null || !t2) { skip++; return; }
-        trades.push({ id: 'csv-' + hash(r.join('|')), src: 'csv', sym: r[cSym].trim(), side, qty, entry: en, exit: ex, entryT: t1, exitT: t2, gross: pnl, fees: 0, pnl: +pnl.toFixed(2), fills: null });
+        trades.push({ id: 'csv-' + hash(r.join('|')), src: 'csv', sym: r[cSym].trim(), side, qty, entry: en, exit: ex, entryT: t1, exitT: t2, gross: pnl, fees: 0, pnl: +pnl.toFixed(2), fills: null, pvUsed: pvOf(r[cSym]), sl: cSl >= 0 ? n(r[cSl]) : null, tp: cTp >= 0 ? n(r[cTp]) : null, strat: cSt >= 0 ? (r[cSt] || '').trim() : '', note: cNo >= 0 ? (r[cNo] || '').trim() : '' });
       });
       if (trades.length) return { kind: 'Trade-Liste', fills: trades.length, skip, trades, open: [] };
     }
