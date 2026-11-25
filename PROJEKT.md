@@ -101,3 +101,9 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - `src/jarvis-bridge.js` (letzte Datei im Build): schickt am Desktop eine Zusammenfassung (Woche/Vorwoche, Gesamt, Level/Wochenziele, 12 neueste Sessions; keine Notizen/Fotos/Keys) per POST text/plain an `http://127.0.0.1:8650/edgelab` (Jarvis-HUD-Server, prueft Origin, speichert `jarvis/tools/edgelab-daten.json`). Ausloeser: renderStart, saveSessions, saveJournal, alle 5 Min, Tab sichtbar. Aus: localStorage `elr.jarvis`=`0`.
 - Deep-Link `#session-<id>` (ui.js route) oeffnet die Session im Backtests-Bereich.
 - Build unter Windows: `PYTHONUTF8=1 python build.py`.
+
+## Demo-Trades (25.11.2026 - live, Cache v19)
+- `src/demo.js` + `src/demo.css`, Bereich #demo (Handel → Demo-Trades). Daten in `J.S.demo` = App.settings.jt.demo (trades, start, pv, tz), synchronisiert, getrennt von Journal/Pass.
+- Import: TradingView Paper Trading „History“/„Order History“ (Fills → Trades flach→flach, Wende wird geteilt, Gebühren anteilig), „Balance History“ (Action-Text), einfache Trade-Listen. Doppelte per ID erkannt. Zeitzone wählbar.
+- Punktwerte für Futures (NQ 20, MNQ 2, ES 50 …) überschreibbar unter „Konto & Punktwerte“, P&L wird aus den Fills neu berechnet.
+- Trade-Fenster: Stop/Ziel (→ R), Strategie, Sterne, Merkmale, Notiz, Screenshot-Link. Auswertung: KPIs, Kontokurve, Kalender, nach Symbol/Seite/Wochentag/Stunde/Strategie/Merkmal/Sterne, Hinweise, CSV-Export, Jarvis-Auswertung.
