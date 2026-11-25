@@ -105,7 +105,6 @@ for (const sym of LIST) {
   const tbl = (j) => { const t = j?.data?.incomeStatementTable; if (!t?.headers || !t?.rows) return null; const keys = Object.keys(t.headers).filter((k) => k !== 'value1'); const dates = keys.map((k) => usDate(t.headers[k])); const row = (re) => { const r = t.rows.find((x) => re.test(String(x.value1 || ''))); return r ? keys.map((k) => { const v = num(r[k]); return v == null ? null : v * 1000; }) : keys.map(() => null); }; return { dates, rev: row(/^total revenue/i), gp: row(/^gross profit/i), oi: row(/^operating income/i), ni: row(/^net income$/i) }; };
   const fq = await getJ(`https://api.nasdaq.com/api/company/${sym}/financials?frequency=2`, UA);
   const fa = await getJ(`https://api.nasdaq.com/api/company/${sym}/financials?frequency=1`, UA);
-  if (sym === LIST[0]) log.push('Financials-Rohdaten ' + sym + ': ' + JSON.stringify(fq?.data?.incomeStatementTable || fq).slice(0, 500));
   const TQ = tbl(fq), TA = tbl(fa);
   const fyeM = TA?.dates?.find(Boolean) ? +TA.dates.find(Boolean).slice(5, 7) : null; co.fye = fyeM;
   if (TQ) TQ.dates.forEach((dt, i) => {

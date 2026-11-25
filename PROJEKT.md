@@ -107,3 +107,9 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Import: TradingView „Handelsverlauf“ (deutsch/englisch, eine Zeile je Ein-/Ausstieg, Netto G&V übernommen, Punktwert daraus abgeleitet), Paper Trading „History“/„Order History“ (Fills → Trades flach→flach, Wende wird geteilt, Gebühren anteilig), „Balance History“ (Action-Text), einfache Trade-Listen. Doppelte per ID erkannt. Zeitzone wählbar.
 - Punktwerte für Futures (NQ 20, MNQ 2, ES 50 …) überschreibbar unter „Konto & Punktwerte“, P&L wird aus den Fills neu berechnet.
 - Trade-Fenster: Stop/Ziel (→ R), Strategie, Sterne, Merkmale, Notiz, Screenshot-Link. Auswertung: KPIs, Kontokurve, Kalender, nach Symbol/Seite/Wochentag/Stunde/Strategie/Merkmal/Sterne, Hinweise, CSV-Export, Jarvis-Auswertung.
+
+## Quartalszahlen (25.11.2026 - live, Cache v22)
+- `src/earnings.js` (Styles in `src/demo.css`), Bereich #earnings (Markt → Quartalszahlen). Daten: `data/earnings.json` aus `tools/fetch-earnings.mjs`, Action `.github/workflows/earnings.yml` (werktags 06:17/13:17/22:17 UTC, Wochenende 09:17).
+- Quellen: Nasdaq (Gewinn- und Verlustrechnung quartalsweise + jährlich für Geschäftsjahresende → Q/GJ-Label, bereinigter EPS vs. Konsens, Termine, Earnings-Kalender 14 Tage ab 20 Mrd. $), Yahoo (Kursreaktion Aktie und ^NDX: Schluss Vortag → Schluss Folgetag). SEC (data.sec.gov) liefert von GitHub aus 403 – bleibt als erster Versuch im Skript.
+- Firmen: NVDA MSFT AAPL AMZN GOOGL META AVGO TSLA NFLX COST AMD PLTR JPM. Karte je Firma, Detail-Tabelle, Jarvis-Analyse je Firma und „Saison & NAS100“.
+- Jarvis-Werkzeuge `quartalszahlen` (J.earnCtx) und `live_trades` (J.liveCtx) in jt-brain.js, plus automatischer Kontext bei passenden Fragen.

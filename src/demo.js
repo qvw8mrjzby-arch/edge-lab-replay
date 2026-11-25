@@ -475,5 +475,6 @@
     render();
     return () => { cleans.forEach(f => { try { f(); } catch { } }); };
   };
+  J.liveCtx = () => { const T = (D().trades || []).filter(t => isFinite(t.pnl) && t.exitT).sort((a, b) => b.exitT - a.exitT); if (!T.length) return { hinweis: 'Noch keine Live-Trades importiert' }; const S = stats(T), r2 = x => x == null || !isFinite(x) ? null : +(+x).toFixed(2); const g = f => Object.fromEntries(groupRows(T, f).map(([k, s]) => [k, { trades: s.n, treffer: r2(s.wr), netto: r2(s.net) }])); return { trades: S.n, netto: r2(S.net), trefferquote: r2(S.wr), profitFaktor: S.pf === Infinity ? 'inf' : r2(S.pf), avgGewinn: r2(S.aw), avgVerlust: r2(S.al), maxDrawdown: r2(S.dd), nachSymbol: g(t => short(t.sym)), nachSession: g(t => t.entryT ? SESS(t.entryT) : null), nachSeite: g(t => t.side > 0 ? 'Long' : 'Short'), letzte15: T.slice(0, 15).map(t => ({ zeit: J.dt(t.exitT), sym: short(t.sym), seite: t.side > 0 ? 'L' : 'S', menge: t.qty, einstieg: t.entry, ausstieg: t.exit, pnl: r2(t.pnl), notiz: t.note || undefined })) }; };
   J.demoParse = parseImport; /* für Tests */
 }

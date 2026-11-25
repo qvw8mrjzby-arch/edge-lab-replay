@@ -232,6 +232,8 @@ JV.tools = () => [
   { name: 'journal_statistik', description: 'Statistik aus Elianos Journal (Replay-Backtests und Desk-Trades) und die letzten Trades.', inputSchema: { type: 'object', properties: {} }, execute: async () => JV.journalCtx() },
   { name: 'backtest', description: 'Führt einen Backtest mit echten Kursdaten aus. Strategien: ema, rsi, donch, vwap, bb, orb.', inputSchema: { type: 'object', properties: { strategie: { type: 'string', enum: Object.keys(TA.STRATS) }, symbol: { type: 'string' }, zeitrahmen: { type: 'string', enum: ['5m', '15m', '1h', '4h', '1T', '1W'] }, parameter: { type: 'object' } }, required: ['strategie', 'symbol'] }, execute: JV.backtest },
   { name: 'second_brain', description: 'Elianos Lebensbereiche aus seinem Second Brain (Brand, Content, Agency, Roblox, Jarvis, Nebeneinkommen, Training, Schule …) mit Stand, nächsten Schritten und Notizen.', inputSchema: { type: 'object', properties: {} }, execute: async () => ((J.S.brain && J.S.brain.areas) || []) },
+  { name: 'quartalszahlen', description: 'Echte Quartalszahlen (Earnings) der Nasdaq-Schwergewichte: Umsatz, Gewinn, EPS vs. Erwartung, Kursreaktion von Aktie und Nasdaq 100, nächste Termine und Earnings-Kalender der nächsten 14 Tage.', inputSchema: { type: 'object', properties: {} }, execute: async () => (J.earnCtx ? J.earnCtx() : { fehler: 'nicht verfügbar' }) },
+  { name: 'live_trades', description: 'Elianos Live-/Demo-Trades aus TradingView (getrennt vom Backtest): Kennzahlen, nach Symbol/Session/Uhrzeit, letzte Trades.', inputSchema: { type: 'object', properties: {} }, execute: async () => (J.liveCtx ? J.liveCtx() : { fehler: 'nicht verfügbar' }) },
   { name: 'risiko_status', description: 'Heutiger Risiko-Status aus Risk Command.', inputSchema: { type: 'object', properties: {} }, execute: async () => JV.riskToday() }
 ];
 /* Für Gemini/OpenRouter: passende echte Daten vorab einsammeln */
@@ -245,6 +247,8 @@ JV.context = async (q) => {
   const st = Object.entries(TA.STRATS).find(([k, s]) => q.toLowerCase().includes(s.name.toLowerCase().split(' ')[0].toLowerCase()) || q.toLowerCase().includes(k + ' '));
   if (/backtest/i.test(q) && st) { try { ctx.backtest = await JV.backtest({ strategie: st[0], symbol: syms[0] || 'ar:NAS100', zeitrahmen: /stunde|1h/i.test(q) ? '1h' : '1T' }); } catch (e) { ctx.backtest = { fehler: J.errText(e) }; } }
   if (/news|nachricht|heute|wichtig|fed|termin|warum/i.test(q)) { try { const n = await JV.news('alle'); ctx.schlagzeilen = n.items.slice(0, 12).map(x => `${x.title} (${x.src}, ${x.date || ''})`); } catch { } try { const c = await J.getJSON('calendar.json'); ctx.termine = (c.events || []).filter(e => e.impact === 'High' || e.impact === 'Medium').slice(0, 25); } catch { } }
+  if (/quartal|earnings|zahlen|\bq[1-4]\b|umsatz|eps|bericht/i.test(q) && J.earnCtx) { try { ctx.quartalszahlen = await J.earnCtx(); } catch { } }
+  if (/live|demo|paper|tradingview|meine trades|heute getradet/i.test(q) && J.liveCtx) ctx.liveTrades = J.liveCtx();
   return ctx;
 };
 }

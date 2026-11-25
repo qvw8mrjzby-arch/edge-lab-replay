@@ -2255,6 +2255,18 @@ html.mode-anim, html.mode-anim * { transition: background-color .35s ease, borde
 .jt .dm-heat td{min-width:44px;height:30px;text-align:center;border-radius:6px;color:var(--ink);background:var(--side)}
 @media (max-width:640px){.jt .dm-link .dm-go{position:static;transform:none}}
 .jt .dm-bars{position:relative;overflow:hidden}.jt .dm-bars::after{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px solid var(--line2)}
+/* Quartalszahlen (src/earnings.js) */
+.jt .er-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.jt .er-card{cursor:pointer}
+.jt .er-sym{font-size:20px;letter-spacing:.3px}
+.jt .er-kv{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:12px}
+.jt .er-kv span{display:block;font-size:12px;color:var(--mut)}
+.jt .er-kv b{display:block;font-size:16px;margin-top:2px;white-space:nowrap}
+.jt .er-kv small{display:block;font-size:11.5px;color:var(--mut);margin-top:1px}
+.jt .er-bars{display:flex;align-items:flex-end;gap:5px;height:44px;margin-top:12px}
+.jt .er-bars i{flex:1;background:var(--acc,#6f8dff);opacity:.55;border-radius:4px 4px 0 0;min-height:3px}
+.jt .er-bars i:last-child{opacity:1}
+.jt .er-kv b b,.jt .er-kv b span{display:inline;font-size:inherit;margin:0}
 </style>
 </head>
 <body>
@@ -2276,6 +2288,7 @@ html.mode-anim, html.mode-anim * { transition: background-color .35s ease, borde
       <a href="#charts" data-view="charts" title="Charts & Replay"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3v14M10 5v11M15 2v12"/><rect x="3.5" y="6" width="3" height="7"/><rect x="8.5" y="8" width="3" height="5"/><rect x="13.5" y="4" width="3" height="6"/></svg><span class="full">Charts &amp; Replay</span><span class="short">Charts</span></a>
       <a href="#news" data-view="news" class="nav-x" title="News Intelligence"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="11" height="14" rx="1.6"/><path d="M14 6.5h2.5v8.5a2 2 0 0 1-2 2M6 7h5M6 10.5h5M6 14h3"/></svg><span>News Intelligence</span></a>
       <a href="#makro" data-view="makro" class="nav-x" title="Makroökonomie"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 16.5l4-7.5 3.5 4 3.5-6.5 4 10"/><path d="M2.5 17.5h15"/></svg><span>Makroökonomie</span></a>
+      <a href="#earnings" data-view="earnings" class="nav-x" title="Quartalszahlen"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3.5" width="14" height="13.5" rx="2"/><path d="M3 7.5h14M7 2v3M13 2v3"/><path d="M6.5 14l2-2.5 2 1.5 3-4"/></svg><span>Quartalszahlen</span></a>
       <span class="nav-h">Handel</span>
       <a href="#desk" data-view="desk" class="nav-x" title="Handels-Desk"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 14l4-4 2.5 2.5 5-6"/><path d="M11.5 6.5h2.5V9"/><path d="M2.5 17.5h15"/></svg><span>Handels-Desk</span></a>
       <a href="#funded" data-view="funded" class="nav-x" title="Funded-Tracker"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="4"/><circle cx="10" cy="10" r="1.2"/></svg><span>Funded-Tracker</span></a>
@@ -2581,6 +2594,7 @@ html.mode-anim, html.mode-anim * { transition: background-color .35s ease, borde
   <section class="view page" id="view-makro" hidden aria-label="Makroökonomie"><div class="jt" id="jt-makro"></div></section>
   <section class="view page" id="view-desk" hidden aria-label="Handels-Desk"><div class="jt" id="jt-desk"></div></section>
   <section class="view page" id="view-funded" hidden aria-label="Funded-Tracker"><div class="jt" id="jt-funded"></div></section>
+  <section class="view page" id="view-earnings" hidden aria-label="Quartalszahlen"><div class="jt" id="jt-earnings"></div></section>
   <section class="view page" id="view-demo" hidden aria-label="Live-Trades"><div class="jt" id="jt-demo"></div></section>
   <section class="view page" id="view-livestats" hidden aria-label="Live-Statistik"><div class="jt" id="jt-livestats"></div></section>
   <section class="view page" id="view-risk" hidden aria-label="Risk Command"><div class="jt" id="jt-risk"></div></section>
@@ -2923,6 +2937,7 @@ html.mode-anim, html.mode-anim * { transition: background-color .35s ease, borde
   <a href="#explorer" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 15l5-5 3.5 3.5 6.5-6.5"/><path d="M2.5 17.5h15"/></svg><span><b>Markt-Explorer</b><small>Sektoren & relative Stärke</small></span></a>
   <a href="#news" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="11" height="14" rx="1.6"/><path d="M14 6.5h2.5v8.5a2 2 0 0 1-2 2M6 7h5M6 10.5h5M6 14h3"/></svg><span><b>News Intelligence</b><small>Schlagzeilen & Stimmung</small></span></a>
   <a href="#makro" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 16.5l4-7.5 3.5 4 3.5-6.5 4 10"/><path d="M2.5 17.5h15"/></svg><span><b>Makroökonomie</b><small>Zinsen, Dollar, Termine</small></span></a>
+  <a href="#earnings" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3.5" width="14" height="13.5" rx="2"/><path d="M3 7.5h14M7 2v3M13 2v3"/><path d="M6.5 14l2-2.5 2 1.5 3-4"/></svg><span><b>Quartalszahlen</b><small>Earnings, Erwartung, Reaktion</small></span></a>
   <a href="#desk" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 14l4-4 2.5 2.5 5-6"/><path d="M11.5 6.5h2.5V9"/><path d="M2.5 17.5h15"/></svg><span><b>Handels-Desk</b><small>Positionsrechner & Paper-Trading</small></span></a>
   <a href="#funded" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="4"/><circle cx="10" cy="10" r="1.2"/></svg><span><b>Funded-Tracker</b><small>Prop-Konten & Payouts</small></span></a>
   <a href="#demo" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 16.5l4-5 3 2.5 4.5-6"/><path d="M12 8h2.5v2.5"/><rect x="2.5" y="2.5" width="15" height="15" rx="3"/></svg><span><b>Live-Trades</b><small>TradingView-Trades importieren</small></span></a>
@@ -11068,6 +11083,8 @@ JV.tools = () => [
   { name: 'journal_statistik', description: 'Statistik aus Elianos Journal (Replay-Backtests und Desk-Trades) und die letzten Trades.', inputSchema: { type: 'object', properties: {} }, execute: async () => JV.journalCtx() },
   { name: 'backtest', description: 'Führt einen Backtest mit echten Kursdaten aus. Strategien: ema, rsi, donch, vwap, bb, orb.', inputSchema: { type: 'object', properties: { strategie: { type: 'string', enum: Object.keys(TA.STRATS) }, symbol: { type: 'string' }, zeitrahmen: { type: 'string', enum: ['5m', '15m', '1h', '4h', '1T', '1W'] }, parameter: { type: 'object' } }, required: ['strategie', 'symbol'] }, execute: JV.backtest },
   { name: 'second_brain', description: 'Elianos Lebensbereiche aus seinem Second Brain (Brand, Content, Agency, Roblox, Jarvis, Nebeneinkommen, Training, Schule …) mit Stand, nächsten Schritten und Notizen.', inputSchema: { type: 'object', properties: {} }, execute: async () => ((J.S.brain && J.S.brain.areas) || []) },
+  { name: 'quartalszahlen', description: 'Echte Quartalszahlen (Earnings) der Nasdaq-Schwergewichte: Umsatz, Gewinn, EPS vs. Erwartung, Kursreaktion von Aktie und Nasdaq 100, nächste Termine und Earnings-Kalender der nächsten 14 Tage.', inputSchema: { type: 'object', properties: {} }, execute: async () => (J.earnCtx ? J.earnCtx() : { fehler: 'nicht verfügbar' }) },
+  { name: 'live_trades', description: 'Elianos Live-/Demo-Trades aus TradingView (getrennt vom Backtest): Kennzahlen, nach Symbol/Session/Uhrzeit, letzte Trades.', inputSchema: { type: 'object', properties: {} }, execute: async () => (J.liveCtx ? J.liveCtx() : { fehler: 'nicht verfügbar' }) },
   { name: 'risiko_status', description: 'Heutiger Risiko-Status aus Risk Command.', inputSchema: { type: 'object', properties: {} }, execute: async () => JV.riskToday() }
 ];
 /* Für Gemini/OpenRouter: passende echte Daten vorab einsammeln */
@@ -11081,6 +11098,8 @@ JV.context = async (q) => {
   const st = Object.entries(TA.STRATS).find(([k, s]) => q.toLowerCase().includes(s.name.toLowerCase().split(' ')[0].toLowerCase()) || q.toLowerCase().includes(k + ' '));
   if (/backtest/i.test(q) && st) { try { ctx.backtest = await JV.backtest({ strategie: st[0], symbol: syms[0] || 'ar:NAS100', zeitrahmen: /stunde|1h/i.test(q) ? '1h' : '1T' }); } catch (e) { ctx.backtest = { fehler: J.errText(e) }; } }
   if (/news|nachricht|heute|wichtig|fed|termin|warum/i.test(q)) { try { const n = await JV.news('alle'); ctx.schlagzeilen = n.items.slice(0, 12).map(x => `${x.title} (${x.src}, ${x.date || ''})`); } catch { } try { const c = await J.getJSON('calendar.json'); ctx.termine = (c.events || []).filter(e => e.impact === 'High' || e.impact === 'Medium').slice(0, 25); } catch { } }
+  if (/quartal|earnings|zahlen|\bq[1-4]\b|umsatz|eps|bericht/i.test(q) && J.earnCtx) { try { ctx.quartalszahlen = await J.earnCtx(); } catch { } }
+  if (/live|demo|paper|tradingview|meine trades|heute getradet/i.test(q) && J.liveCtx) ctx.liveTrades = J.liveCtx();
   return ctx;
 };
 }
@@ -12205,7 +12224,83 @@ V.copilot = el => {
     render();
     return () => { cleans.forEach(f => { try { f(); } catch { } }); };
   };
+  J.liveCtx = () => { const T = (D().trades || []).filter(t => isFinite(t.pnl) && t.exitT).sort((a, b) => b.exitT - a.exitT); if (!T.length) return { hinweis: 'Noch keine Live-Trades importiert' }; const S = stats(T), r2 = x => x == null || !isFinite(x) ? null : +(+x).toFixed(2); const g = f => Object.fromEntries(groupRows(T, f).map(([k, s]) => [k, { trades: s.n, treffer: r2(s.wr), netto: r2(s.net) }])); return { trades: S.n, netto: r2(S.net), trefferquote: r2(S.wr), profitFaktor: S.pf === Infinity ? 'inf' : r2(S.pf), avgGewinn: r2(S.aw), avgVerlust: r2(S.al), maxDrawdown: r2(S.dd), nachSymbol: g(t => short(t.sym)), nachSession: g(t => t.entryT ? SESS(t.entryT) : null), nachSeite: g(t => t.side > 0 ? 'Long' : 'Short'), letzte15: T.slice(0, 15).map(t => ({ zeit: J.dt(t.exitT), sym: short(t.sym), seite: t.side > 0 ? 'L' : 'S', menge: t.qty, einstieg: t.entry, ausstieg: t.exit, pnl: r2(t.pnl), notiz: t.note || undefined })) }; };
   J.demoParse = parseImport; /* für Tests */
+}
+
+/* Quartalszahlen (Earnings) der Nasdaq-Schwergewichte — Daten aus data/earnings.json (tools/fetch-earnings.mjs, GitHub Action earnings.yml).
+   Quellen: Nasdaq (Gewinn- und Verlustrechnung, EPS vs. Erwartung, Kalender), Yahoo (Kursreaktion). Nichts wird geschätzt: fehlt ein Wert, steht „–“. */
+'use strict';
+{
+  const { esc } = J;
+  const V = J.V;
+  const big = n => { if (n == null || !isFinite(n)) return '–'; const a = Math.abs(n); return a >= 1e12 ? J.num(n / 1e12, 2) + ' Bio. $' : a >= 1e9 ? J.num(n / 1e9, a >= 1e11 ? 1 : 2) + ' Mrd. $' : a >= 1e6 ? J.num(n / 1e6, 0) + ' Mio. $' : J.num(n, 0) + ' $'; };
+  const pc = (a, b) => (a == null || b == null || !b) ? null : (a / Math.abs(b) - 1) * 100;
+  const MN = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+  const qLabel = q => q.fp ? `${q.fp} GJ${String(q.fy).slice(2)}` : 'Quartal';
+  const qRange = q => { const m = +q.end.slice(5, 7), y = +q.end.slice(0, 4); const s = (m + 9) % 12; return s > m - 1 ? `${MN[s]} ${y - 1}–${MN[m - 1]} ${y}` : `${MN[s]}–${MN[m - 1]} ${y}`; };
+  const calQ = q => `Q${Math.ceil(+q.end.slice(5, 7) / 3)} ${q.end.slice(0, 4)}`;
+  const last = c => [...c.q].reverse().find(q => q.est || q.rev != null);
+  const prevOf = (c, q) => { const i = c.q.indexOf(q); return i > 0 ? c.q[i - 1] : null; };
+  const chip = (v, d = 1) => v == null ? '<span class="mut">–</span>' : `<b class="${J.cls(v)}">${J.pct(v, d)}</b>`;
+  let DATA = null, at = 0;
+  const load = async (force) => { if (!DATA || force || Date.now() - at > 15 * 60e3) { DATA = await J.getJSON('earnings.json'); at = Date.now(); } return DATA; };
+  J.earnings = load;
+
+  const persona = () => { try { return Jarvis.persona(); } catch { return 'Du bist Jarvis, mein Trading-Coach. Antworte auf Deutsch, klar und knapp.'; } };
+  const r2 = x => x == null || !isFinite(x) ? null : +(+x).toFixed(2);
+  const compact = c => ({ firma: c.name, symbol: c.sym, naechsterTermin: c.next?.date || null, quartale: c.q.slice(-6).map(q => ({ quartal: q.fp ? qLabel(q) : null, kalender: calQ(q), ende: q.end, umsatzMrd: q.rev != null ? r2(q.rev / 1e9) : null, nettogewinnMrd: q.ni != null ? r2(q.ni / 1e9) : null, bruttogewinnMrd: q.gp != null ? r2(q.gp / 1e9) : null, operativMrd: q.oi != null ? r2(q.oi / 1e9) : null, eps: q.est?.eps ?? null, epsErwartung: q.est?.cons ?? null, ueberraschungPct: q.est?.surp ?? null, gemeldet: q.est?.date || null, reaktionAktiePct: q.react?.stock?.pct ?? null, reaktionNasdaq100Pct: q.react?.ndx?.pct ?? null })) });
+  const askCo = c => J.jvAsk(`Jarvis: ${c.name}`, on => Jarvis.think(`${persona()}\n\nAnalysiere die Quartalszahlen von ${c.name} (${c.sym}) für mich als Nasdaq-100-Daytrader. Nur die Daten unten, nichts erfinden; fehlt etwas, sag es. EPS = bereinigter Gewinn je Aktie laut Nasdaq, Erwartung = Analystenkonsens. Kursreaktion = Schluss Vortag bis Schluss Folgetag. Struktur: ### Kurzfazit, ### Umsatz & Gewinn (Trend über die Quartale, Margen), ### Erwartung vs. Ergebnis, ### Wie hat der Markt reagiert (Aktie und Nasdaq 100), ### Was heißt das für meinen NAS100-Handel (nächster Termin, worauf achten).\n\nDaten (JSON):\n${JSON.stringify(compact(c))}`, { onText: ({ text }) => on(text) }), `Stand ${J.dt(Date.parse(DATA.updated))}`);
+  const askSeason = (cos, cal) => J.jvAsk('Jarvis: Earnings-Saison & NAS100', on => Jarvis.think(`${persona()}\n\nGib mir einen Überblick über die aktuelle Earnings-Saison der Nasdaq-Schwergewichte und was sie für meinen NAS100-Handel bedeutet. Nur die Daten unten, nichts erfinden. Struktur: ### Kurzfazit, ### Wer hat überzeugt / enttäuscht (EPS vs. Erwartung, Umsatztrend), ### Marktreaktion (Aktien und Nasdaq 100 rund um die Termine), ### Kommende Termine, die den NAS100 bewegen können, ### Konkrete Hinweise für meine Trading-Tage.\n\nFirmen:\n${JSON.stringify(cos.map(c => { const x = compact(c); x.quartale = x.quartale.slice(-3); return x; }))}\n\nKalender (nächste 14 Tage, Firmen ab 20 Mrd. $):\n${JSON.stringify(cal.slice(0, 40).map(e => ({ datum: e.date, firma: e.name, symbol: e.sym, zeit: e.time, epsErwartung: e.est, epsVorjahr: e.last })))}`, { onText: ({ text }) => on(text) }), 'Quartalszahlen + Kalender');
+
+  J.earnCtx = async () => { const d = await load(); return { stand: d.updated, firmen: (d.companies || []).map(c => { const x = compact(c); x.quartale = x.quartale.slice(-3); return x; }), kalender14Tage: (d.calendar || []).slice(0, 30).map(e => ({ datum: e.date, firma: e.name, symbol: e.sym, zeit: e.time, epsErwartung: e.est })) }; };
+  V.earnings = el => {
+    let alive = true;
+    el.innerHTML = `<div class="page-hd"><div><h1>Quartalszahlen</h1><p class="mut">Earnings der Nasdaq-Schwergewichte – Umsatz, Gewinn, Erwartung, Marktreaktion</p></div></div><div class="card"><p class="note"><span class="spin"></span> Lade Quartalszahlen …</p></div>`;
+    const render = d => {
+      const cos = (d.companies || []).filter(c => c.q && c.q.length), cal = d.calendar || [], today = J.today();
+      const L = cos.map(c => [c, last(c)]).filter(x => x[1]);
+      const rep = L.filter(([, q]) => q.est && q.est.eps != null && q.est.cons != null);
+      const beats = rep.filter(([, q]) => q.est.eps > q.est.cons).length;
+      const avg = a => a.length ? a.reduce((s, x) => s + x, 0) / a.length : null;
+      const aS = avg(rep.map(([, q]) => q.est.surp).filter(isFinite)), aR = avg(L.map(([, q]) => q.react?.stock?.pct).filter(isFinite)), aN = avg(L.map(([, q]) => q.react?.ndx?.pct).filter(isFinite));
+      const upcoming = cos.filter(c => c.next?.date && c.next.date >= today).sort((a, b) => a.next.date.localeCompare(b.next.date));
+      const byDay = {}; cal.forEach(e => (byDay[e.date] = byDay[e.date] || []).push(e));
+      el.innerHTML = `<div class="page-hd"><div><h1>Quartalszahlen</h1><p class="mut">Earnings der Nasdaq-Schwergewichte – Umsatz, Gewinn, Erwartung, Marktreaktion · Stand ${J.dt(Date.parse(d.updated))}</p></div></div>
+      <div class="row" style="margin-bottom:14px;gap:8px"><button class="btn pri" id="erAi">Jarvis: Saison & NAS100</button><button class="btn ghost" id="erRe">${J.icon('refresh')}Neu laden</button></div>
+      <div class="kpis" style="margin-bottom:14px">
+        <div class="kpi"><span>Erwartung geschlagen</span><b>${rep.length ? `${beats} von ${rep.length}` : '–'}</b><small>letztes Quartal je Firma (bereinigter EPS)</small></div>
+        <div class="kpi"><span>Ø Überraschung</span><b class="${J.cls(aS)}">${aS == null ? '–' : J.pct(aS, 1)}</b><small>EPS über/unter Konsens</small></div>
+        <div class="kpi"><span>Ø Kursreaktion Aktie</span><b class="${J.cls(aR)}">${aR == null ? '–' : J.pct(aR, 1)}</b><small>Vortag → Folgetag</small></div>
+        <div class="kpi"><span>Ø Reaktion Nasdaq 100</span><b class="${J.cls(aN)}">${aN == null ? '–' : J.pct(aN, 2)}</b><small>gleicher Zeitraum</small></div>
+        <div class="kpi"><span>Nächster großer Termin</span><b>${upcoming[0] ? esc(upcoming[0].sym) : '–'}</b><small>${upcoming[0] ? J.date(upcoming[0].next.date) + (upcoming[0].next.time ? ' · ' + upcoming[0].next.time : '') : 'noch kein Termin bekannt'}</small></div>
+      </div>
+      <div class="grid g2" style="margin-bottom:14px">
+        <div class="card"><h3>Termine nächste 14 Tage <small class="mut">(ab 20 Mrd. $ Börsenwert)</small></h3>${Object.keys(byDay).length ? `<div class="scroll" style="max-height:340px"><table class="dm-tbl"><tbody>${Object.entries(byDay).map(([dt, E]) => `<tr><th colspan="4" style="padding-top:10px">${dt === today ? '<span class="chip acc">Heute</span> ' : ''}${new Date(dt + 'T12:00:00Z').toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit', timeZone: 'UTC' })}</th></tr>${E.map(e => `<tr><td><b>${esc(e.sym)}</b> <span class="mut">${esc(e.name || '')}</span></td><td>${esc(e.time || '')}</td><td class="r">${e.est != null ? 'EPS-Erw. ' + J.num(e.est, 2) : ''}</td><td class="r mut">${e.mcap ? big(e.mcap) : ''}</td></tr>`).join('')}`).join('')}</tbody></table></div>` : '<p class="note">Keine Termine großer Firmen in den nächsten 14 Tagen gefunden.</p>'}</div>
+        <div class="card"><h3>Nächste Termine deiner Schwergewichte</h3>${upcoming.length ? `<table class="dm-tbl"><tbody>${upcoming.map(c => `<tr><td><b>${esc(c.sym)}</b> <span class="mut">${esc(c.name)}</span></td><td class="r">${J.date(c.next.date)}</td><td>${esc(c.next.time || '')}</td></tr>`).join('')}</tbody></table>` : ''}<p class="note">Für Firmen ohne Eintrag hat Nasdaq noch keinen Termin veröffentlicht.</p></div>
+      </div>
+      <div class="er-grid">${L.map(([c, q]) => { const p = prevOf(c, q); const rs = c.q.filter(x => x.rev != null).slice(-6); const mx = Math.max(...rs.map(x => x.rev), 1); const beat = q.est && q.est.eps != null && q.est.cons != null ? q.est.eps > q.est.cons : null;
+        return `<div class="card er-card" data-co="${esc(c.sym)}"><div class="row nw"><div><b class="er-sym">${esc(c.sym)}</b><div class="note">${esc(c.name)}</div></div><div class="sp"></div><div style="text-align:right"><span class="chip">${qLabel(q)}</span><div class="note">${qRange(q)}</div></div></div>
+          <div class="er-kv"><div><span>Umsatz</span><b>${big(q.rev)}</b><small>${q.rev != null && p?.rev != null ? 'zum Vorquartal ' + J.pct(pc(q.rev, p.rev), 1) : q.rev == null ? 'noch nicht in den Daten' : ''}</small></div><div><span>Nettogewinn</span><b>${big(q.ni)}</b><small>${q.ni != null && q.rev ? 'Marge ' + J.num(q.ni / q.rev * 100, 1) + ' %' : ''}</small></div>
+          <div><span>EPS vs. Erwartung</span><b>${q.est?.eps != null ? J.num(q.est.eps, 2) + ' $' : '–'}</b><small>${q.est?.cons != null ? `Konsens ${J.num(q.est.cons, 2)} · ` : ''}${beat == null ? '' : beat ? '<span class="up">geschlagen</span>' : '<span class="dn">verfehlt</span>'}${q.est?.surp != null ? ` (${J.pct(q.est.surp, 1)})` : ''}</small></div>
+          <div><span>Reaktion Aktie / NDX</span><b>${chip(q.react?.stock?.pct)} <span class="mut">/</span> ${chip(q.react?.ndx?.pct, 2)}</b><small>${q.est?.date ? 'gemeldet ' + J.date(q.est.date) : ''}</small></div></div>
+          ${rs.length > 1 ? `<div class="er-bars" title="Umsatz der letzten Quartale">${rs.map(x => `<i style="height:${(x.rev / mx * 100).toFixed(0)}%" title="${qLabel(x)}: ${big(x.rev)}"></i>`).join('')}</div>` : ''}
+          <div class="note" style="margin-top:6px">${c.next?.date ? `Nächster Termin: <b>${J.date(c.next.date)}</b>${c.next.time ? ' · ' + c.next.time : ''}` : 'Nächster Termin: noch nicht bekannt'}</div></div>`; }).join('')}</div>
+      <p class="note" style="margin-top:12px">Quellen: Nasdaq (Gewinn- und Verlustrechnung, bereinigter EPS & Analystenkonsens, Kalender), Yahoo Finance (Kurse). GJ = Geschäftsjahr der Firma (z. B. NVIDIA: Q3 GJ27 = Aug–Okt 2026). Kursreaktion = Schlusskurs Vortag bis Schlusskurs Folgetag.</p>`;
+      J.$('#erAi', el).onclick = () => askSeason(cos, cal);
+      J.$('#erRe', el).onclick = () => go(true);
+      J.$$('[data-co]', el).forEach(x => x.onclick = () => detail(cos.find(c => c.sym === x.dataset.co)));
+    };
+    const detail = c => {
+      const Q = [...c.q].reverse();
+      J.modal(`${c.name} (${c.sym})`, `<div class="scroll"><table class="dm-tbl"><thead><tr><th>Quartal</th><th class="r">Umsatz</th><th class="r">Brutto</th><th class="r">Operativ</th><th class="r">Netto</th><th class="r">EPS</th><th class="r">Konsens</th><th class="r">Überr.</th><th class="r">Aktie</th><th class="r">NDX</th></tr></thead><tbody>${Q.map(q => `<tr><td><b>${qLabel(q)}</b><div class="note">${qRange(q)}${q.est?.date ? ' · ' + J.date(q.est.date) : ''}</div></td><td class="r">${big(q.rev)}</td><td class="r">${big(q.gp)}</td><td class="r">${big(q.oi)}</td><td class="r">${big(q.ni)}</td><td class="r">${q.est?.eps != null ? J.num(q.est.eps, 2) : '–'}</td><td class="r">${q.est?.cons != null ? J.num(q.est.cons, 2) : '–'}</td><td class="r">${chip(q.est?.surp)}</td><td class="r">${chip(q.react?.stock?.pct)}</td><td class="r">${chip(q.react?.ndx?.pct, 2)}</td></tr>`).join('')}</tbody></table></div>
+        <p class="note">${c.next?.date ? `Nächster Termin: ${J.date(c.next.date)}${c.next.time ? ' · ' + c.next.time : ''}` : 'Nächster Termin noch nicht veröffentlicht.'} Umsatz/Gewinn = berichtete Zahlen (GAAP), EPS = bereinigt laut Nasdaq.</p>
+        <div class="row" style="justify-content:flex-end"><button class="btn pri" id="erCo">Jarvis analysiert ${esc(c.sym)}</button></div>`, (b, close) => { b.querySelector('#erCo').onclick = () => { close(); askCo(c); }; });
+    };
+    const go = force => load(force).then(d => { if (alive) render(d); }).catch(e => { if (alive) el.innerHTML = `<div class="page-hd"><div><h1>Quartalszahlen</h1></div></div><div class="card empty"><b>Quartalszahlen konnten nicht geladen werden</b><span>${esc(J.errText ? J.errText(e) : (e?.message || e?.code || 'Fehler'))}</span></div>`; });
+    go();
+    return () => { alive = false; };
+  };
 }
 
 /* Jarvis-Terminal — Jarvis in deinen bisherigen Bereichen: Charts & Replay (ohne Blick in die Zukunft), Journal, Statistik, Analyse */
@@ -12627,7 +12722,7 @@ V.copilot = el => {
   const spark = (vals, col) => { const m = Math.max(1, ...vals); return `<div class="bs-bars">${vals.map(v => `<i style="height:${Math.max(6, v / m * 100)}%;background:${col}"></i>`).join('')}</div>`; };
   const weeks = (times, n = 8) => { const now = Date.now() / 1000, out = new Array(n).fill(0); for (const t of times) { if (!t) continue; const k = Math.floor((now - t) / 604800); if (k >= 0 && k < n) out[n - 1 - k]++; } return out; };
   const AREAS = () => J.NAV_ALL;
-  J.NAV_ALL = [['Markt', [['markt', 'Marktüberblick'], ['briefing', 'Morning Briefing'], ['explorer', 'Markt-Explorer'], ['charts', 'Charts & Replay'], ['news', 'News Intelligence'], ['makro', 'Makroökonomie']]], ['Handel', [['desk', 'Handels-Desk'], ['funded', 'Funded-Tracker'], ['demo', 'Live-Trades'], ['livestats', 'Live-Statistik'], ['journal', 'Journal'], ['stats', 'Statistik'], ['risk', 'Risk Command']]], ['Research', [['backtests', 'Backtests'], ['analyse', 'Analyse'], ['strategien', 'Strategien'], ['quant', 'Quant Lab'], ['regime', 'Marktregime'], ['research', 'Research Desk'], ['copilot', 'Intelligence Copilot']]], ['Wissen & Fortschritt', [['start', 'Dashboard'], ['handbuch', 'Handbuch'], ['tradingview', 'TradingView'], ['pass', 'Pass'], ['shop', 'Shop']]]];
+  J.NAV_ALL = [['Markt', [['markt', 'Marktüberblick'], ['briefing', 'Morning Briefing'], ['explorer', 'Markt-Explorer'], ['charts', 'Charts & Replay'], ['news', 'News Intelligence'], ['makro', 'Makroökonomie'], ['earnings', 'Quartalszahlen']]], ['Handel', [['desk', 'Handels-Desk'], ['funded', 'Funded-Tracker'], ['demo', 'Live-Trades'], ['livestats', 'Live-Statistik'], ['journal', 'Journal'], ['stats', 'Statistik'], ['risk', 'Risk Command']]], ['Research', [['backtests', 'Backtests'], ['analyse', 'Analyse'], ['strategien', 'Strategien'], ['quant', 'Quant Lab'], ['regime', 'Marktregime'], ['research', 'Research Desk'], ['copilot', 'Intelligence Copilot']]], ['Wissen & Fortschritt', [['start', 'Dashboard'], ['handbuch', 'Handbuch'], ['tradingview', 'TradingView'], ['pass', 'Pass'], ['shop', 'Shop']]]];
   const panel = (which, area) => {
     const p = el()?.querySelector('#bsPanel'); if (!p) return;
     if (!which || (p.dataset.k === which && which !== 'area' && !p.hidden)) { p.hidden = true; p.dataset.k = ''; return; }
@@ -12889,7 +12984,7 @@ function closeModal(sel) {
 }
 function getPath(o, p) { return p.split('.').reduce((a, k) => (a == null ? a : a[k]), o); }
 function setPath(o, p, v) { const ks = p.split('.'); let a = o; for (let i = 0; i < ks.length - 1; i++) a = a[ks[i]]; a[ks[ks.length - 1]] = v; }
-const JT_VIEWS = ['markt', 'briefing', 'explorer', 'news', 'makro', 'desk', 'funded', 'demo', 'livestats', 'risk', 'quant', 'regime', 'research', 'copilot'];
+const JT_VIEWS = ['markt', 'briefing', 'explorer', 'news', 'makro', 'desk', 'funded', 'demo', 'livestats', 'earnings', 'risk', 'quant', 'regime', 'research', 'copilot'];
 const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'analyse', 'strategien', 'pass', 'shop', 'handbuch', 'tradingview'].concat(JT_VIEWS);
 const MORE_VIEWS = ['strategien', 'pass', 'shop', 'handbuch', 'tradingview'].concat(JT_VIEWS);
 

@@ -17,7 +17,7 @@ function closeModal(sel) {
 }
 function getPath(o, p) { return p.split('.').reduce((a, k) => (a == null ? a : a[k]), o); }
 function setPath(o, p, v) { const ks = p.split('.'); let a = o; for (let i = 0; i < ks.length - 1; i++) a = a[ks[i]]; a[ks[ks.length - 1]] = v; }
-const JT_VIEWS = ['markt', 'briefing', 'explorer', 'news', 'makro', 'desk', 'funded', 'demo', 'livestats', 'risk', 'quant', 'regime', 'research', 'copilot'];
+const JT_VIEWS = ['markt', 'briefing', 'explorer', 'news', 'makro', 'desk', 'funded', 'demo', 'livestats', 'earnings', 'risk', 'quant', 'regime', 'research', 'copilot'];
 const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'analyse', 'strategien', 'pass', 'shop', 'handbuch', 'tradingview'].concat(JT_VIEWS);
 const MORE_VIEWS = ['strategien', 'pass', 'shop', 'handbuch', 'tradingview'].concat(JT_VIEWS);
 
