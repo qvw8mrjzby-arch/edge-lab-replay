@@ -1,0 +1,34 @@
+name: Quartalszahlen aktualisieren
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/fetch-earnings.mjs', '.github/workflows/earnings.yml']
+  schedule:
+    - cron: '17 6,13,22 * * 1-5'
+    - cron: '17 9 * * 0,6'
+permissions:
+  contents: write
+concurrency:
+  group: quartalszahlen
+  cancel-in-progress: false
+jobs:
+  earnings:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Quartalszahlen laden
+        run: node tools/fetch-earnings.mjs
+      - name: Speichern
+        run: |
+          git config user.name "kursdaten-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/earnings.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Keine Änderungen."; exit 0; fi
+          git commit -q -m "Quartalszahlen aktualisiert"
+          for i in 1 2 3 4; do git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0; sleep 7; done
+          exit 1
