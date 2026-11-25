@@ -101,6 +101,20 @@ for (const sym of LIST) {
     await sleep(150);
   } else log.push(`SEC ${sym}: keine CIK`);
 
+  // Ersatz/Ergänzung: Gewinn- und Verlustrechnung von Nasdaq (letzte 4 Quartale, Werte in Tausend $) + Geschäftsjahresende
+  const tbl = (j) => { const t = j?.data?.incomeStatementTable; if (!t?.headers || !t?.rows) return null; const keys = Object.keys(t.headers).filter((k) => k !== 'value1'); const dates = keys.map((k) => usDate(t.headers[k])); const row = (re) => { const r = t.rows.find((x) => re.test(String(x.value1 || ''))); return r ? keys.map((k) => { const v = num(r[k]); return v == null ? null : v * 1000; }) : keys.map(() => null); }; return { dates, rev: row(/^total revenue/i), gp: row(/^gross profit/i), oi: row(/^operating income/i), ni: row(/^net income$/i) }; };
+  const fq = await getJ(`https://api.nasdaq.com/api/company/${sym}/financials?frequency=2`, UA);
+  const fa = await getJ(`https://api.nasdaq.com/api/company/${sym}/financials?frequency=1`, UA);
+  if (sym === LIST[0]) log.push('Financials-Rohdaten ' + sym + ': ' + JSON.stringify(fq?.data?.incomeStatementTable || fq).slice(0, 500));
+  const TQ = tbl(fq), TA = tbl(fa);
+  const fyeM = TA?.dates?.find(Boolean) ? +TA.dates.find(Boolean).slice(5, 7) : null; co.fye = fyeM;
+  if (TQ) TQ.dates.forEach((dt, i) => {
+    if (!dt) return; let q = co.q.find((x) => Math.abs(Date.parse(x.end) - Date.parse(dt)) < 12 * DAY);
+    if (!q) { q = { end: dt, src: 'nasdaq' }; co.q.push(q); }
+    for (const k of ['rev', 'gp', 'oi', 'ni']) if (q[k] == null && TQ[k][i] != null) q[k] = TQ[k][i];
+  });
+  else if (fq.err) log.push(`Nasdaq Bilanz ${sym}: ${fq.err}`);
+  if (fyeM) for (const q of co.q) { if (q.fp && q.fy) continue; const m = +q.end.slice(5, 7), y = +q.end.slice(0, 4); const d = ((m - fyeM) % 12 + 12) % 12; const n = Math.round(d / 3) || 4; q.fp = 'Q' + n; q.fy = m <= fyeM ? y : y + 1; if (n === 4) q.fy = (m <= fyeM ? y : y + 1); }
   const s = await getJ(`https://api.nasdaq.com/api/company/${sym}/earnings-surprise`, UA);
   const rows = s?.data?.earningsSurpriseTable?.rows || [];
   if (s.err) log.push(`Nasdaq Überraschung ${sym}: ${s.err}`);
@@ -109,12 +123,14 @@ for (const sym of LIST) {
     const ym = `${m[2]}-${MON[m[1]]}`;
     const est = { date: usDate(r.dateReported), eps: num(r.eps), cons: num(r.consensusForecast), surp: num(r.percentageSurprise) };
     let q = co.q.find((x) => x.end.slice(0, 7) === ym) || co.q.find((x) => { const d = Math.abs(Date.parse(x.end) - Date.parse(ym + '-15')); return d < 20 * DAY; });
+    if (q && q.onlyEst === undefined && !q.rev && !q.ni) q.onlyEst = true;
     if (!q) { q = { end: ym + '-28', fy: null, fp: null, onlyEst: true }; co.q.push(q); }
     q.est = est;
   }
   co.q.sort((a, b) => a.end.localeCompare(b.end));
+  if (fyeM) for (const q of co.q) { if (q.fp && q.fy) continue; const m = +q.end.slice(5, 7), y = +q.end.slice(0, 4); const d = ((m - fyeM) % 12 + 12) % 12; q.fp = 'Q' + (Math.round(d / 3) || 4); q.fy = m <= fyeM ? y : y + 1; }
+  for (const q of co.q) if (q.rev || q.ni) delete q.onlyEst;
   const nd = await getJ(`https://api.nasdaq.com/api/analyst/${sym}/earnings-date`, UA);
-  if (sym === LIST[0]) log.push('Termin-Rohdaten ' + sym + ': ' + JSON.stringify(nd?.data || nd).slice(0, 400));
   if (nd?.data) { const txt = nd.data.announcement || nd.data.reportText || ''; const m = String(txt).match(/([A-Z][a-z]{2})\s+(\d{1,2}),\s+(\d{4})/); co.next = { date: m ? `${m[3]}-${MON[m[1]]}-${m[2].padStart(2, '0')}` : null, text: String(txt).replace(/<[^>]+>/g, '').trim().slice(0, 240) }; }
   else if (nd.err) log.push(`Nasdaq Termin ${sym}: ${nd.err}`);
 
@@ -140,6 +156,7 @@ for (let i = 0; i < 15; i++) {
   await sleep(300);
 }
 
+for (const co of companies) { const c = calendar.find((x) => x.sym === co.sym); if (c) co.next = { date: c.date, time: c.time, est: c.est, text: '' }; else if (co.next && !co.next.date) co.next = null; }
 const prev = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')) : null;
 const okCount = companies.filter((c) => c.q.length).length;
 if (!okCount && prev) { console.log('Keine Daten bekommen – alte Datei bleibt.', log.join(' | ')); process.exit(0); }
