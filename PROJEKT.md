@@ -103,7 +103,7 @@ Bereiche: Übersicht · Charts · Journal · Backtests · Statistik · Analyse �
 - Build unter Windows: `PYTHONUTF8=1 python build.py`.
 
 ## Demo-Trades (25.11.2026 - live, Cache v20)
-- `src/demo.js` + `src/demo.css`, Bereich #demo (Handel → Demo-Trades). Daten in `J.S.demo` = App.settings.jt.demo (trades, start, pv, tz), synchronisiert, getrennt von Journal/Pass.
-- Import: TradingView Paper Trading „History“/„Order History“ (Fills → Trades flach→flach, Wende wird geteilt, Gebühren anteilig), „Balance History“ (Action-Text), einfache Trade-Listen. Doppelte per ID erkannt. Zeitzone wählbar.
+- `src/demo.js` + `src/demo.css`, Bereiche #demo (Handel → Live-Trades: Import, Trades, Kalender) und #livestats (Live-Statistik: KPIs, Kontokurve, Drawdown, Tages-P&L, Verteilung, Wochentag×Uhrzeit, Session, Haltedauer, Monat, Live vs. Backtest, beste/schlechteste Trades, Jarvis). Daten in `J.S.demo` = App.settings.jt.demo (trades, start, pv, tz), synchronisiert, getrennt von Journal/Pass.
+- Import: TradingView „Handelsverlauf“ (deutsch/englisch, eine Zeile je Ein-/Ausstieg, Netto G&V übernommen, Punktwert daraus abgeleitet), Paper Trading „History“/„Order History“ (Fills → Trades flach→flach, Wende wird geteilt, Gebühren anteilig), „Balance History“ (Action-Text), einfache Trade-Listen. Doppelte per ID erkannt. Zeitzone wählbar.
 - Punktwerte für Futures (NQ 20, MNQ 2, ES 50 …) überschreibbar unter „Konto & Punktwerte“, P&L wird aus den Fills neu berechnet.
 - Trade-Fenster: Stop/Ziel (→ R), Strategie, Sterne, Merkmale, Notiz, Screenshot-Link. Auswertung: KPIs, Kontokurve, Kalender, nach Symbol/Seite/Wochentag/Stunde/Strategie/Merkmal/Sterne, Hinweise, CSV-Export, Jarvis-Auswertung.

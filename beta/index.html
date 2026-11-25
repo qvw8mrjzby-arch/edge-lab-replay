@@ -2240,6 +2240,21 @@ html.mode-anim, html.mode-anim * { transition: background-color .35s ease, borde
 .jt .dm-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .jt .dm-tags .chip{cursor:pointer;border:1px solid var(--line)}
 @media (max-width:640px){.jt .dm-day b{font-size:10px}.jt .dm-cal>div:not(.dm-wd){min-height:46px}}
+.jt .dm-link{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:inherit;position:relative}
+.jt .dm-link .dm-go{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-weight:600;color:var(--acc,#6f8dff)}
+.jt .dm-bars{display:flex;gap:3px;height:170px;align-items:stretch}
+.jt .dm-bar{flex:1;position:relative;min-width:4px}
+.jt .dm-bar i{position:absolute;left:0;right:0;border-radius:3px}
+.jt .dm-bar i.up,.jt .dm-hist i.up{background:#2fcf9f}.jt .dm-bar i.dn,.jt .dm-hist i.dn{background:#ef5d78}
+.jt .dm-hist{display:flex;gap:4px;height:170px;align-items:flex-end}
+.jt .dm-hist>div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:3px}
+.jt .dm-hist i{display:block;width:100%;border-radius:4px 4px 0 0;min-height:2px}
+.jt .dm-hist span{font-size:11px;color:var(--mut)}
+.jt .dm-heat{border-collapse:separate;border-spacing:3px;font-size:11.5px}
+.jt .dm-heat th{color:var(--mut);font-weight:600;padding:2px 4px}
+.jt .dm-heat td{min-width:44px;height:30px;text-align:center;border-radius:6px;color:var(--ink);background:var(--side)}
+@media (max-width:640px){.jt .dm-link .dm-go{position:static;transform:none}}
+.jt .dm-bars{position:relative;overflow:hidden}.jt .dm-bars::after{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px solid var(--line2)}
 </style>
 </head>
 <body>
@@ -2264,7 +2279,8 @@ html.mode-anim, html.mode-anim * { transition: background-color .35s ease, borde
       <span class="nav-h">Handel</span>
       <a href="#desk" data-view="desk" class="nav-x" title="Handels-Desk"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 14l4-4 2.5 2.5 5-6"/><path d="M11.5 6.5h2.5V9"/><path d="M2.5 17.5h15"/></svg><span>Handels-Desk</span></a>
       <a href="#funded" data-view="funded" class="nav-x" title="Funded-Tracker"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="4"/><circle cx="10" cy="10" r="1.2"/></svg><span>Funded-Tracker</span></a>
-      <a href="#demo" data-view="demo" class="nav-x" title="Demo-Trades"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 16.5l4-5 3 2.5 4.5-6"/><path d="M12 8h2.5v2.5"/><rect x="2.5" y="2.5" width="15" height="15" rx="3"/></svg><span>Demo-Trades</span></a>
+      <a href="#demo" data-view="demo" class="nav-x" title="Live-Trades"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 16.5l4-5 3 2.5 4.5-6"/><path d="M12 8h2.5v2.5"/><rect x="2.5" y="2.5" width="15" height="15" rx="3"/></svg><span>Live-Trades</span></a>
+      <a href="#livestats" data-view="livestats" class="nav-x" title="Live-Statistik"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 17h14"/><rect x="4.5" y="10" width="2.6" height="5"/><rect x="8.7" y="6" width="2.6" height="9"/><rect x="12.9" y="3" width="2.6" height="12"/><circle cx="16.5" cy="4" r="1.5"/></svg><span>Live-Statistik</span></a>
       <a href="#journal" data-view="journal" title="Journal"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3.5" y="2.5" width="13" height="15" rx="1.5"/><path d="M7 7h6M7 10.5h6M7 14h4"/></svg><span>Journal</span></a>
       <a href="#stats" data-view="stats" title="Statistik"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 17h14"/><rect x="4.5" y="9" width="2.6" height="6"/><rect x="8.7" y="5" width="2.6" height="10"/><rect x="12.9" y="11" width="2.6" height="4"/></svg><span>Statistik</span></a>
       <a href="#risk" data-view="risk" class="nav-x" title="Risk Command"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5l8 14.5H2z"/><path d="M10 8.5v3.5M10 14.5v.4"/></svg><span>Risk Command</span></a>
@@ -2565,7 +2581,8 @@ html.mode-anim, html.mode-anim * { transition: background-color .35s ease, borde
   <section class="view page" id="view-makro" hidden aria-label="Makroökonomie"><div class="jt" id="jt-makro"></div></section>
   <section class="view page" id="view-desk" hidden aria-label="Handels-Desk"><div class="jt" id="jt-desk"></div></section>
   <section class="view page" id="view-funded" hidden aria-label="Funded-Tracker"><div class="jt" id="jt-funded"></div></section>
-  <section class="view page" id="view-demo" hidden aria-label="Demo-Trades"><div class="jt" id="jt-demo"></div></section>
+  <section class="view page" id="view-demo" hidden aria-label="Live-Trades"><div class="jt" id="jt-demo"></div></section>
+  <section class="view page" id="view-livestats" hidden aria-label="Live-Statistik"><div class="jt" id="jt-livestats"></div></section>
   <section class="view page" id="view-risk" hidden aria-label="Risk Command"><div class="jt" id="jt-risk"></div></section>
   <section class="view page" id="view-quant" hidden aria-label="Quant Lab"><div class="jt" id="jt-quant"></div></section>
   <section class="view page" id="view-regime" hidden aria-label="Marktregime"><div class="jt" id="jt-regime"></div></section>
@@ -2908,7 +2925,8 @@ html.mode-anim, html.mode-anim * { transition: background-color .35s ease, borde
   <a href="#makro" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 16.5l4-7.5 3.5 4 3.5-6.5 4 10"/><path d="M2.5 17.5h15"/></svg><span><b>Makroökonomie</b><small>Zinsen, Dollar, Termine</small></span></a>
   <a href="#desk" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 14l4-4 2.5 2.5 5-6"/><path d="M11.5 6.5h2.5V9"/><path d="M2.5 17.5h15"/></svg><span><b>Handels-Desk</b><small>Positionsrechner & Paper-Trading</small></span></a>
   <a href="#funded" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="4"/><circle cx="10" cy="10" r="1.2"/></svg><span><b>Funded-Tracker</b><small>Prop-Konten & Payouts</small></span></a>
-  <a href="#demo" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 16.5l4-5 3 2.5 4.5-6"/><path d="M12 8h2.5v2.5"/><rect x="2.5" y="2.5" width="15" height="15" rx="3"/></svg><span><b>Demo-Trades</b><small>TradingView-Paper-Trades auswerten</small></span></a>
+  <a href="#demo" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 16.5l4-5 3 2.5 4.5-6"/><path d="M12 8h2.5v2.5"/><rect x="2.5" y="2.5" width="15" height="15" rx="3"/></svg><span><b>Live-Trades</b><small>TradingView-Trades importieren</small></span></a>
+  <a href="#livestats" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 17h14"/><rect x="4.5" y="10" width="2.6" height="5"/><rect x="8.7" y="6" width="2.6" height="9"/><rect x="12.9" y="3" width="2.6" height="12"/><circle cx="16.5" cy="4" r="1.5"/></svg><span><b>Live-Statistik</b><small>Deine Live-Trades ausgewertet</small></span></a>
   <a href="#risk" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5l8 14.5H2z"/><path d="M10 8.5v3.5M10 14.5v.4"/></svg><span><b>Risk Command</b><small>Ampel, Limits, Ruin-Simulator</small></span></a>
   <a href="#quant" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 2.5h5M8.5 2.5v5L4 15.5a1.3 1.3 0 0 0 1.1 2h9.8a1.3 1.3 0 0 0 1.1-2L11.5 7.5v-5"/><path d="M6 12.5h8"/></svg><span><b>Quant Lab</b><small>Strategien automatisch testen</small></span></a>
   <a href="#regime" class="mm-jt"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 14h3.5V7.5h4V13h3.5V5h4"/></svg><span><b>Marktregime</b><small>Trend oder Seitwärts?</small></span></a>
@@ -11733,6 +11751,7 @@ V.copilot = el => {
   };
   /* Wanduhrzeit in einer Zeitzone → Unix-ms */
   const offMs = (ms, tz) => { const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).formatToParts(new Date(ms)).map(x => [x.type, x.value])); return Date.UTC(+p.year, p.month - 1, +p.day, +p.hour % 24, +p.minute, +p.second) - ms; };
+  const MONTHS = { jan: 1, feb: 2, mär: 3, mrz: 3, mar: 3, apr: 4, mai: 5, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, okt: 10, oct: 10, nov: 11, dez: 12, dec: 12 };
   const parseTime = (s, tz) => {
     s = String(s || '').trim(); if (!s) return null;
     if (/^\d{10}$/.test(s)) return +s * 1000; if (/^\d{13}$/.test(s)) return +s;
@@ -11742,6 +11761,8 @@ V.copilot = el => {
     else if ((m = s.match(/^(\d\d?)\.(\d\d?)\.(\d{2,4})[ ,]+(\d\d?):(\d\d)(?::(\d\d))?/))) [, Dd, Mo, Y, h, mi, se] = m;
     else if ((m = s.match(/^(\d\d?)\/(\d\d?)\/(\d{4})[ ,]+(\d\d?):(\d\d)(?::(\d\d))?\s*(AM|PM)?/i))) { [, Mo, Dd, Y, h, mi, se] = m; if (m[7]) { h = +h % 12 + (/pm/i.test(m[7]) ? 12 : 0); } }
     else if ((m = s.match(/^(\d{4})-(\d\d)-(\d\d)$/))) { [, Y, Mo, Dd] = m; h = 12; mi = 0; }
+    else if ((m = s.match(/^(\d{1,2})\.?\s*([A-Za-zÄäÖöÜü]{3,})\.?\s+(\d{4}),?\s+(\d\d?):(\d\d)(?::(\d\d))?/)) && MONTHS[m[2].slice(0, 3).toLowerCase()]) { [, Dd, , Y, h, mi, se] = m; Mo = MONTHS[m[2].slice(0, 3).toLowerCase()]; }
+    else if ((m = s.match(/^([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2}),?\s+(\d{4}),?\s+(\d\d?):(\d\d)(?::(\d\d))?/)) && MONTHS[m[1].toLowerCase()]) { [, , Dd, Y, h, mi, se] = m; Mo = MONTHS[m[1].toLowerCase()]; }
     else { const t = Date.parse(s); return isFinite(t) ? t : null; }
     if (String(Y).length === 2) Y = '20' + Y;
     const wall = Date.UTC(+Y, +Mo - 1, +Dd, +h, +mi, +(se || 0));
@@ -11823,6 +11844,26 @@ V.copilot = el => {
     const cSym = col(hd, 'symbol', 'instrument', 'ticker', 'markt'), cSide = col(hd, 'side', 'seite', 'richtung', 'direction', 'action type');
     const cFill = col(hd, 'fill price', 'avg fill price', 'ausführungspreis', 'avg price', 'durchschnittspreis');
     const cAct = col(hd, 'action', 'aktion');
+    // 0) Handelsverlauf / List of trades (Symbol, Trade-Nummer, Typ „Long-Einstieg/Short-Ausstieg“, Datum und Uhrzeit, Preis, Größe (Menge), Netto G&V)
+    const cNr = col(hd, 'trade nummer', 'trade #', 'trade nr', 'trade number'), cTyp = col(hd, 'typ', 'type');
+    if (cNr >= 0 && cTyp >= 0) {
+      const cDt = col(hd, 'datum und uhrzeit', 'date time', 'date', 'datum'), cPr = col(hd, 'preis', 'price'), cQ = col(hd, 'größe menge', 'menge', 'quantity', 'contracts', 'qty'), cPn = col(hd, 'netto g&v', 'net p&l', 'net pnl', 'profit'), cFee = col(hd, 'provision', 'commission'), cOid = col(hd, 'order id');
+      const G = new Map(); let skip = 0, openN = 0; const open = [];
+      body.forEach(r => { const k = (r[cSym] || '') + '#' + r[cNr]; if (!G.has(k)) G.set(k, {}); const g = G.get(k); const ty = String(r[cTyp] || ''); if (/ausstieg|exit/i.test(ty)) g.x = r; else if (/einstieg|entry/i.test(ty)) g.e = r; });
+      const trades = [];
+      for (const g of G.values()) {
+        if (!g.e) { skip++; continue; }
+        const x = g.x, side = /short/i.test(g.e[cTyp]) ? -1 : 1, sym = String(g.e[cSym] || '').trim();
+        const xt = x ? parseTime(x[cDt], tz) : null;
+        if (!x || !xt || n(x[cPr]) == null) { open.push({ sym, qty: side * (n(g.e[cQ]) || 0) }); continue; }
+        const qty = Math.abs(n(g.e[cQ]) || 0), en = n(g.e[cPr]), ex = n(x[cPr]), et = parseTime(g.e[cDt], tz), fee = Math.abs(n(x[cFee]) || 0);
+        let pnl = n(x[cPn]); const gross = pnl != null ? pnl + fee : null;
+        const pvG = gross != null && qty && en != null && ex != null && ex !== en ? Math.abs(gross / ((ex - en) * qty)) : null;
+        if (pnl == null) { if (en == null || ex == null) { skip++; continue; } pnl = (ex - en) * side * qty * pvOf(sym) - fee; }
+        trades.push({ id: 'tvh-' + hash(sym + '|' + (cOid >= 0 ? g.e[cOid] + '|' + x[cOid] : g.e[cDt] + '|' + x[cDt]) + '|' + qty), src: 'tv', sym, side, qty, entry: en, exit: ex, entryT: et, exitT: xt, gross: +((gross ?? pnl + fee)).toFixed(2), fees: fee, pnl: +pnl.toFixed(2), fills: null, pvUsed: pvG ? +pvG.toPrecision(4) : pvOf(sym), nr: g.e[cNr] });
+      }
+      if (trades.length) return { kind: 'Handelsverlauf', fills: body.length, skip, trades, open };
+    }
     // 1) Order-Historie (TradingView Paper Trading: Symbol, Side, Type, Qty, Fill Price, Status, Commission, Placing/Closing Time, Order ID)
     if (cSym >= 0 && cSide >= 0 && cFill >= 0) {
       const cQ = col(hd, 'qty', 'quantity', 'menge', 'filled qty', 'stück'), cSt = col(hd, 'status'), cFee = col(hd, 'commission', 'kommission', 'gebühr', 'fee');
@@ -11873,7 +11914,7 @@ V.copilot = el => {
   };
 
   /* ---------- Kennzahlen ---------- */
-  const rOf = t => { if (t.sl == null || t.entry == null || !t.qty) return null; const risk = Math.abs(t.entry - t.sl) * t.qty * (t.pvUsed || pvOf(t.sym)); return risk > 0 ? t.pnl / risk : null; };
+  const rOf = t => { if (t.r != null && isFinite(t.r)) return t.r; if (t.sl == null || t.entry == null || !t.qty) return null; const risk = Math.abs(t.entry - t.sl) * t.qty * (t.pvUsed || pvOf(t.sym)); return risk > 0 ? t.pnl / risk : null; };
   const stats = T => {
     const W = T.filter(t => t.pnl > 0), L = T.filter(t => t.pnl < 0);
     const gw = W.reduce((s, t) => s + t.pnl, 0), gl = -L.reduce((s, t) => s + t.pnl, 0), net = gw - gl;
@@ -11886,6 +11927,30 @@ V.copilot = el => {
   const groupRows = (T, keyFn, order) => { const m = new Map(); T.forEach(t => { const k = keyFn(t); if (k == null || k === '') return; [].concat(k).forEach(kk => { if (!m.has(kk)) m.set(kk, []); m.get(kk).push(t); }); }); let e = [...m.entries()].map(([k, L]) => [k, stats(L)]); e = order ? e.sort((a, b) => order(a[0], b[0])) : e.sort((a, b) => b[1].net - a[1].net); return e; };
 
   /* ---------- Seite ---------- */
+    const table = (title, rows) => `<div class="card"><h3>${title}</h3><table class="dm-tbl"><thead><tr><th></th><th class="r">Trades</th><th class="r">Treffer</th><th class="r">PF</th><th class="r">Netto</th></tr></thead><tbody>${rows.length ? rows.map(([k, s]) => `<tr><td><b>${esc(k)}</b></td><td class="r">${s.n}</td><td class="r">${J.num(s.wr, 0)} %</td><td class="r">${pfTxt(s.pf)}</td><td class="r ${J.cls(s.net)}">${J.money(s.net, 0)}</td></tr>`).join('') : '<tr><td colspan="5" class="mut">Keine Daten</td></tr>'}</tbody></table></div>`;
+    const insights = (T, S) => {
+      if (T.length < 5) return '';
+      const L = []; const g = (f) => groupRows(T, f).filter(([, s]) => s.n >= 3);
+      const hrs = g(t => t.entryT ? String(hourOf(t.entryT)).padStart(2, '0') + ':00' : null);
+      if (hrs.length > 1) { const b = hrs[0], w = hrs[hrs.length - 1]; if (b[1].net > 0) L.push(`Beste Uhrzeit: <b>${b[0]}</b> (${b[1].n} Trades, ${J.money(b[1].net, 0)}).`); if (w[1].net < 0) L.push(`Teuerste Uhrzeit: <b>${w[0]}</b> (${w[1].n} Trades, <span class="dn">${J.money(w[1].net, 0)}</span>).`); }
+      const sy = g(t => short(t.sym)); if (sy.length > 1 && sy[sy.length - 1][1].net < 0) L.push(`Schwächstes Symbol: <b>${esc(sy[sy.length - 1][0])}</b> mit ${J.money(sy[sy.length - 1][1].net, 0)}.`);
+      const ls = g(t => t.side > 0 ? 'Long' : 'Short'); if (ls.length === 2 && Math.sign(ls[0][1].net) !== Math.sign(ls[1][1].net)) L.push(`<b>${ls[0][0]}</b> bringt Geld (${J.money(ls[0][1].net, 0)}), <b>${ls[1][0]}</b> kostet Geld (${J.money(ls[1][1].net, 0)}).`);
+      if (S.aw && S.worst < 0 && -S.worst > 2 * S.aw) L.push(`Dein größter Verlust (${J.money(S.worst, 0)}) frisst ${J.num(-S.worst / S.aw, 1)} durchschnittliche Gewinne.`);
+      if (S.wr != null && S.aw && S.al) { const be = -S.al / (S.aw - S.al) * 100; L.push(`Mit deinem Gewinn/Verlust-Verhältnis brauchst du mindestens <b>${J.num(be, 0)} %</b> Treffer – du hast ${J.num(S.wr, 0)} %.`); }
+      const tg = g(t => t.tags && t.tags.length ? t.tags : null).filter(([, s]) => s.net < 0); if (tg.length) L.push(`Teuerstes Merkmal: <b>${esc(tg[tg.length - 1][0])}</b> (${J.money(tg[tg.length - 1][1].net, 0)}).`);
+      const noSl = T.filter(t => t.sl == null).length; if (noSl) L.push(`${noSl} von ${T.length} Trades ohne eingetragenen Stop – trag ihn im Trade nach, dann siehst du dein R.`);
+      return L.length ? `<div class="card" style="margin-bottom:14px"><h3>Was deine Zahlen sagen</h3><ul class="dm-ins">${L.map(x => `<li>${x}</li>`).join('')}</ul></div>` : '';
+    };
+    const ai = (T, S) => {
+      const persona = () => { try { return Jarvis.persona(); } catch { return 'Du bist Jarvis, mein Trading-Coach. Antworte auf Deutsch, klar und knapp.'; } };
+      const r2 = x => x == null || !isFinite(x) ? null : +(+x).toFixed(2);
+      const g = f => Object.fromEntries(groupRows(T, f).map(([k, s]) => [k, { trades: s.n, treffer: r2(s.wr), netto: r2(s.net), pf: s.pf === Infinity ? 'inf' : r2(s.pf) }]));
+      const data = { kennzahlen: { trades: S.n, netto: r2(S.net), trefferquote: r2(S.wr), profitFaktor: S.pf === Infinity ? 'inf' : r2(S.pf), avgGewinn: r2(S.aw), avgVerlust: r2(S.al), erwartung: r2(S.exp), maxDrawdown: r2(S.dd), avgR: r2(S.avgR), haltedauerMin: S.hold ? Math.round(S.hold / 60000) : null, verlustSerie: S.ml },
+        nachSymbol: g(t => short(t.sym)), longShort: g(t => t.side > 0 ? 'Long' : 'Short'), nachStunde: g(t => t.entryT ? hourOf(t.entryT) + ' Uhr' : null), nachWochentag: g(t => WD[wdOf(t.entryT || t.exitT)]), nachStrategie: g(t => t.strat || null), nachMerkmal: g(t => t.tags && t.tags.length ? t.tags : null),
+        letzte25: T.slice(0, 25).map(t => ({ zeit: J.dt(t.exitT), sym: short(t.sym), seite: t.side > 0 ? 'L' : 'S', pnl: r2(t.pnl), r: r2(rOf(t)), min: t.entryT ? Math.round((t.exitT - t.entryT) / 60000) : null, strat: t.strat || undefined, sterne: t.grade || undefined, merkmale: t.tags?.length ? t.tags : undefined, notiz: t.note ? t.note.slice(0, 140) : undefined })) };
+      J.jvAsk('Jarvis wertet deine Demo-Trades aus', (on) => Jarvis.think(`${persona()}\n\nWerte meine Demo-Trades (TradingView Paper Trading, echte Ausführungen, aktuelle Filterauswahl) aus. Nur was die Daten zeigen, keine erfundenen Zahlen. Struktur: ### Kurzfazit (2 Sätze), ### Was funktioniert, ### Teuerste Muster (Uhrzeiten, Symbole, Seite, Merkmale – mit $), ### Risiko (Gewinn/Verlust-Verhältnis, Drawdown, Stops), ### 3 konkrete Regeln für die nächste Woche.\n\nDaten (JSON):\n${JSON.stringify(data)}`, { onText: ({ text }) => on(text) }), `${T.length} Trades in der Auswahl`);
+    };
+
   V.demo = el => {
     const st = { per: 'all', sym: '', side: 0, strat: '', tag: '', mon: null, show: 40 };
     let cleans = [];
@@ -11902,7 +11967,7 @@ V.copilot = el => {
       const syms = [...new Set(A.map(t => short(t.sym)))].sort(), strats = [...new Set(A.map(t => t.strat).filter(Boolean))].sort(), tags = [...new Set(A.flatMap(t => t.tags || []))].sort();
       const seg = (name, opts, cur) => `<div class="seg" data-seg="${name}">${opts.map(([v, l]) => `<button data-v="${v}" class="${String(cur) === String(v) ? 'on' : ''}">${l}</button>`).join('')}</div>`;
       const kpi = (l, v, c, s) => `<div class="kpi"><span>${l}</span><b class="${c || ''}">${v}</b>${s ? `<small>${s}</small>` : ''}</div>`;
-      el.innerHTML = `<div class="page-hd"><div><h1>Demo-Trades</h1><p class="mut">Deine Demo-/Paper-Trades aus TradingView – importieren, notieren, auswerten</p></div></div>
+      el.innerHTML = `<div class="page-hd"><div><h1>Live-Trades</h1><p class="mut">Deine Demo-/Paper-Trades auf Live-Charts aus TradingView – importieren, notieren, auswerten</p></div></div>
       <div class="row" style="margin-bottom:14px;gap:8px"><button class="btn pri" id="dmImp">${J.icon('upload')}TradingView importieren</button><button class="btn" id="dmAdd">${J.icon('plus')}Trade eintragen</button><div class="sp"></div>${A.length ? `<button class="btn" id="dmAi">Jarvis auswerten</button>` : ''}<button class="btn ghost" id="dmSet">Konto & Punktwerte</button></div>
       ${!A.length ? empty() : `
       <div class="card" style="margin-bottom:14px"><div class="row" style="gap:8px">${seg('per', [['all', 'Alles'], ['day', 'Heute'], ['w', '7 Tage'], ['m30', '30 Tage'], ['mon', 'Monat'], ['y', 'Jahr']], st.per)}${seg('side', [[0, 'Beide'], [1, 'Long'], [-1, 'Short']], st.side)}
@@ -11921,38 +11986,16 @@ V.copilot = el => {
       </div>
       <div class="grid g2" style="margin-bottom:14px"><div class="card"><h3>Kontokurve</h3><div id="dmEq" style="height:230px"></div></div><div class="card"><h3>Kalender<span class="sp"></span><button class="btn sm ghost" data-mon="-1">‹</button><span class="note" id="dmMon"></span><button class="btn sm ghost" data-mon="1">›</button></h3><div id="dmCal"></div></div></div>
       ${insights(T, S)}
-      <div class="grid g2" style="margin-bottom:14px">
-        ${table('Nach Symbol', groupRows(T, t => short(t.sym)))}
-        ${table('Long / Short', groupRows(T, t => t.side > 0 ? 'Long' : 'Short'))}
-        ${table('Nach Wochentag', groupRows(T, t => WD[wdOf(t.entryT || t.exitT)], (a, b) => WD.indexOf(a) - WD.indexOf(b)))}
-        ${table('Nach Uhrzeit (Einstieg, Berlin)', groupRows(T.filter(t => t.entryT), t => String(hourOf(t.entryT)).padStart(2, '0') + ':00', (a, b) => a.localeCompare(b)))}
-        ${strats.length ? table('Nach Strategie', groupRows(T, t => t.strat || 'ohne Strategie')) : ''}
-        ${tags.length ? table('Nach Merkmal', groupRows(T, t => t.tags && t.tags.length ? t.tags : null)) : ''}
-        ${T.some(t => t.grade) ? table('Nach Ausführung (★)', groupRows(T.filter(t => t.grade), t => '★'.repeat(t.grade), (a, b) => b.length - a.length)) : ''}
-      </div>
+      <a class="card dm-link" href="#livestats" style="margin-bottom:14px"><b>Alle Statistiken zu deinen Live-Trades</b><span class="mut">Symbole, Uhrzeiten, Sessions, Haltedauer, Verteilung, Monate und der Vergleich mit deinem Backtest</span><span class="dm-go">Live-Statistik →</span></a>
       <div class="card"><h3>Trades (${T.length})<span class="sp"></span><button class="btn sm ghost" id="dmCsv">Als CSV sichern</button></h3>
         <div class="scroll"><table class="dm-tbl"><thead><tr><th>Ausstieg</th><th>Symbol</th><th>Seite</th><th class="r">Menge</th><th class="r">Einstieg</th><th class="r">Ausstieg</th><th class="r">Dauer</th><th class="r">R</th><th class="r">P&amp;L</th><th>Strategie / Notiz</th></tr></thead><tbody>
         ${T.slice(0, st.show).map(t => { const r = rOf(t); return `<tr data-tr="${t.id}"><td>${J.dt(t.exitT)}</td><td><b>${esc(short(t.sym))}</b></td><td><span class="chip ${t.side > 0 ? 'up' : 'dn'}">${t.side > 0 ? 'Long' : 'Short'}</span></td><td class="r">${J.num(t.qty, t.qty % 1 ? 2 : 0)}</td><td class="r">${J.price(t.entry)}</td><td class="r">${J.price(t.exit)}</td><td class="r">${t.entryT ? dur(t.exitT - t.entryT) : '–'}</td><td class="r">${r == null ? '–' : J.num(r, 2)}</td><td class="r ${J.cls(t.pnl)}"><b>${J.money(t.pnl)}</b></td><td class="dm-note">${t.grade ? '<span class="gold">' + '★'.repeat(t.grade) + '</span> ' : ''}${esc(t.strat || '')}${t.note ? ' · <span class="mut">' + esc(t.note.slice(0, 60)) + '</span>' : ''}${t.shot ? ' 📷' : ''}</td></tr>`; }).join('')}
         </tbody></table></div>${T.length > st.show ? `<div class="row" style="justify-content:center;margin-top:10px"><button class="btn sm" id="dmMore">Weitere ${Math.min(40, T.length - st.show)} zeigen</button></div>` : ''}</div>`}`;
       bind(T, S);
     };
-    const empty = () => `<div class="card empty"><b>Noch keine Demo-Trades</b><span>So holst du deine TradingView-Paper-Trades rein:</span>
-      <ol class="dm-steps"><li>Auf TradingView einen Chart öffnen, unten <b>Paper Trading</b> öffnen.</li><li>Im Tab <b>History</b> (bzw. Order History) über die drei Punkte rechts alle Spalten anhaken (Side, Type, Qty, Fill Price, Status, Commission, Closing Time, Order ID).</li><li>Auf das Paper-Trading-Logo klicken → <b>Export data</b> → <b>History</b> → Export.</li><li>Hier auf <b>TradingView importieren</b> und die CSV wählen – fertig. Doppelte Trades werden beim nächsten Import erkannt.</li></ol>
+    const empty = () => `<div class="card empty"><b>Noch keine Live-Trades</b><span>So holst du deine TradingView-Paper-Trades rein:</span>
+      <ol class="dm-steps"><li>Auf TradingView einen Chart öffnen, unten <b>Paper Trading</b> öffnen.</li><li>Im Tab <b>History</b> (bzw. Order History) über die drei Punkte rechts alle Spalten anhaken (Side, Type, Qty, Fill Price, Status, Commission, Closing Time, Order ID).</li><li>Auf das Paper-Trading-Logo klicken → <b>Export data</b> → <b>Handelsverlauf</b> (bzw. History) → Export.</li><li>Hier auf <b>TradingView importieren</b> und die CSV wählen – fertig. Doppelte Trades werden beim nächsten Import erkannt.</li></ol>
       <span class="note">Kein Export zur Hand? Einzelne Trades kannst du auch mit „Trade eintragen“ von Hand erfassen.</span></div>`;
-    const table = (title, rows) => `<div class="card"><h3>${title}</h3><table class="dm-tbl"><thead><tr><th></th><th class="r">Trades</th><th class="r">Treffer</th><th class="r">PF</th><th class="r">Netto</th></tr></thead><tbody>${rows.length ? rows.map(([k, s]) => `<tr><td><b>${esc(k)}</b></td><td class="r">${s.n}</td><td class="r">${J.num(s.wr, 0)} %</td><td class="r">${pfTxt(s.pf)}</td><td class="r ${J.cls(s.net)}">${J.money(s.net, 0)}</td></tr>`).join('') : '<tr><td colspan="5" class="mut">Keine Daten</td></tr>'}</tbody></table></div>`;
-    const insights = (T, S) => {
-      if (T.length < 5) return '';
-      const L = []; const g = (f) => groupRows(T, f).filter(([, s]) => s.n >= 3);
-      const hrs = g(t => t.entryT ? String(hourOf(t.entryT)).padStart(2, '0') + ':00' : null);
-      if (hrs.length > 1) { const b = hrs[0], w = hrs[hrs.length - 1]; if (b[1].net > 0) L.push(`Beste Uhrzeit: <b>${b[0]}</b> (${b[1].n} Trades, ${J.money(b[1].net, 0)}).`); if (w[1].net < 0) L.push(`Teuerste Uhrzeit: <b>${w[0]}</b> (${w[1].n} Trades, <span class="dn">${J.money(w[1].net, 0)}</span>).`); }
-      const sy = g(t => short(t.sym)); if (sy.length > 1 && sy[sy.length - 1][1].net < 0) L.push(`Schwächstes Symbol: <b>${esc(sy[sy.length - 1][0])}</b> mit ${J.money(sy[sy.length - 1][1].net, 0)}.`);
-      const ls = g(t => t.side > 0 ? 'Long' : 'Short'); if (ls.length === 2 && Math.sign(ls[0][1].net) !== Math.sign(ls[1][1].net)) L.push(`<b>${ls[0][0]}</b> bringt Geld (${J.money(ls[0][1].net, 0)}), <b>${ls[1][0]}</b> kostet Geld (${J.money(ls[1][1].net, 0)}).`);
-      if (S.aw && S.worst < 0 && -S.worst > 2 * S.aw) L.push(`Dein größter Verlust (${J.money(S.worst, 0)}) frisst ${J.num(-S.worst / S.aw, 1)} durchschnittliche Gewinne.`);
-      if (S.wr != null && S.aw && S.al) { const be = -S.al / (S.aw - S.al) * 100; L.push(`Mit deinem Gewinn/Verlust-Verhältnis brauchst du mindestens <b>${J.num(be, 0)} %</b> Treffer – du hast ${J.num(S.wr, 0)} %.`); }
-      const tg = g(t => t.tags && t.tags.length ? t.tags : null).filter(([, s]) => s.net < 0); if (tg.length) L.push(`Teuerstes Merkmal: <b>${esc(tg[tg.length - 1][0])}</b> (${J.money(tg[tg.length - 1][1].net, 0)}).`);
-      const noSl = T.filter(t => t.sl == null).length; if (noSl) L.push(`${noSl} von ${T.length} Trades ohne eingetragenen Stop – trag ihn im Trade nach, dann siehst du dein R.`);
-      return L.length ? `<div class="card" style="margin-bottom:14px"><h3>Was deine Zahlen sagen</h3><ul class="dm-ins">${L.map(x => `<li>${x}</li>`).join('')}</ul></div>` : '';
-    };
     const calendar = (T) => {
       const box = J.$('#dmCal', el); if (!box) return;
       const mon = st.mon || (T[0] ? dayKey(T[0].exitT).slice(0, 7) : J.today().slice(0, 7)); st.mon = mon;
@@ -12076,16 +12119,89 @@ V.copilot = el => {
       const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + rows.map(r => r.map(q).join(';')).join('\n')], { type: 'text/csv' })); a.download = `demo-trades-${J.today()}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
     };
 
-    const ai = (T, S) => {
-      const persona = () => { try { return Jarvis.persona(); } catch { return 'Du bist Jarvis, mein Trading-Coach. Antworte auf Deutsch, klar und knapp.'; } };
-      const r2 = x => x == null || !isFinite(x) ? null : +(+x).toFixed(2);
-      const g = f => Object.fromEntries(groupRows(T, f).map(([k, s]) => [k, { trades: s.n, treffer: r2(s.wr), netto: r2(s.net), pf: s.pf === Infinity ? 'inf' : r2(s.pf) }]));
-      const data = { kennzahlen: { trades: S.n, netto: r2(S.net), trefferquote: r2(S.wr), profitFaktor: S.pf === Infinity ? 'inf' : r2(S.pf), avgGewinn: r2(S.aw), avgVerlust: r2(S.al), erwartung: r2(S.exp), maxDrawdown: r2(S.dd), avgR: r2(S.avgR), haltedauerMin: S.hold ? Math.round(S.hold / 60000) : null, verlustSerie: S.ml },
-        nachSymbol: g(t => short(t.sym)), longShort: g(t => t.side > 0 ? 'Long' : 'Short'), nachStunde: g(t => t.entryT ? hourOf(t.entryT) + ' Uhr' : null), nachWochentag: g(t => WD[wdOf(t.entryT || t.exitT)]), nachStrategie: g(t => t.strat || null), nachMerkmal: g(t => t.tags && t.tags.length ? t.tags : null),
-        letzte25: T.slice(0, 25).map(t => ({ zeit: J.dt(t.exitT), sym: short(t.sym), seite: t.side > 0 ? 'L' : 'S', pnl: r2(t.pnl), r: r2(rOf(t)), min: t.entryT ? Math.round((t.exitT - t.entryT) / 60000) : null, strat: t.strat || undefined, sterne: t.grade || undefined, merkmale: t.tags?.length ? t.tags : undefined, notiz: t.note ? t.note.slice(0, 140) : undefined })) };
-      J.jvAsk('Jarvis wertet deine Demo-Trades aus', (on) => Jarvis.think(`${persona()}\n\nWerte meine Demo-Trades (TradingView Paper Trading, echte Ausführungen, aktuelle Filterauswahl) aus. Nur was die Daten zeigen, keine erfundenen Zahlen. Struktur: ### Kurzfazit (2 Sätze), ### Was funktioniert, ### Teuerste Muster (Uhrzeiten, Symbole, Seite, Merkmale – mit $), ### Risiko (Gewinn/Verlust-Verhältnis, Drawdown, Stops), ### 3 konkrete Regeln für die nächste Woche.\n\nDaten (JSON):\n${JSON.stringify(data)}`, { onText: ({ text }) => on(text) }), `${T.length} Trades in der Auswahl`);
-    };
+    render();
+    return () => { cleans.forEach(f => { try { f(); } catch { } }); };
+  };
 
+  /* ===================== Live-Statistik (eigener Tab, nur deine Live-/Demo-Trades) ===================== */
+  const SESS = ms => { const h = hourOf(ms), m = +new Intl.DateTimeFormat('en-GB', { minute: '2-digit', timeZone: 'Europe/Berlin' }).format(new Date(ms)); const x = h + m / 60; return x >= 1 && x < 9 ? 'Asien (01–09 Uhr)' : x >= 9 && x < 15.5 ? 'London (09–15:30)' : x >= 15.5 && x < 22 ? 'New York (15:30–22)' : 'Nacht (22–01 Uhr)'; };
+  const HOLD = ms => { const m = ms / 60000; return m < 2 ? 'unter 2 Min' : m < 10 ? '2–10 Min' : m < 30 ? '10–30 Min' : m < 120 ? '30 Min–2 Std' : 'über 2 Std'; };
+  const HOLD_O = ['unter 2 Min', '2–10 Min', '10–30 Min', '30 Min–2 Std', 'über 2 Std'];
+  V.livestats = el => {
+    const st = { per: 'all', sym: '', side: 0 };
+    let cleans = [];
+    const all = () => (D().trades || []).filter(t => isFinite(t.pnl) && t.exitT).sort((a, b) => b.exitT - a.exitT);
+    const sel = () => { const now = Date.now(), today = J.today(); const lim = { w: t => t.exitT >= now - 7 * 864e5, m30: t => t.exitT >= now - 30 * 864e5, mon: t => dayKey(t.exitT).slice(0, 7) === today.slice(0, 7), y: t => dayKey(t.exitT).slice(0, 4) === today.slice(0, 4) }[st.per]; return all().filter(t => (!lim || lim(t)) && (!st.sym || short(t.sym) === st.sym) && (!st.side || t.side === st.side)); };
+    const kpi = (l, v, c, sm) => `<div class="kpi"><span>${l}</span><b class="${c || ''}">${v}</b>${sm ? `<small>${sm}</small>` : ''}</div>`;
+    const seg = (name, opts, cur) => `<div class="seg" data-seg="${name}">${opts.map(([v, l]) => `<button data-v="${v}" class="${String(cur) === String(v) ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+    const btStats = () => { const J0 = (typeof J.journal === 'function' ? J.journal() : []).map(t => ({ pnl: t.pnl, exitT: (t.exitT || 0) * 1000, entryT: (t.entryT || 0) * 1000, r: t.r, side: t.side })); return J0.length ? stats(J0) : null; };
+    const render = () => {
+      cleans.forEach(f => { try { f(); } catch { } }); cleans = [];
+      const A = all(), T = sel(), S = stats(T), d = D();
+      const syms = [...new Set(A.map(t => short(t.sym)))].sort();
+      if (!A.length) { el.innerHTML = `<div class="page-hd"><div><h1>Live-Statistik</h1><p class="mut">Nur deine Live-/Demo-Trades – getrennt von deinen Backtests</p></div></div><div class="card empty"><b>Noch keine Live-Trades</b><span>Importiere zuerst deinen TradingView-Handelsverlauf unter Live-Trades.</span><a class="btn pri" href="#demo">Zu den Live-Trades</a></div>`; return; }
+      const asc = [...T].reverse();
+      const days = {}; asc.forEach(t => { const k = dayKey(t.exitT); days[k] = (days[k] || 0) + t.pnl; });
+      const dv = Object.values(days), dW = dv.filter(x => x > 0).length;
+      const bestD = dv.length ? Math.max(...dv) : null, worstD = dv.length ? Math.min(...dv) : null;
+      const W = T.filter(t => t.pnl > 0 && t.entryT), L = T.filter(t => t.pnl < 0 && t.entryT);
+      const avgH = X => X.length ? X.reduce((s, t) => s + t.exitT - t.entryT, 0) / X.length : null;
+      const start = +d.start || 0; let eq = start, pk = start, ddPct = 0; asc.forEach(t => { eq += t.pnl; pk = Math.max(pk, eq); if (pk > 0) ddPct = Math.max(ddPct, (pk - eq) / pk * 100); });
+      const B = btStats();
+      el.innerHTML = `<div class="page-hd"><div><h1>Live-Statistik</h1><p class="mut">Nur deine Live-/Demo-Trades aus TradingView – getrennt von deinen Backtests</p></div></div>
+      <div class="row" style="margin-bottom:14px;gap:8px">${seg('per', [['all', 'Alles'], ['w', '7 Tage'], ['m30', '30 Tage'], ['mon', 'Monat'], ['y', 'Jahr']], st.per)}${seg('side', [[0, 'Beide'], [1, 'Long'], [-1, 'Short']], st.side)}<select id="lsSym" style="width:auto"><option value="">Alle Symbole</option>${syms.map(x => `<option ${x === st.sym ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select><div class="sp"></div><button class="btn" id="lsAi">Jarvis auswerten</button><a class="btn ghost" href="#demo">Trades & Import</a></div>
+      ${!T.length ? '<div class="card empty"><b>Keine Trades in dieser Auswahl</b></div>' : `
+      <div class="kpis" style="margin-bottom:14px">
+        ${kpi('Netto P&amp;L', J.money(S.net), J.cls(S.net), `${S.n} Trades an ${dv.length} Tagen`)}
+        ${kpi('Trefferquote', J.num(S.wr, 1) + ' %', '', `${S.w} Gewinner · ${S.l} Verlierer`)}
+        ${kpi('Profit-Faktor', pfTxt(S.pf), S.pf >= 1 ? 'up' : 'dn', `Gewinne ${J.cash(S.gw, 0)} · Verluste ${J.cash(S.gl, 0)}`)}
+        ${kpi('Erwartung je Trade', J.money(S.exp), J.cls(S.exp), S.avgR != null ? `Ø ${J.num(S.avgR, 2)} R (${S.nR} Trades mit Stop)` : 'R: Stop im Trade eintragen')}
+        ${kpi('Ø Gewinn / Ø Verlust', `${J.num(S.aw ?? NaN, 0)} / ${J.num(S.al ?? NaN, 0)}`, '', S.aw && S.al ? `Verhältnis ${J.num(S.aw / -S.al, 2)} : 1` : '')}
+        ${kpi('Max. Drawdown', J.cash(S.dd), S.dd ? 'dn' : '', start ? `${J.num(ddPct, 2)} % vom Höchststand` : '')}
+        ${kpi('Erholungsfaktor', S.dd ? J.num(S.net / S.dd, 2) : '–', '', 'Netto ÷ Max. Drawdown')}
+        ${kpi('Grüne Tage', dv.length ? J.num(dW / dv.length * 100, 0) + ' %' : '–', '', `Bester ${J.money(bestD, 0)} · Schlechtester ${J.money(worstD, 0)}`)}
+        ${kpi('Ø pro Tag', J.money(dv.length ? S.net / dv.length : null, 0), J.cls(S.net), `${J.num(S.n / (dv.length || 1), 1)} Trades pro Tag`)}
+        ${kpi('Haltedauer', dur(S.hold), '', `Gewinner ${dur(avgH(W))} · Verlierer ${dur(avgH(L))}`)}
+        ${kpi('Serien', `${S.mw} / ${S.ml}`, '', 'längste Gewinn- / Verlustserie')}
+        ${kpi('Gebühren', J.cash(S.fees), '', `${S.gw ? J.num(S.fees / S.gw * 100, 1) : 0} % der Gewinne`)}
+      </div>
+      <div class="grid g2" style="margin-bottom:14px">
+        <div class="card"><h3>Kontokurve</h3><div id="lsEq" style="height:220px"></div></div>
+        <div class="card"><h3>Drawdown</h3><div id="lsDd" style="height:220px"></div></div>
+        <div class="card"><h3>Tages-P&amp;L</h3>${dayBars(days)}</div>
+        <div class="card"><h3>Verteilung der Trades (P&amp;L)</h3>${histo(T)}</div>
+      </div>
+      ${B ? compare(S, B) : ''}
+      <div class="card" style="margin-bottom:14px"><h3>Wochentag × Uhrzeit (Einstieg, Berlin)</h3>${heat(T)}</div>
+      ${insights(T, S)}
+      <div class="grid g2" style="margin-bottom:14px">
+        ${table('Nach Session', groupRows(T.filter(t => t.entryT), t => SESS(t.entryT), (a, b) => ['Asien (01–09 Uhr)', 'London (09–15:30)', 'New York (15:30–22)', 'Nacht (22–01 Uhr)'].indexOf(a) - ['Asien (01–09 Uhr)', 'London (09–15:30)', 'New York (15:30–22)', 'Nacht (22–01 Uhr)'].indexOf(b)))}
+        ${table('Nach Symbol', groupRows(T, t => short(t.sym)))}
+        ${table('Long / Short', groupRows(T, t => t.side > 0 ? 'Long' : 'Short'))}
+        ${table('Nach Haltedauer', groupRows(T.filter(t => t.entryT), t => HOLD(t.exitT - t.entryT), (a, b) => HOLD_O.indexOf(a) - HOLD_O.indexOf(b)))}
+        ${table('Nach Wochentag', groupRows(T, t => WD[wdOf(t.entryT || t.exitT)], (a, b) => WD.indexOf(a) - WD.indexOf(b)))}
+        ${table('Nach Uhrzeit', groupRows(T.filter(t => t.entryT), t => String(hourOf(t.entryT)).padStart(2, '0') + ':00', (a, b) => a.localeCompare(b)))}
+        ${table('Nach Monat', groupRows(T, t => dayKey(t.exitT).slice(0, 7), (a, b) => b.localeCompare(a)))}
+        ${T.some(t => t.strat) ? table('Nach Strategie', groupRows(T, t => t.strat || 'ohne Strategie')) : ''}
+        ${T.some(t => t.tags && t.tags.length) ? table('Nach Merkmal', groupRows(T, t => t.tags && t.tags.length ? t.tags : null)) : ''}
+        ${T.some(t => t.grade) ? table('Nach Ausführung (★)', groupRows(T.filter(t => t.grade), t => '★'.repeat(t.grade), (a, b) => b.length - a.length)) : ''}
+      </div>
+      <div class="grid g2">${topList('Beste Trades', [...T].sort((a, b) => b.pnl - a.pnl).slice(0, 5))}${topList('Schlechteste Trades', [...T].sort((a, b) => a.pnl - b.pnl).slice(0, 5))}</div>`}`;
+      J.$$('[data-seg]', el).forEach(g => g.querySelectorAll('button').forEach(b => b.onclick = () => { const k = g.dataset.seg; st[k] = k === 'side' ? +b.dataset.v : b.dataset.v; render(); }));
+      const ss = J.$('#lsSym', el); if (ss) ss.onchange = () => { st.sym = ss.value; render(); };
+      J.$('#lsAi', el).onclick = () => ai(T, S);
+      if (!T.length) return;
+      let c = 0, p = 0; const v = [0, ...asc.map(t => (c += t.pnl))], dd = [0, ...asc.map((t, i) => { p = Math.max(p, v[i + 1]); return v[i + 1] - p; })];
+      const labs = ['', ...asc.map(t => J.date(t.exitT).slice(0, 6))];
+      cleans.push(LineChart(J.$('#lsEq', el), [{ v, color: c >= 0 ? '#2fcf9f' : '#ef5d78', w: 2, fill: c >= 0 ? '#2fcf9f38' : '#ef5d7838' }], { zero: true, labels: labs }));
+      cleans.push(LineChart(J.$('#lsDd', el), [{ v: dd, color: '#ef5d78', w: 1.8, fill: '#ef5d7830' }], { zero: true, labels: labs }));
+      J.$$('[data-tr]', el).forEach(r => r.onclick = () => { location.hash = '#demo'; });
+    };
+    const dayBars = days => { const E = Object.entries(days).slice(-30); if (!E.length) return '<p class="note">Keine Daten</p>'; const mx = Math.max(...E.map(e => Math.abs(e[1])), 1); return `<div class="dm-bars">${E.map(([k, x]) => `<div class="dm-bar" title="${J.date(k)}: ${J.money(x)}"><i class="${x >= 0 ? 'up' : 'dn'}" style="height:${(Math.abs(x) / mx * 50).toFixed(1)}%;${x >= 0 ? 'bottom:50%' : 'top:50%'}"></i></div>`).join('')}</div><div class="row nw note"><span>${J.date(E[0][0])}</span><div class="sp"></div><span>${J.date(E[E.length - 1][0])}</span></div>`; };
+    const histo = T => { const v = T.map(t => t.pnl); const lo = Math.min(...v), hi = Math.max(...v); if (lo === hi) return '<p class="note">Zu wenig Streuung</p>'; const nb = Math.min(12, Math.max(5, Math.round(Math.sqrt(v.length)))); const w = (hi - lo) / nb; const B = Array.from({ length: nb }, (_, i) => ({ a: lo + i * w, n: 0 })); v.forEach(x => B[Math.min(nb - 1, Math.floor((x - lo) / w))].n++); const mx = Math.max(...B.map(b => b.n)); return `<div class="dm-hist">${B.map(b => `<div title="${J.num(b.a, 0)} bis ${J.num(b.a + w, 0)}: ${b.n} Trades"><span>${b.n || ''}</span><i class="${b.a + w / 2 >= 0 ? 'up' : 'dn'}" style="height:${(b.n / mx * 100).toFixed(1)}%"></i></div>`).join('')}</div><div class="row nw note"><span>${J.money(lo, 0)}</span><div class="sp"></div><span>${J.money(hi, 0)}</span></div>`; };
+    const heat = T => { const hs = [...new Set(T.filter(t => t.entryT).map(t => hourOf(t.entryT)))].sort((a, b) => a - b); if (!hs.length) return '<p class="note">Keine Einstiegszeiten</p>'; const M = {}; T.forEach(t => { if (!t.entryT) return; const k = wdOf(t.entryT) + '|' + hourOf(t.entryT); (M[k] = M[k] || { n: 0, p: 0 }); M[k].n++; M[k].p += t.pnl; }); const mx = Math.max(...Object.values(M).map(x => Math.abs(x.p)), 1); const days = [0, 1, 2, 3, 4, 5, 6].filter(d => hs.some(h => M[d + '|' + h])); return `<div class="scroll"><table class="dm-heat"><thead><tr><th></th>${hs.map(h => `<th>${String(h).padStart(2, '0')}</th>`).join('')}</tr></thead><tbody>${days.map(d => `<tr><th>${WD[d]}</th>${hs.map(h => { const x = M[d + '|' + h]; return x ? `<td style="background:${x.p >= 0 ? 'rgba(47,207,159,' : 'rgba(239,93,120,'}${(.2 + .7 * Math.abs(x.p) / mx).toFixed(2)})" title="${WD[d]} ${h}:00 · ${x.n} Trades · ${J.money(x.p)}">${J.num(x.p, 0)}</td>` : '<td></td>'; }).join('')}</tr>`).join('')}</tbody></table></div>`; };
+    const compare = (S, B) => { const row = (l, a, b, f) => `<tr><td>${l}</td><td class="r"><b>${f(a)}</b></td><td class="r">${f(b)}</td></tr>`; const p1 = x => x == null ? '–' : J.num(x, 1) + ' %', m0 = x => J.money(x, 0), n2 = x => x == null ? '–' : x === Infinity ? '∞' : J.num(x, 2); return `<div class="card" style="margin-bottom:14px"><h3>Live vs. Backtest</h3><p class="note">Hält dein Edge aus dem Backtest auch auf Live-Charts? Backtest = dein Journal aus dem Replay.</p><table class="dm-tbl"><thead><tr><th></th><th class="r">Live</th><th class="r">Backtest</th></tr></thead><tbody>${row('Trades', S.n, B.n, x => x)}${row('Trefferquote', S.wr, B.wr, p1)}${row('Profit-Faktor', S.pf, B.pf, n2)}${row('Ø Gewinn', S.aw, B.aw, m0)}${row('Ø Verlust', S.al, B.al, m0)}${row('Erwartung je Trade', S.exp, B.exp, m0)}${row('Ø R', S.avgR, B.avgR, n2)}${row('Ø Haltedauer', S.hold, B.hold, dur)}</tbody></table></div>`; };
+    const topList = (title, L) => `<div class="card"><h3>${title}</h3><table class="dm-tbl"><tbody>${L.map(t => `<tr><td>${J.dt(t.exitT)}</td><td><b>${esc(short(t.sym))}</b></td><td>${t.side > 0 ? 'Long' : 'Short'}</td><td class="r">${J.num(t.qty, t.qty % 1 ? 1 : 0)}</td><td class="r ${J.cls(t.pnl)}"><b>${J.money(t.pnl)}</b></td></tr>`).join('')}</tbody></table></div>`;
     render();
     return () => { cleans.forEach(f => { try { f(); } catch { } }); };
   };
@@ -12511,7 +12627,7 @@ V.copilot = el => {
   const spark = (vals, col) => { const m = Math.max(1, ...vals); return `<div class="bs-bars">${vals.map(v => `<i style="height:${Math.max(6, v / m * 100)}%;background:${col}"></i>`).join('')}</div>`; };
   const weeks = (times, n = 8) => { const now = Date.now() / 1000, out = new Array(n).fill(0); for (const t of times) { if (!t) continue; const k = Math.floor((now - t) / 604800); if (k >= 0 && k < n) out[n - 1 - k]++; } return out; };
   const AREAS = () => J.NAV_ALL;
-  J.NAV_ALL = [['Markt', [['markt', 'Marktüberblick'], ['briefing', 'Morning Briefing'], ['explorer', 'Markt-Explorer'], ['charts', 'Charts & Replay'], ['news', 'News Intelligence'], ['makro', 'Makroökonomie']]], ['Handel', [['desk', 'Handels-Desk'], ['funded', 'Funded-Tracker'], ['demo', 'Demo-Trades'], ['journal', 'Journal'], ['stats', 'Statistik'], ['risk', 'Risk Command']]], ['Research', [['backtests', 'Backtests'], ['analyse', 'Analyse'], ['strategien', 'Strategien'], ['quant', 'Quant Lab'], ['regime', 'Marktregime'], ['research', 'Research Desk'], ['copilot', 'Intelligence Copilot']]], ['Wissen & Fortschritt', [['start', 'Dashboard'], ['handbuch', 'Handbuch'], ['tradingview', 'TradingView'], ['pass', 'Pass'], ['shop', 'Shop']]]];
+  J.NAV_ALL = [['Markt', [['markt', 'Marktüberblick'], ['briefing', 'Morning Briefing'], ['explorer', 'Markt-Explorer'], ['charts', 'Charts & Replay'], ['news', 'News Intelligence'], ['makro', 'Makroökonomie']]], ['Handel', [['desk', 'Handels-Desk'], ['funded', 'Funded-Tracker'], ['demo', 'Live-Trades'], ['livestats', 'Live-Statistik'], ['journal', 'Journal'], ['stats', 'Statistik'], ['risk', 'Risk Command']]], ['Research', [['backtests', 'Backtests'], ['analyse', 'Analyse'], ['strategien', 'Strategien'], ['quant', 'Quant Lab'], ['regime', 'Marktregime'], ['research', 'Research Desk'], ['copilot', 'Intelligence Copilot']]], ['Wissen & Fortschritt', [['start', 'Dashboard'], ['handbuch', 'Handbuch'], ['tradingview', 'TradingView'], ['pass', 'Pass'], ['shop', 'Shop']]]];
   const panel = (which, area) => {
     const p = el()?.querySelector('#bsPanel'); if (!p) return;
     if (!which || (p.dataset.k === which && which !== 'area' && !p.hidden)) { p.hidden = true; p.dataset.k = ''; return; }
@@ -12773,7 +12889,7 @@ function closeModal(sel) {
 }
 function getPath(o, p) { return p.split('.').reduce((a, k) => (a == null ? a : a[k]), o); }
 function setPath(o, p, v) { const ks = p.split('.'); let a = o; for (let i = 0; i < ks.length - 1; i++) a = a[ks[i]]; a[ks[ks.length - 1]] = v; }
-const JT_VIEWS = ['markt', 'briefing', 'explorer', 'news', 'makro', 'desk', 'funded', 'demo', 'risk', 'quant', 'regime', 'research', 'copilot'];
+const JT_VIEWS = ['markt', 'briefing', 'explorer', 'news', 'makro', 'desk', 'funded', 'demo', 'livestats', 'risk', 'quant', 'regime', 'research', 'copilot'];
 const VIEWS = ['start', 'charts', 'journal', 'backtests', 'stats', 'analyse', 'strategien', 'pass', 'shop', 'handbuch', 'tradingview'].concat(JT_VIEWS);
 const MORE_VIEWS = ['strategien', 'pass', 'shop', 'handbuch', 'tradingview'].concat(JT_VIEWS);
 
