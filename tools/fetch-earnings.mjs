@@ -27,9 +27,9 @@ const log = [];
 
 /* ---------- SEC ---------- */
 const tick = await getJ('https://www.sec.gov/files/company_tickers.json', SEC_UA);
-const CIK = {};
-if (!tick.err) for (const v of Object.values(tick)) CIK[v.ticker] = v.cik_str;
-else log.push('SEC Tickerliste: ' + tick.err);
+// Feste CIKs (SEC-Kennnummern) als Ersatz, falls die Tickerliste gesperrt ist
+const CIK = { NVDA: 1045810, MSFT: 789019, AAPL: 320193, AMZN: 1018724, GOOGL: 1652044, META: 1326801, AVGO: 1730168, TSLA: 1318605, NFLX: 1065280, COST: 909832, AMD: 2488, PLTR: 1321655, JPM: 19617 };
+if (!tick.err) for (const v of Object.values(tick)) { if (LIST.includes(v.ticker)) CIK[v.ticker] = v.cik_str; }
 
 const DAY = 864e5;
 const days = (a, b) => (Date.parse(b) - Date.parse(a)) / DAY;
@@ -114,6 +114,7 @@ for (const sym of LIST) {
   }
   co.q.sort((a, b) => a.end.localeCompare(b.end));
   const nd = await getJ(`https://api.nasdaq.com/api/analyst/${sym}/earnings-date`, UA);
+  if (sym === LIST[0]) log.push('Termin-Rohdaten ' + sym + ': ' + JSON.stringify(nd?.data || nd).slice(0, 400));
   if (nd?.data) { const txt = nd.data.announcement || nd.data.reportText || ''; const m = String(txt).match(/([A-Z][a-z]{2})\s+(\d{1,2}),\s+(\d{4})/); co.next = { date: m ? `${m[3]}-${MON[m[1]]}-${m[2].padStart(2, '0')}` : null, text: String(txt).replace(/<[^>]+>/g, '').trim().slice(0, 240) }; }
   else if (nd.err) log.push(`Nasdaq Termin ${sym}: ${nd.err}`);
 
