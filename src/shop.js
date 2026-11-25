@@ -81,11 +81,21 @@ const ShopCore = (() => {
   }
   const owns = (sh, type, id) => !!def(type, id) && (!isShopItem(type, id) || !!(sh.owned && sh.owned[keyOf(type, id)]));
 
+  /* Guthaben in zeitlicher Reihenfolge: Payouts zählen dazu, Käufe ab. Ein Kauf kann das Konto nie ins Minus ziehen –
+     was über das damalige Guthaben hinausging (z. B. gleichzeitiger Kauf auf zwei Geräten, beim Abgleich zusammengelegt),
+     wird nicht nachträglich von späteren Payouts abgezogen (forgiven). */
   function wallet(sh) {
-    let earned = 0, spent = 0, payouts = 0;
-    for (const c of Object.values(sh.claims || {})) { earned += c.c; payouts++; }
-    for (const o of Object.values(sh.owned || {})) spent += o.p;
-    return { earned, spent, payouts, raw: earned - spent, balance: Math.max(0, earned - spent) };
+    const ev = [];
+    let earned = 0, payouts = 0;
+    for (const c of Object.values(sh.claims || {})) { earned += c.c; payouts++; ev.push([+c.t || 0, 0, c.c]); }
+    for (const o of Object.values(sh.owned || {})) ev.push([+o.t || 0, 1, o.p]);
+    ev.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    let bal = 0, spent = 0, forgiven = 0;
+    for (const [, kind, v] of ev) {
+      if (kind === 0) { bal += v; continue; }
+      const pay = Math.min(v, bal); bal -= pay; spent += pay; forgiven += v - pay;
+    }
+    return { earned, spent, payouts, raw: bal, balance: bal, forgiven };
   }
 
   /* Grenzen der Challenge: sonst wäre ein Ziel von 1 $ ein Freifahrtschein */

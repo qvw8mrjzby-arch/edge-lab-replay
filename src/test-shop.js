@@ -75,7 +75,12 @@ eq('Mini-Challenge → blocked mit drei Gründen', [weak.state, weak.reasons.len
 
 /* Guthaben = Auszahlungen minus Käufe */
 let sh = S.sanitize({ claims: { a: { t: 1, c: 80, n: 3000 }, b: { t: 2, c: 120, n: 4500 } }, owned: { 'theme:rubin': { t: 3, p: 180 } } });
-eq('Wallet', S.wallet(sh), { earned: 200, spent: 180, payouts: 2, raw: 20, balance: 20 });
+eq('Wallet', S.wallet(sh), { earned: 200, spent: 180, payouts: 2, raw: 20, balance: 20, forgiven: 0 });
+/* Doppelkauf über zwei Geräte (beim Abgleich zusammengelegt): nie ins Minus, spätere Payouts bleiben voll erhalten */
+const dbl = S.sanitize({ claims: { a: { t: 10, c: 80, n: 1 }, b: { t: 11, c: 108, n: 1 }, c: { t: 12, c: 98, n: 1 }, d: { t: 13, c: 81, n: 1 }, e: { t: 50, c: 92, n: 1 } }, owned: { 'theme:rubin': { t: 20, p: 180 }, 'theme:ozean': { t: 21, p: 180 }, 'theme:sakura': { t: 22, p: 200 } } });
+const wd = S.wallet(dbl);
+eq('Doppelkauf: späteres Payout kommt voll an', [wd.earned, wd.balance, wd.spent, wd.forgiven], [459, 92, 367, 193]);
+eq('Kauf genau mit Guthaben', S.wallet(S.sanitize({ claims: { a: { t: 1, c: 100, n: 1 } }, owned: { 'theme:rubin': { t: 2, p: 100 } } })).balance, 0);
 eq('Besitz erkannt', [S.owns(sh, 'theme', 'rubin'), S.owns(sh, 'theme', 'ozean'), S.owns(sh, 'theme', 'standard') /* kein Shop-Teil */, S.owns(sh, 'candles', 'standard'), S.owns(sh, 'avatar', 'gibtsnicht')], [true, false, false, true, false]);
 
 /* Glättung: Unbekanntes, Negatives und Übergroßes fliegt raus */
