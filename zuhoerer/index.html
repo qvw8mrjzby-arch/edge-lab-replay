@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Zuhörer">
+<title>Zuhörer</title>
+<style>
+/* Idee: eine Glas-Insel oben. Klein beim Zuhören, klappt bei einer Antwort automatisch auf. */
+:root{
+  --bg:#eef1f7; --blob1:#cfe0ff; --blob2:#f3d9ef; --blob3:#d5f2ea;
+  --glass:rgba(255,255,255,.58); --glass-hi:rgba(255,255,255,.82);
+  --edge:rgba(255,255,255,.9); --hair:rgba(60,60,67,.12);
+  --text:#1d1d1f; --muted:rgba(60,60,67,.6);
+  --accent:#0a84ff; --live:#ff3b30;
+  --shadow:0 20px 60px rgba(25,35,80,.16),0 2px 8px rgba(25,35,80,.06);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#07080c; --blob1:#1b2650; --blob2:#3a1838; --blob3:#0f3330;
+  --glass:rgba(30,32,44,.55); --glass-hi:rgba(50,52,68,.78);
+  --edge:rgba(255,255,255,.12); --hair:rgba(255,255,255,.1);
+  --text:#f5f5f7; --muted:rgba(235,235,245,.58);
+  --shadow:0 20px 60px rgba(0,0,0,.55),0 2px 8px rgba(0,0,0,.3); color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#07080c; --blob1:#1b2650; --blob2:#3a1838; --blob3:#0f3330;
+  --glass:rgba(30,32,44,.55); --glass-hi:rgba(50,52,68,.78);
+  --edge:rgba(255,255,255,.12); --hair:rgba(255,255,255,.1);
+  --text:#f5f5f7; --muted:rgba(235,235,245,.58);
+  --shadow:0 20px 60px rgba(0,0,0,.55),0 2px 8px rgba(0,0,0,.3); color-scheme:dark;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;overflow:hidden;
+  -webkit-user-select:none;user-select:none}
+.bg{position:fixed;inset:-20%;z-index:0;filter:blur(70px);opacity:.9;pointer-events:none}
+.bg i{position:absolute;border-radius:50%}
+.bg i:nth-child(1){width:55%;height:55%;left:5%;top:5%;background:var(--blob1)}
+.bg i:nth-child(2){width:50%;height:50%;right:0;top:25%;background:var(--blob2)}
+.bg i:nth-child(3){width:55%;height:50%;left:25%;bottom:0;background:var(--blob3)}
+button{font-family:var(--font);color:inherit;border:0;background:none;cursor:pointer;padding:0}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.glass{background:var(--glass);border:1px solid var(--edge);box-shadow:var(--shadow);
+  -webkit-backdrop-filter:blur(30px) saturate(190%);backdrop-filter:blur(30px) saturate(190%)}
+
+/* ---------- Insel ---------- */
+.wrap{position:relative;z-index:2;display:flex;justify-content:center;
+  padding:max(12px,env(safe-area-inset-top)) 16px 0}
+.island{width:min(100%,300px);border-radius:30px;overflow:hidden;
+  transition:width .5s cubic-bezier(.2,.9,.25,1.05),border-radius .5s;}
+.island.open{width:min(100%,560px);border-radius:28px}
+.bar{display:flex;align-items:center;gap:10px;height:56px;padding:0 8px 0 18px;width:100%}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+.on .dot{background:var(--live);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,59,48,.45)}50%{box-shadow:0 0 0 6px rgba(255,59,48,0)}}
+.title{font:600 15px var(--font);flex:1;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.title small{font-weight:500;color:var(--muted);margin-left:6px}
+.wave{display:flex;gap:3px;align-items:center;height:18px;flex:none;opacity:0;transition:opacity .3s}
+.on .wave{opacity:1}
+.wave b{width:3px;height:5px;border-radius:2px;background:var(--live);transition:height .15s}
+.talk .wave b{animation:w .9s ease-in-out infinite}
+.talk .wave b:nth-child(2){animation-delay:.15s}.talk .wave b:nth-child(3){animation-delay:.3s}.talk .wave b:nth-child(4){animation-delay:.45s}
+@keyframes w{0%,100%{height:5px}50%{height:17px}}
+.go{flex:none;height:40px;min-width:40px;padding:0 16px;border-radius:20px;background:var(--accent);color:#fff;font:600 14px var(--font);transition:background .25s}
+.on .go{background:var(--hair);color:var(--text);padding:0;width:40px;font-size:13px}
+
+.body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.2,.9,.25,1)}
+.open .body{grid-template-rows:1fr}
+.body>div{min-height:0;overflow:hidden}
+.inner{padding:2px 20px 18px;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateY(-6px);transition:opacity .3s .1s,transform .4s .1s}
+.open .inner{opacity:1;transform:none}
+.kind{font:600 11px var(--font);letter-spacing:.07em;text-transform:uppercase;color:var(--accent)}
+.kind.info{color:var(--muted)}
+.reply{font:600 21px/1.32 var(--font);letter-spacing:-.01em;overflow-wrap:anywhere;-webkit-user-select:text;user-select:text}
+.reply.info{font-size:17px;font-weight:500}
+.heard{font-size:13px;line-height:1.4;color:var(--muted);overflow-wrap:anywhere;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.acts{display:flex;gap:8px;align-items:center}
+.chip{height:34px;padding:0 14px;border-radius:17px;background:var(--hair);font:600 13px var(--font)}
+.chip.pin[aria-pressed="true"]{background:var(--accent);color:#fff}
+.timer{flex:1;height:3px;border-radius:2px;background:var(--hair);overflow:hidden}
+.timer i{display:block;height:100%;width:100%;background:var(--accent);transform-origin:left}
+
+/* ---------- Unten: Steuerung ---------- */
+.panel{position:fixed;z-index:2;left:50%;transform:translateX(-50%);
+  bottom:max(16px,env(safe-area-inset-bottom));width:min(calc(100% - 32px),420px);
+  border-radius:26px;padding:8px;display:flex;gap:6px;align-items:center}
+.seg{flex:1;display:flex;background:var(--hair);border-radius:19px;padding:3px}
+.seg button{flex:1;height:38px;border-radius:16px;font:600 14px var(--font);color:var(--muted);transition:all .25s}
+.seg button[aria-pressed="true"]{background:var(--glass-hi);color:var(--text);box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.ic{width:44px;height:44px;border-radius:22px;display:grid;place-items:center;flex:none}
+.ic svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ic[aria-pressed="false"]{opacity:.45}
+
+.hint{position:fixed;z-index:1;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;
+  padding:120px 32px;text-align:center;color:var(--muted);font-size:15px;line-height:1.5;transition:opacity .3s}
+.hint b{display:block;color:var(--text);font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
+.started .hint{opacity:0}
+.status{position:fixed;z-index:2;left:0;right:0;bottom:calc(max(16px,env(safe-area-inset-bottom)) + 74px);
+  text-align:center;font-size:12px;color:var(--muted);padding:0 24px}
+
+/* ---------- Sheets ---------- */
+.sheet{position:fixed;inset:0;z-index:5;display:flex;align-items:flex-end;justify-content:center;
+  padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));background:rgba(0,0,0,.2);
+  opacity:0;pointer-events:none;transition:opacity .3s}
+.sheet.show{opacity:1;pointer-events:auto}
+.card{width:100%;max-width:520px;max-height:78%;border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:12px;
+  background:var(--glass-hi);transform:translateY(30px);transition:transform .45s cubic-bezier(.2,.9,.25,1)}
+.show .card{transform:none}
+.card h2{margin:0;font:700 20px var(--font);letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:center}
+.card p{margin:0;font-size:13px;line-height:1.45;color:var(--muted)}
+.card input{width:100%;border:1px solid var(--hair);background:var(--glass);color:var(--text);border-radius:14px;padding:13px;font:16px var(--font);-webkit-user-select:text;user-select:text}
+.done{height:46px;border-radius:15px;background:var(--accent);color:#fff;font:600 15px var(--font)}
+.row2{display:flex;gap:8px}.row2 .chip{flex:1;height:40px}
+.list{overflow:auto;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch}
+.item{padding:12px 14px;border-radius:16px;background:var(--glass);text-align:left;width:100%}
+.item .t{font:600 15px/1.35 var(--font);overflow-wrap:anywhere}
+.item .m{font-size:12px;color:var(--muted);margin-top:4px}
+.empty{color:var(--muted);font-size:14px;padding:20px 0;text-align:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<div class="hint"><div><b>Zuhörer</b>Starte oben. Ich höre leise mit und klappe auf, sobald ich dir eine Antwort geben kann. Es wird nichts vorgelesen.</div></div>
+
+<div class="wrap">
+  <section class="island glass" id="island" aria-live="polite">
+    <div class="bar">
+      <span class="dot"></span>
+      <button class="title" id="titleBtn" aria-label="Antwort auf- oder zuklappen"><span id="tTxt">Bereit</span><small id="tMode">Schule</small></button>
+      <span class="wave" aria-hidden="true"><b></b><b></b><b></b><b></b></span>
+      <button class="go" id="goBtn">Start</button>
+    </div>
+    <div class="body"><div><div class="inner">
+      <span class="kind" id="kind">Antwort</span>
+      <div class="reply" id="reply"></div>
+      <div class="heard" id="heard"></div>
+      <div class="acts">
+        <button class="chip" id="copyBtn">Kopieren</button>
+        <button class="chip pin" id="pinBtn" aria-pressed="false">Offen lassen</button>
+        <span class="timer" aria-hidden="true"><i id="timerBar"></i></span>
+      </div>
+    </div></div></div>
+  </section>
+</div>
+
+<div class="status" id="status"></div>
+
+<nav class="panel glass" aria-label="Steuerung">
+  <button class="ic" id="histBtn" aria-label="Verlauf"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
+  <div class="seg" role="group" aria-label="Modus">
+    <button id="mSchule" aria-pressed="true">Schule</button>
+    <button id="mArbeit" aria-pressed="false">Arbeit</button>
+  </div>
+  <button class="ic" id="autoBtn" aria-pressed="true" aria-label="Automatische Antworten"><svg viewBox="0 0 24 24"><path d="M12 3l2.2 5.3L20 9l-4.3 3.9L17 19l-5-3-5 3 1.3-6.1L4 9l5.8-.7z"/></svg></button>
+  <button class="ic" id="setBtn" aria-label="Einstellungen"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+</nav>
+
+<div class="sheet" id="setSheet" role="dialog" aria-modal="true" aria-label="Einstellungen">
+  <div class="card glass">
+    <h2>Einstellungen</h2>
+    <p>Für die Antworten braucht die Seite deinen Anthropic-API-Schlüssel. Er bleibt nur in diesem Browser. Direkt in Claude geöffnet wird keiner gebraucht.</p>
+    <input type="password" id="keyIn" placeholder="API-Schlüssel (sk-ant-…)" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="API-Schlüssel">
+    <input type="text" id="ctxIn" placeholder="Fach oder Thema, z. B. Mathe Klasse 11" aria-label="Fach oder Thema">
+    <div class="row2"><button class="chip" id="themeBtn">Hell / Dunkel</button><button class="chip" id="clearBtn">Verlauf löschen</button></div>
+    <button class="done" id="saveBtn">Fertig</button>
+  </div>
+</div>
+
+<div class="sheet" id="histSheet" role="dialog" aria-modal="true" aria-label="Verlauf">
+  <div class="card glass">
+    <h2>Verlauf <button class="chip" id="histClose">Schließen</button></h2>
+    <div class="list" id="list"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id)};
+var store={get:function(k){try{return localStorage.getItem(k)||""}catch(e){return ""}},
+           set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+var OPEN_MS=14000;
+var S={mode:store.get("zh_mode")||"schule",active:false,auto:true,busy:false,buffer:[],timer:null,
+  abort:null,backend:null,sample:null,dict:null,rec:null,wake:null,closeT:null,talkT:null,pinned:false,last:null,hist:[]};
+try{S.hist=JSON.parse(store.get("zh_hist")||"[]")}catch(e){S.hist=[]}
+
+var island=$("island");
+
+/* ---------- Insel ---------- */
+function setTitle(t){$("tTxt").textContent=t}
+function setMode(m){
+  S.mode=m;store.set("zh_mode",m);
+  $("mSchule").setAttribute("aria-pressed",m==="schule");
+  $("mArbeit").setAttribute("aria-pressed",m==="arbeit");
+  $("tMode").textContent=m==="schule"?"Schule":"Arbeit";
+}
+function status(t){$("status").textContent=t||""}
+function talking(){
+  island.classList.add("talk");clearTimeout(S.talkT);
+  S.talkT=setTimeout(function(){island.classList.remove("talk")},900);
+}
+function openIsland(){
+  island.classList.add("open");
+  clearTimeout(S.closeT);
+  var bar=$("timerBar");bar.style.transition="none";bar.style.transform="scaleX(1)";
+  if(S.pinned){bar.style.opacity="0";return}
+  bar.style.opacity="1";
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    bar.style.transition="transform "+OPEN_MS+"ms linear";bar.style.transform="scaleX(0)";})});
+  S.closeT=setTimeout(closeIsland,OPEN_MS);
+}
+function closeIsland(){island.classList.remove("open");clearTimeout(S.closeT)}
+function show(item){
+  S.last=item;
+  $("kind").textContent=item.art==="frage"?"Antwort":"Notiz";
+  $("kind").className="kind"+(item.art==="frage"?"":" info");
+  $("reply").textContent=item.text;
+  $("reply").className="reply"+(item.art==="frage"?"":" info");
+  $("heard").textContent="Gehört: „"+item.heard+"“";
+  openIsland();
+}
+function setActive(on){
+  S.active=on;
+  island.classList.toggle("on",on);
+  document.body.classList.toggle("started",on||S.hist.length>0);
+  $("goBtn").textContent=on?"■":"Start";
+  $("goBtn").setAttribute("aria-label",on?"Zuhören stoppen":"Zuhören starten");
+  setTitle(on?"Hört zu":"Bereit");
+}
+
+/* ---------- Verlauf ---------- */
+function saveHist(){store.set("zh_hist",JSON.stringify(S.hist.slice(0,40)))}
+function renderHist(){
+  var l=$("list");l.textContent="";
+  if(!S.hist.length){var e=document.createElement("div");e.className="empty";e.textContent="Noch keine Antworten.";l.appendChild(e);return}
+  S.hist.forEach(function(it){
+    var b=document.createElement("button");b.className="item";
+    var t=document.createElement("div");t.className="t";t.textContent=it.text;
+    var m=document.createElement("div");m.className="m";
+    m.textContent=(it.art==="frage"?"Antwort":"Notiz")+" · "+new Date(it.at).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})+" · "+(it.mode==="arbeit"?"Arbeit":"Schule");
+    b.appendChild(t);b.appendChild(m);
+    b.addEventListener("click",function(){$("histSheet").classList.remove("show");show(it)});
+    l.appendChild(b);
+  });
+}
+
+/* ---------- KI ---------- */
+function prompt(){
+  var ctx=store.get("zh_ctx");
+  var base=S.mode==="schule"
+    ?"Du hilfst einem Schüler live im Unterricht. Du bekommst den Text, den das Mikrofon zuletzt gehört hat (mit möglichen Lücken und Hörfehlern). Stellt jemand eine Frage oder Aufgabe, gib eine kurze, richtige Antwort in 1 bis 2 Sätzen, die der Schüler direkt so sagen kann, in natürlicher Schülersprache."
+    :"Du hilfst einer Person live bei der Arbeit, z. B. in Meetings, Kundengesprächen oder Telefonaten. Du bekommst den Text, den das Mikrofon zuletzt gehört hat (mit möglichen Lücken und Hörfehlern). Wird eine Frage gestellt oder eine Antwort erwartet, gib einen knappen, professionellen Antwortvorschlag in 1 bis 2 Sätzen, den die Person direkt sagen kann.";
+  return base+(ctx?" Fach/Thema: "+ctx+".":"")+
+    " Ist es keine Frage, aber wichtig (Hausaufgabe, Termin, Auftrag, Merksatz), gib eine Notiz mit höchstens 12 Wörtern. Bei Smalltalk oder Unwichtigem: art \"nichts\". Erfinde keine Fakten; bist du unsicher, sag es kurz."+
+    " Antworte nur als JSON: {\"art\":\"frage|info|nichts\",\"text\":\"...\"}";
+}
+function parse(t){var m=String(t||"").match(/\{[\s\S]*\}/);if(!m)return null;try{var o=JSON.parse(m[0]);return o&&o.art?o:null}catch(e){return null}}
+async function api(user,signal){
+  var key=store.get("zh_key");if(!key)throw {code:"nokey"};
+  var r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",signal:signal,
+    headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+    body:JSON.stringify({model:"claude-haiku-5-5",max_tokens:300,system:prompt(),messages:[{role:"user",content:user}]})});
+  if(!r.ok)throw {code:r.status===401?"badkey":r.status===429?"rate_limited":"http"};
+  var j=await r.json();return (j.content&&j.content[0]&&j.content[0].text)||"";
+}
+async function ask(force){
+  if(!S.buffer.length){if(force)status("Noch nichts gehört.");return}
+  if(S.busy&&!force)return;
+  var heard=S.buffer.slice(-6).join(" ");S.buffer=S.buffer.slice(-6);
+  if(S.abort)try{S.abort.abort()}catch(e){}
+  S.abort=new AbortController();S.busy=true;setTitle("Denkt nach …");
+  var user="Zuletzt gehört:\n"+heard;
+  try{
+    var raw=S.sample?(await S.sample(prompt()+"\n\n"+user,{signal:S.abort.signal,modelTier:"quick",cache:false})).text:await api(user,S.abort.signal);
+    var o=parse(raw);
+    if(o&&o.art!=="nichts"&&o.text){
+      var it={art:o.art==="frage"?"frage":"info",text:String(o.text),heard:heard,at:Date.now(),mode:S.mode};
+      S.hist.unshift(it);saveHist();S.buffer=[];show(it);status("");
+    }else if(force)status("Nichts Wichtiges gehört.");
+  }catch(err){
+    if(err&&err.name==="AbortError"){}
+    else if(err&&err.code==="nokey"){status("Trag zuerst deinen API-Schlüssel ein.");openSet()}
+    else if(err&&err.code==="badkey")status("API-Schlüssel wird nicht akzeptiert.");
+    else if(err&&err.code==="rate_limited")status("Kurz warten, zu viele Anfragen.");
+    else if(err&&err.code==="not_granted")status("Antworten wurden nicht freigegeben.");
+    else status("Antwort gerade nicht möglich.");
+  }
+  S.busy=false;setTitle(S.active?"Hört zu":"Bereit");
+}
+function onFinal(t){
+  t=(t||"").trim();if(!t)return;
+  S.buffer.push(t);talking();
+  if(!S.auto)return;
+  if(S.buffer.join(" ").split(/\s+/).length<4)return;
+  clearTimeout(S.timer);S.timer=setTimeout(function(){ask(false)},1500);
+}
+
+/* ---------- Mikrofon ---------- */
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function startSR(){
+  var rec=new SR();S.rec=rec;rec.lang="de-DE";rec.continuous=true;rec.interimResults=true;
+  rec.onresult=function(e){
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      var r=e.results[i];if(r.isFinal)onFinal(r[0].transcript);else talking();
+    }
+  };
+  rec.onerror=function(e){
+    if(e.error==="not-allowed"||e.error==="service-not-allowed"){stop();status("Mikrofon blockiert. In Safari für diese Seite erlauben.")}
+  };
+  rec.onend=function(){if(S.active&&S.rec===rec)setTimeout(function(){try{rec.start()}catch(e){}},250)};
+  try{rec.start()}catch(e){status("Mikrofon konnte nicht starten.")}
+}
+function startDict(){
+  var d=S.dict;
+  d.onPartial(function(){talking()});
+  d.onFinal(function(p){onFinal(p.text)});
+  d.onState(function(s){if(s.state==="idle"&&S.active&&s.reason!=="viewer_stopped"&&s.reason!=="hidden")d.start().catch(function(){})});
+  d.start().catch(function(){stop();status("Mikrofon nicht freigegeben.")});
+}
+function start(){
+  if(S.active)return;
+  if(SR){S.backend="sr";setActive(true);startSR()}
+  else if(S.dict){S.backend="dict";setActive(true);startDict()}
+  else{status("Dieser Browser kann nicht zuhören. Öffne die Seite in Safari.");return}
+  status("");
+  try{if(navigator.wakeLock)navigator.wakeLock.request("screen").then(function(w){S.wake=w},function(){})}catch(e){}
+}
+function stop(){
+  setActive(false);clearTimeout(S.timer);
+  try{if(S.rec){var r=S.rec;S.rec=null;r.onend=null;r.stop()}}catch(e){}
+  try{if(S.dict&&S.backend==="dict")S.dict.stop()}catch(e){}
+  try{if(S.wake){S.wake.release();S.wake=null}}catch(e){}
+}
+
+/* ---------- Events ---------- */
+function openSet(){$("keyIn").value=store.get("zh_key");$("ctxIn").value=store.get("zh_ctx");$("setSheet").classList.add("show")}
+$("goBtn").addEventListener("click",function(){S.active?stop():start()});
+$("titleBtn").addEventListener("click",function(){
+  if(island.classList.contains("open"))closeIsland();else if(S.last)openIsland();else if(S.active)ask(true);
+});
+$("pinBtn").addEventListener("click",function(){
+  S.pinned=!S.pinned;this.setAttribute("aria-pressed",S.pinned);openIsland();
+});
+$("copyBtn").addEventListener("click",function(){
+  var b=this;if(!S.last)return;
+  try{navigator.clipboard.writeText(S.last.text).then(function(){b.textContent="Kopiert";setTimeout(function(){b.textContent="Kopieren"},1400)},function(){})}catch(e){}
+});
+$("mSchule").addEventListener("click",function(){setMode("schule")});
+$("mArbeit").addEventListener("click",function(){setMode("arbeit")});
+$("autoBtn").addEventListener("click",function(){S.auto=!S.auto;this.setAttribute("aria-pressed",S.auto);status(S.auto?"Automatische Antworten an":"Automatisch aus: tippe oben auf den Titel für eine Antwort")});
+$("setBtn").addEventListener("click",openSet);
+$("saveBtn").addEventListener("click",function(){store.set("zh_key",$("keyIn").value.trim());store.set("zh_ctx",$("ctxIn").value.trim());$("setSheet").classList.remove("show")});
+$("histBtn").addEventListener("click",function(){renderHist();$("histSheet").classList.add("show")});
+$("histClose").addEventListener("click",function(){$("histSheet").classList.remove("show")});
+$("clearBtn").addEventListener("click",function(){S.hist=[];saveHist();this.textContent="Gelöscht"});
+$("themeBtn").addEventListener("click",function(){
+  var r=document.documentElement,c=r.getAttribute("data-theme");
+  var dark=c?c==="dark":matchMedia("(prefers-color-scheme:dark)").matches;
+  var n=dark?"light":"dark";r.setAttribute("data-theme",n);store.set("zh_theme",n);
+});
+document.querySelectorAll(".sheet").forEach(function(s){s.addEventListener("click",function(e){if(e.target===s)s.classList.remove("show")})});
+document.addEventListener("visibilitychange",function(){if(!document.hidden&&S.active&&S.backend==="sr"&&S.rec){try{S.rec.start()}catch(e){}}});
+
+/* ---------- Start ---------- */
+setMode(S.mode);
+var th=store.get("zh_theme");if(th)document.documentElement.setAttribute("data-theme",th);
+if(S.hist.length){document.body.classList.add("started");S.last=S.hist[0];show(S.last);
+  $("kind").textContent=(S.last.art==="frage"?"Letzte Antwort":"Letzte Notiz");}
+if(window.claude&&window.claude.use){
+  window.claude.use("sample").then(function(s){if(s)S.sample=s}).catch(function(){});
+  window.claude.use("dictation").then(function(d){if(d)S.dict=d}).catch(function(){});
+}
+})();
+</script>
+</body>
+</html>
