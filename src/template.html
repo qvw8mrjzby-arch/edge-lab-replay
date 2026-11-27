@@ -1188,6 +1188,7 @@ button, a, select, input, label, [role="tab"] { touch-action: manipulation; }
 @media (min-width: 861px) and (min-height: 501px) {
   #app { grid-template-columns: var(--sideW, 252px) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
   body.side-mini #app { --sideW: 70px; }
+  body.fs #app { grid-template-columns: minmax(0, 1fr); } /* Vollbild: Seitenleiste ist ausgeblendet – Chart nimmt die ganze Breite */
   header.top { flex-direction: column; align-items: stretch; height: 100%; gap: 0; padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); border-bottom: 0; border-right: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 55%, var(--panel)); overflow: hidden; min-height: 0; }
   header.top > .hspace { display: none; }
   .brand { padding: 18px 16px 10px; gap: 12px; }
